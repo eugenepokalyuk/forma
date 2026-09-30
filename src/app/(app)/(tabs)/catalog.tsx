@@ -80,82 +80,75 @@ export default function CatalogScreen() {
   }, [refetch]);
 
   return (
-    <ScreenContainer
-      edges={['top']}
-      loading={isLoading}
-      scroll
-      onRefresh={onRefresh}
-      refreshing={isRefreshing}
-      contentStyle={{ paddingBottom: tabBarClearance }}
-    >
-      {previewProgram ? (
-        <View style={styles.previewWrap}>
-          <ProgramPreviewCard program={previewProgram} />
+    <ScreenContainer edges={['top']} loading={isLoading}>
+      <FlatList
+        style={styles.list}
+        data={rows}
+        keyExtractor={(row) => row.key}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
+        contentContainerStyle={[
+          { paddingBottom: tabBarClearance, gap: spacing.md },
+          rows.length === 0 && styles.emptyContent,
+        ]}
+        ListHeaderComponent={
+          previewProgram ? (
+            <View style={styles.previewWrap}>
+              <ProgramPreviewCard program={previewProgram} />
 
-          <View style={styles.previewHeaderOverlay}>
+              <View style={styles.previewHeaderOverlay}>
+                <AppHeader />
+              </View>
+            </View>
+          ) : (
             <AppHeader />
+          )
+        }
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Typography variant="display" align="center">
+              {'Пока пусто'}
+            </Typography>
+
+            <Typography
+              variant="body"
+              color={COLORS.Text.secondary}
+              align="center"
+              style={{ marginTop: spacing.xs }}
+            >
+              {'Готовые программы появятся здесь'}
+            </Typography>
           </View>
-        </View>
-      ) : (
-        <AppHeader />
-      )}
-
-      {/* TODO: 004, комментарии в файле компонента */}
-      {/* Состояния вынести в отдельные компоненты, на каждое состояние должна быть своя вьюха (view) */}
-      {!data || data.length === 0 ? (
-        //   Empty state
-        <View style={[styles.empty, { paddingBottom: tabBarClearance }]}>
-          <Typography variant="display" align="center">
-            {'Пока пусто'}
-          </Typography>
-
-          <Typography
-            variant="body"
-            color={COLORS.Text.secondary}
-            align="center"
-            style={{ marginTop: spacing.xs }}
-          >
-            {'Готовые программы появятся здесь'}
-          </Typography>
-        </View>
-      ) : (
-        //   Not empty state
-        <FlatList
-          data={rows}
-          keyExtractor={(row) => row.key}
-          scrollEnabled={false}
-          contentContainerStyle={{
-            paddingBottom: tabBarClearance,
-            gap: spacing.md,
-          }}
-          renderItem={({ item, index }) => (
-            <FadeInItem index={index}>
-              {item.type === 'wide' ? (
-                <ProgramCard program={item.program} />
-              ) : (
-                <View style={styles.mediumRow}>
-                  {item.programs.map((program) => (
-                    <ProgramMediumCard
-                      key={program.id}
-                      program={program}
-                      style={
-                        item.programs.length === 2
-                          ? styles.mediumItemPaired
-                          : styles.mediumItemAlone
-                      }
-                    />
-                  ))}
-                </View>
-              )}
-            </FadeInItem>
-          )}
-        />
-      )}
+        }
+        renderItem={({ item, index }) => (
+          <FadeInItem index={index}>
+            {item.type === 'wide' ? (
+              <ProgramCard program={item.program} />
+            ) : (
+              <View style={styles.mediumRow}>
+                {item.programs.map((program) => (
+                  <ProgramMediumCard
+                    key={program.id}
+                    program={program}
+                    style={
+                      item.programs.length === 2
+                        ? styles.mediumItemPaired
+                        : styles.mediumItemAlone
+                    }
+                  />
+                ))}
+              </View>
+            )}
+          </FadeInItem>
+        )}
+      />
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
+  list: { flex: 1 },
+  emptyContent: { flexGrow: 1 },
   empty: {
     flex: 1,
     alignItems: 'center',

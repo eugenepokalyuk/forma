@@ -76,74 +76,64 @@ export default function FeedScreen() {
   });
 
   return (
-    <ScreenContainer
-      edges={['top']}
-      loading={isLoading}
-      scroll
-      onRefresh={onRefresh}
-      refreshing={isRefreshing}
-      contentStyle={{ paddingBottom: tabBarClearance }}
-    >
-      <ScreenHeader title="Лента" />
+    <ScreenContainer edges={['top']} loading={isLoading}>
+      <FlatList
+        style={styles.list}
+        data={posts}
+        keyExtractor={(item) => item.id}
+        refreshing={isRefreshing}
+        onRefresh={onRefresh}
+        contentContainerStyle={[
+          { gap: spacing.md, paddingBottom: tabBarClearance },
+          posts.length === 0 && styles.emptyContent,
+        ]}
+        onEndReachedThreshold={0.4}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
+        }}
+        ListHeaderComponent={<ScreenHeader title="Лента" />}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Typography variant="display" align="center">
+              {'Пока тихо'}
+            </Typography>
 
-      {/* TODO: 003, комментарии в файле компонента */}
-      {/* Состояния вынести в отдельные компоненты, на каждое состояние должна быть своя вьюха (view) */}
-      {posts.length === 0 ? (
-        //   Empty state - подобное сосотяние повторяется уже N раз в разных компоненах, мб задуматься о том , чтобы создать собсвтенный компонент
-        <View style={[styles.empty, { paddingBottom: tabBarClearance }]}>
-          <Typography variant="display" align="center">
-            {'Пока тихо'}
-          </Typography>
+            <Typography
+              variant="body"
+              color={COLORS.Text.secondary}
+              align="center"
+              style={{ marginTop: spacing.xs }}
+            >
+              {
+                'В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки'
+              }
+            </Typography>
 
-          <Typography
-            variant="body"
-            color={COLORS.Text.secondary}
-            align="center"
-            style={{ marginTop: spacing.xs }}
-          >
-            {
-              'В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки'
-            }
-          </Typography>
-
-          <Button
-            title="Найти друзей"
-            onPress={() => router.push(ROUTES.friends)}
-            style={{ marginTop: spacing.lg }}
-          />
-        </View>
-      ) : (
-        //   Not empty state
-        <FlatList
-          data={posts}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{
-            gap: spacing.md,
-            paddingBottom: tabBarClearance,
-          }}
-          onEndReachedThreshold={0.4}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
-          }}
-          ListFooterComponent={
-            isFetchingNextPage ? (
-              <ActivityIndicator
-                color={COLORS.Icon.accent}
-                style={{ marginTop: spacing.md }}
-              />
-            ) : null
-          }
-          renderItem={({ item, index }) => (
-            <FadeInItem index={index}>
-              <PostCard
-                post={item}
-                onToggleLike={() => toggleLike.mutate(item)}
-                onOpenComments={() => setOpenCommentsFor(item.id)}
-              />
-            </FadeInItem>
-          )}
-        />
-      )}
+            <Button
+              title="Найти друзей"
+              onPress={() => router.push(ROUTES.friends)}
+              style={{ marginTop: spacing.lg }}
+            />
+          </View>
+        }
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <ActivityIndicator
+              color={COLORS.Icon.accent}
+              style={{ marginTop: spacing.md }}
+            />
+          ) : null
+        }
+        renderItem={({ item, index }) => (
+          <FadeInItem index={index}>
+            <PostCard
+              post={item}
+              onToggleLike={() => toggleLike.mutate(item)}
+              onOpenComments={() => setOpenCommentsFor(item.id)}
+            />
+          </FadeInItem>
+        )}
+      />
 
       <CommentsModal
         postId={openCommentsFor}
@@ -154,6 +144,8 @@ export default function FeedScreen() {
 }
 
 const styles = StyleSheet.create({
+  list: { flex: 1 },
+  emptyContent: { flexGrow: 1 },
   empty: {
     flex: 1,
     alignItems: 'center',

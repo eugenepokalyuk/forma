@@ -5,6 +5,7 @@ import * as React from 'react';
 import {
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   View,
   type ViewToken,
@@ -255,18 +256,20 @@ function PhotoSlide({
 function WorkoutSlide({ width, post }: { width: number; post: Post }) {
   return (
     // Высота задаётся числом (height: width), а не только aspectRatio —
-    // вложенному FlatList с flex:1 нужен реально зафиксированный размер
-    // родителя, иначе список не скроллится сам, а растягивает слайд и
-    // наезжает на контент под пейджером.
+    // вложенному скроллу нужен реально зафиксированный размер родителя,
+    // иначе список растягивает слайд и наезжает на контент под пейджером.
+    // ScrollView, а не FlatList: этот слайд уже сидит внутри renderItem
+    // ленты постов (тоже VirtualizedList) — вложенный FlatList того же
+    // направления ломает windowing (см. предупреждение RN про nested
+    // VirtualizedLists) и на практике переставал сам скроллиться.
     <View style={[styles.workoutSlide, { width, height: width }]}>
-      <FlatList
-        data={post.exercises}
-        keyExtractor={(_, i) => String(i)}
+      <ScrollView
         style={styles.workoutList}
         contentContainerStyle={{ gap: spacing.sm }}
         showsVerticalScrollIndicator={false}
-        renderItem={({ item: ex }) => (
-          <View style={styles.exerciseChip}>
+      >
+        {post.exercises.map((ex, i) => (
+          <View key={i} style={styles.exerciseChip}>
             {ex.thumbnailUrl ? (
               <Image
                 source={{ uri: ex.thumbnailUrl }}
@@ -287,8 +290,8 @@ function WorkoutSlide({ width, post }: { width: number; post: Post }) {
               </Typography>
             </View>
           </View>
-        )}
-      />
+        ))}
+      </ScrollView>
     </View>
   );
 }

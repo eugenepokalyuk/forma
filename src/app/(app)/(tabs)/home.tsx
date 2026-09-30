@@ -2,7 +2,7 @@ import * as ReactQuery from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { MotiView } from 'moti';
 import * as React from 'react';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { fetchProgram, fetchUserPrograms } from '@/api/programs';
 import { fetchSessions } from '@/api/sessions';
@@ -270,17 +270,13 @@ export default function HomeScreen() {
               onPress: () => router.push(ROUTES.catalog),
             }}
           >
-            <FlatList
-              data={sorted}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-              contentContainerStyle={{ gap: spacing.sm }}
-              renderItem={({ item, index }) => (
-                <FadeInItem index={index}>
+            <View style={{ gap: spacing.sm }}>
+              {sorted.map((item, index) => (
+                <FadeInItem key={item.id} index={index}>
                   <ProgramCard program={item.program} active={item.isActive} />
                 </FadeInItem>
-              )}
-            />
+              ))}
+            </View>
           </Section>
         )}
       </React.Fragment>
