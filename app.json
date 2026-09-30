@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Forma",
+    "slug": "forma",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/branding/logo_black.png",
+    "scheme": "forma",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0B0B0C",
+    "ios": {
+      "bundleIdentifier": "ru.formaone.app",
+      "icon": {
+        "light": "./assets/branding/logo_yellow.png",
+        "dark": "./assets/branding/logo_black.png",
+        "tinted": "./assets/branding/logo_black.png"
+      },
+      "infoPlist": {
+        "UIBackgroundModes": []
+      }
+    },
+    "android": {
+      "package": "ru.formaone.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B0B0C",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B0B0C",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 120
+        }
+      ],
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

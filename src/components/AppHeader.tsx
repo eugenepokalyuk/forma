@@ -1,0 +1,62 @@
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import * as SafeArea from 'react-native-safe-area-context';
+
+import { Logo, Typography } from '@/components/ui';
+import { COLORS, radius, spacing } from '@/theme';
+import { useAuthStore } from '@/store/auth';
+
+// Шапка главных вкладок — логотип + бейдж ПРО, один в один на всех экранах
+export function AppHeader() {
+  const insets = SafeArea.useSafeAreaInsets();
+
+  const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
+
+  const onPress = () => {
+    if (hasProAccess) {
+      Alert.alert('У вас уже есть ПРО', 'Все программы и функции открыты');
+      return;
+    }
+
+    Alert.alert(
+      'ПРО доступен на сайте',
+      'Оформить подписку можно на forma-one.ru',
+    );
+  };
+
+  return (
+    <View style={styles.topBar}>
+      <Logo />
+
+      <Pressable onPress={onPress} style={styles.proBadge}>
+        <Typography variant="title" color={COLORS.Text.accent}>
+          {'ПРО'}
+        </Typography>
+
+        <Typography variant="title" color={COLORS.Text.primary}>
+          {hasProAccess ? 'АКТИВЕН' : 'БЕСПЛАТНО'}
+        </Typography>
+      </Pressable>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  topBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  proBadge: {
+    flexDirection: 'row',
+    gap: 4,
+
+    borderWidth: 1,
+    borderColor: COLORS.Stroke.secondary,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+  },
+});

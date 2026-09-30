@@ -1,0 +1,170 @@
+import * as ReactQuery from '@tanstack/react-query';
+import * as React from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+
+import { fetchCatalog } from '@/api/programs';
+import type { Program } from '@/api/types';
+import { AppHeader } from '@/components/AppHeader';
+import { FadeInItem } from '@/components/FadeInItem';
+import { ProgramCard } from '@/components/ProgramCard';
+import { ProgramMediumCard } from '@/components/ProgramMediumCard';
+import { ProgramPreviewCard } from '@/components/ProgramPreviewCard';
+import { ScreenContainer, ScreenHeader, Typography } from '@/components/ui';
+import { useTabBarClearance } from '@/components/TabBar';
+import { COLORS, spacing } from '@/theme';
+
+type CatalogRow =
+  | { type: 'wide'; key: string; program: Program }
+  | { type: 'medium'; key: string; programs: Program[] };
+
+// Порядок программ — с бэка (Program.order, управляется в админке), поэтому
+// тут больше не пересортировываем по реакциям. Wide-программы идут своей
+// строкой, medium — парами по 1/2 ширины (нечётная последняя занимает
+// половину строки, а не растягивается на всю).
+function buildCatalogRows(programs: Program[]): CatalogRow[] {
+  const rows: CatalogRow[] = [];
+  let mediumBuffer: Program[] = [];
+
+  const flushMedium = () => {
+    if (mediumBuffer.length > 0) {
+      rows.push({
+        type: 'medium',
+        key: mediumBuffer.map((p) => p.id).join('-'),
+        programs: mediumBuffer,
+      });
+      mediumBuffer = [];
+    }
+  };
+
+  for (const program of programs) {
+    if (program.catalogLayout === 'medium') {
+      mediumBuffer.push(program);
+      if (mediumBuffer.length === 2) flushMedium();
+    } else {
+      flushMedium();
+      rows.push({ type: 'wide', key: program.id, program });
+    }
+  }
+  flushMedium();
+
+  return rows;
+}
+
+// Тот же ProgramCard, что и на главном в «Мои программы» — раньше здесь была
+// отдельная карточка с описанием и кнопкой «Добавить»; теперь добавление
+// программы делается на её странице (см. program/[id].tsx), а список тут
+// один в один как в forma-project Figma (node 5487-2731).
+export default function CatalogScreen() {
+  const tabBarClearance = useTabBarClearance();
+  const { data, isLoading, refetch } = ReactQuery.useQuery({
+    queryKey: ['catalog'],
+    queryFn: fetchCatalog,
+  });
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  // Единственная закреплённая preview-программа (см. Program.catalog_layout
+  // на бэке) — если есть, идёт баннером над остальным списком.
+  const previewProgram = data?.find((p) => p.catalogLayout === 'preview');
+  const rows = React.useMemo(
+    () => buildCatalogRows((data ?? []).filter((p) => p !== previewProgram)),
+    [data, previewProgram],
+  );
+
+  const onRefresh = React.useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
+
+  return (
+    <ScreenContainer
+      edges={['top']}
+      loading={isLoading}
+      scroll
+      onRefresh={onRefresh}
+      refreshing={isRefreshing}
+      contentStyle={{ paddingBottom: tabBarClearance }}
+    >
+      {previewProgram ? (
+        <View style={styles.previewWrap}>
+          <ProgramPreviewCard program={previewProgram} />
+
+          <View style={styles.previewHeaderOverlay}>
+            <AppHeader />
+          </View>
+        </View>
+      ) : (
+        <AppHeader />
+      )}
+
+      {/* TODO: 004, комментарии в файле компонента */}
+      {/* Состояния вынести в отдельные компоненты, на каждое состояние должна быть своя вьюха (view) */}
+      {!data || data.length === 0 ? (
+        //   Empty state
+        <View style={[styles.empty, { paddingBottom: tabBarClearance }]}>
+          <Typography variant="display" align="center">
+            {'Пока пусто'}
+          </Typography>
+
+          <Typography
+            variant="body"
+            color={COLORS.Text.secondary}
+            align="center"
+            style={{ marginTop: spacing.xs }}
+          >
+            {'Готовые программы появятся здесь'}
+          </Typography>
+        </View>
+      ) : (
+        //   Not empty state
+        <FlatList
+          data={rows}
+          keyExtractor={(row) => row.key}
+          scrollEnabled={false}
+          contentContainerStyle={{
+            paddingBottom: tabBarClearance,
+            gap: spacing.md,
+          }}
+          renderItem={({ item, index }) => (
+            <FadeInItem index={index}>
+              {item.type === 'wide' ? (
+                <ProgramCard program={item.program} />
+              ) : (
+                <View style={styles.mediumRow}>
+                  {item.programs.map((program) => (
+                    <ProgramMediumCard
+                      key={program.id}
+                      program={program}
+                      style={
+                        item.programs.length === 2
+                          ? styles.mediumItemPaired
+                          : styles.mediumItemAlone
+                      }
+                    />
+                  ))}
+                </View>
+              )}
+            </FadeInItem>
+          )}
+        />
+      )}
+    </ScreenContainer>
+  );
+}
+
+const styles = StyleSheet.create({
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xl,
+  },
+  previewWrap: { position: 'relative' },
+  previewHeaderOverlay: { position: 'absolute', top: 0, left: 0, right: 0 },
+  mediumRow: { flexDirection: 'row', gap: spacing.md },
+  mediumItemPaired: { flex: 1 },
+  mediumItemAlone: { width: '48%' },
+});

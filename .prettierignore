@@ -1,0 +1,5 @@
+android/
+ios/
+vendor/
+.expo/
+package-lock.json
