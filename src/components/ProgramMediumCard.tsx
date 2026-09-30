@@ -8,6 +8,7 @@ import type { Program } from '@/api/types';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
+import { formatProgramSubtitle } from '@/utils/format';
 import { ROUTES } from '@/utils/routes';
 
 interface ProgramMediumCardProps {
@@ -59,16 +60,14 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
           {program.title}
         </Typography>
 
-        {program.description ? (
-          <Typography
-            variant="body"
-            color={COLORS.Text.secondary}
-            align="center"
-            numberOfLines={2}
-          >
-            {program.description}
-          </Typography>
-        ) : null}
+        <Typography
+          variant="body"
+          color={COLORS.Text.secondary}
+          align="center"
+          numberOfLines={2}
+        >
+          {formatProgramSubtitle(program)}
+        </Typography>
 
         {reactions.length > 0 ? (
           <View style={styles.reactions}>

@@ -1,4 +1,4 @@
-import type { Exercise } from '@/api/types';
+import type { Exercise, Program } from '@/api/types';
 
 const TIMED_TYPES = new Set(['cardio', 'stretch', 'yoga']);
 
@@ -79,6 +79,27 @@ export function pluralizeWorkouts(n: number): string {
 
 export function pluralizeTimes(n: number): string {
   return `${n} ${plural(n, ['раз', 'раза', 'раз'])}`;
+}
+
+// Место тренировки — в тексте программы (Program.goal) это ключ выбора из
+// админки (bars/gym/home), goalLabel — именительный падеж ("Зал", «Турники»);
+// для подписи карточки нужен именно предложный падеж, поэтому короткий
+// словарь здесь, а не goalLabel напрямую.
+const PLACE_PHRASE: Record<string, string> = {
+  gym: 'В зале',
+  home: 'Дома',
+  bars: 'На турниках',
+};
+
+// «В зале. 3 раза в неделю» — единая подпись карточки программы везде
+// (wide/medium/preview), вместо вольного описания программы.
+export function formatProgramSubtitle(
+  program: Pick<Program, 'goal' | 'daysPerWeek'>,
+): string {
+  const place = program.goal ? PLACE_PHRASE[program.goal] : null;
+  return [place, `${pluralizeTimes(program.daysPerWeek)} в неделю`]
+    .filter(Boolean)
+    .join('. ');
 }
 
 // Малые нагрузки — в кг, крупные — в тоннах: 850 → «850 кг», 12540 → «12,5 т».

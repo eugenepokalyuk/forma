@@ -12,11 +12,6 @@ export function AppHeader() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
 
   const onPress = () => {
-    if (hasProAccess) {
-      Alert.alert('У вас уже есть ПРО', 'Все программы и функции открыты');
-      return;
-    }
-
     Alert.alert(
       'ПРО доступен на сайте',
       'Оформить подписку можно на forma-one.ru',
@@ -27,15 +22,17 @@ export function AppHeader() {
     <View style={styles.topBar}>
       <Logo />
 
-      <Pressable onPress={onPress} style={styles.proBadge}>
-        <Typography variant="title" color={COLORS.Text.accent}>
-          {'ПРО'}
-        </Typography>
+      {hasProAccess ? null : (
+        <Pressable onPress={onPress} style={styles.proBadge}>
+          <Typography variant="title" color={COLORS.Text.accent}>
+            {'ПРО'}
+          </Typography>
 
-        <Typography variant="title" color={COLORS.Text.primary}>
-          {hasProAccess ? 'АКТИВЕН' : 'БЕСПЛАТНО'}
-        </Typography>
-      </Pressable>
+          <Typography variant="title" color={COLORS.Text.primary}>
+            {'БЕСПЛАТНО'}
+          </Typography>
+        </Pressable>
+      )}
     </View>
   );
 }

@@ -8,6 +8,7 @@ import { fetchReactions } from '@/api/reactions';
 import type { Program } from '@/api/types';
 import { Typography } from '@/components/ui';
 import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
+import { formatProgramSubtitle } from '@/utils/format';
 import { ROUTES } from '@/utils/routes';
 
 interface ProgramPreviewCardProps {
@@ -56,16 +57,14 @@ export function ProgramPreviewCard({ program }: ProgramPreviewCardProps) {
           {program.title}
         </Typography>
 
-        {program.description ? (
-          <Typography
-            variant="body"
-            color={COLORS.Text.secondary}
-            numberOfLines={2}
-            style={styles.description}
-          >
-            {program.description}
-          </Typography>
-        ) : null}
+        <Typography
+          variant="body"
+          color={COLORS.Text.secondary}
+          numberOfLines={2}
+          style={styles.description}
+        >
+          {formatProgramSubtitle(program)}
+        </Typography>
 
         {reactions.length > 0 ? (
           <View style={styles.reactions}>

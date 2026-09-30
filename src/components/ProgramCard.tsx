@@ -9,18 +9,8 @@ import type { Program } from '@/api/types';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { pluralizeTimes } from '@/utils/format';
+import { formatProgramSubtitle } from '@/utils/format';
 import { ROUTES } from '@/utils/routes';
-
-// Место тренировки — в тексте программы (Program.goal) это ключ выбора из
-// админки (bars/gym/home), goalLabel — именительный падеж ("Зал", «Турники»);
-// для подписи карточки нужен именно предложный падеж, поэтому короткий
-// словарь здесь, а не goalLabel напрямую.
-const PLACE_PHRASE: Record<string, string> = {
-  gym: 'В зале',
-  home: 'Дома',
-  bars: 'На турниках',
-};
 
 // Сумма всех реакций программы — для сортировки каталога по популярности.
 export function totalReactions(program: Program): number {
@@ -50,10 +40,7 @@ export function ProgramCard({ program, active }: ProgramCardProps) {
     .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
     .sort((a, b) => a.order - b.order);
 
-  const place = program.goal ? PLACE_PHRASE[program.goal] : null;
-  const subtitle = [place, `От ${pluralizeTimes(program.daysPerWeek)} в неделю`]
-    .filter(Boolean)
-    .join('. ');
+  const subtitle = formatProgramSubtitle(program);
   const isPro = program.tier === 'pro';
 
   return (
