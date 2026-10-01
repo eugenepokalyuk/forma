@@ -11,11 +11,11 @@ import {
   type ViewToken,
 } from 'react-native';
 
-import type { Post } from '@/api';
-import { CustomIcon, Icon, Typography } from '@/components/ui';
-import { UserAvatar } from '@/components/UserAvatar';
-import { formatMMSS } from '@/utils/helpers/string/number';
-import { formatRelativeTime } from '@/utils/helpers/date/relativeTime';
+import type { Post } from '@/modules/social';
+import { CustomIcon, Icon, Typography } from '@/shared/ui';
+import { UserAvatar } from '@/shared/ui';
+import { formatMMSS } from '@/shared/lib/string/number';
+import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { COLORS, motion, radius, shadow, spacing } from '@/theme';
 
 const DOUBLE_TAP_MS = 280;

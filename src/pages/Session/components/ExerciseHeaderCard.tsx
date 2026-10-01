@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api';
-import { Typography } from '@/components/ui';
+import type { Exercise } from '@/modules/programs';
+import { Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 
 // Имя, описание и мышцы упражнения — по центру, без карточки-подложки

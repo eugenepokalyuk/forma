@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useSessions } from '@/queries/sessions';
+import { useSessions } from '@/modules/workout';
 
 // Даты завершённых тренировок — для полосы недели и цели недели.
 export function useTrainedDates() {

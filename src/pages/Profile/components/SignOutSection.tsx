@@ -1,5 +1,5 @@
-import { ListGroup, ListRow, Section } from '@/components/ui';
-import { useAuthStore } from '@/store/auth';
+import { ListGroup, ListRow, Section } from '@/shared/ui';
+import { useAuthStore } from '@/modules/auth';
 
 export function SignOutSection() {
   const signOut = useAuthStore((s) => s.signOut);

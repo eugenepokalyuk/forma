@@ -1,8 +1,8 @@
 import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
-import type { UserProgram } from '@/api';
-import { programQueryOptions } from '@/queries/programs';
+import type { UserProgram } from '@/modules/programs';
+import { programQueryOptions } from '@/modules/programs';
 
 // Предзагружаем программу целиком для каждой активной — она будет в
 // кэше до прихода в зал.

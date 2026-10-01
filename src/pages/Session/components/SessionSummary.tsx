@@ -3,11 +3,11 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { Button } from '@/components/Button';
-import { Input, StatTile, Typography } from '@/components/ui';
+import { Button } from '@/shared/ui';
+import { Input, StatTile, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
-import { formatMMSS } from '@/utils/helpers/string/number';
-import { tonnage, useSessionStore } from '@/store/session';
+import { formatMMSS } from '@/shared/lib/string/number';
+import { tonnage, useSessionStore } from '@/modules/workout';
 
 export function SessionSummary({
   elapsed,

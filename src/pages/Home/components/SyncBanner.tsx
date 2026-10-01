@@ -1,8 +1,8 @@
 import { MotiView } from 'moti';
 import { StyleSheet, View } from 'react-native';
 
-import { Typography } from '@/components/ui';
-import { useOutboxStore } from '@/store/outbox';
+import { Typography } from '@/shared/ui';
+import { useOutboxStore } from '@/modules/workout';
 import { COLORS, motion, radius, spacing } from '@/theme';
 
 // Плашка о несинхронизированных действиях из очереди outbox.

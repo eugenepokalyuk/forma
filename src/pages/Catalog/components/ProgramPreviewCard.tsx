@@ -3,12 +3,12 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
-import type { Program } from '@/api';
-import { Typography } from '@/components/ui';
+import type { Program } from '@/modules/programs';
+import { Typography } from '@/shared/ui';
 import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
-import { ROUTES } from '@/utils/constants/routes';
-import { useReactions } from '@/queries/reactions';
+import { formatProgramSubtitle } from '@/modules/programs';
+import { ROUTES } from '@/shared/constants/routes';
+import { useReactions } from '@/modules/programs';
 
 interface ProgramPreviewCardProps {
   program: Program;

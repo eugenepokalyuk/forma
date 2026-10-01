@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import type { Program } from '@/api';
-import { AppHeader } from '@/components/AppHeader';
-import { FadeInItem } from '@/components/FadeInItem';
-import { ProgramCard } from '@/components/ProgramCard';
+import type { Program } from '@/modules/programs';
+import { AppHeader } from '@/modules/auth';
+import { FadeInItem } from '@/shared/ui';
+import { ProgramCard } from '@/modules/programs';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { ProgramPreviewCard } from '@/pages/Catalog/components/ProgramPreviewCard';
-import { ScreenContainer, ScreenHeader, Typography } from '@/components/ui';
-import { useTabBarClearance } from '@/components/TabBar';
+import { ScreenContainer, ScreenHeader, Typography } from '@/shared/ui';
+import { useTabBarClearance } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
-import { useCatalog } from '@/queries/programs';
+import { useCatalog } from '@/modules/programs';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program }
@@ -51,7 +51,7 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 
 // Тот же ProgramCard, что и на главном в «Мои программы» — раньше здесь была
 // отдельная карточка с описанием и кнопкой «Добавить»; теперь добавление
-// программы делается на её странице (см. program/[id].tsx), а список тут
+// программы делается на её странице (см. pages/Program), а список тут
 // один в один как в forma-project Figma (node 5487-2731).
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();

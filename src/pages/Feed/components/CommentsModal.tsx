@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { CustomIcon, Input, Typography } from '@/components/ui';
+import { CustomIcon, Input, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatRelativeTime } from '@/utils/helpers/date/relativeTime';
-import { useAddComment, useComments } from '@/queries/social';
+import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
+import { useAddComment, useComments } from '@/modules/social';
 
 interface CommentsModalProps {
   postId: string | null;

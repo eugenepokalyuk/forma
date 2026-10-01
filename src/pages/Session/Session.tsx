@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import type { Exercise } from '@/api';
+import type { Exercise } from '@/modules/programs';
 import { ExerciseActionsList } from '@/pages/Session/components/ExerciseActionsList';
 import { ExerciseHeaderCard } from '@/pages/Session/components/ExerciseHeaderCard';
 import { ExerciseInput } from '@/pages/Session/components/ExerciseInput';
@@ -14,9 +14,9 @@ import { NoteModal } from '@/pages/Session/components/NoteModal';
 import { RestScreen } from '@/pages/Session/components/RestScreen';
 import { SessionSummary } from '@/pages/Session/components/SessionSummary';
 import { SetPills } from '@/pages/Session/components/SetPills';
-import { Typography } from '@/components/ui';
+import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
-import { type LocalLog, useSessionStore } from '@/store/session';
+import { type LocalLog, useSessionStore } from '@/modules/workout';
 
 type Phase = 'exercise' | 'rest' | 'summary';
 

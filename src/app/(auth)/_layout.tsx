@@ -1,8 +1,8 @@
 import { Redirect, Stack } from 'expo-router';
 
 import { COLORS } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
-import { useAuthStore } from '@/store/auth';
+import { ROUTES } from '@/shared/constants/routes';
+import { useAuthStore } from '@/modules/auth';
 
 export default function AuthLayout() {
   const status = useAuthStore((s) => s.status);

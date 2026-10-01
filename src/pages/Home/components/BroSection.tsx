@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { Section } from '@/components/ui';
-import { TipsCarousel } from '@/pages/Home/components/TipsCarousel';
+import { Section } from '@/shared/ui';
+import { TipsCarousel } from '@/modules/bro';
 import { useTodayWorkout } from '@/pages/Home/hooks/useTodayWorkout';
 import { useTrainedDates } from '@/pages/Home/hooks/useTrainedDates';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
-import { useAuthStore } from '@/store/auth';
-import { getWeeklyGoal } from '@/utils/helpers/bro/broMessages';
-import { getCurrentWeek, isSameDay } from '@/utils/helpers/date/calendar';
+import { useAuthStore } from '@/modules/auth';
+import { getWeeklyGoal } from '@/modules/bro';
+import { getCurrentWeek, isSameDay } from '@/shared/lib/date/calendar';
 
 // Карточки Фитнес Бро: контекст «сегодня» и цель недели.
 export function BroSection() {

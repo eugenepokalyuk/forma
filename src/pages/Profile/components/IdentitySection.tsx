@@ -1,9 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 
-import { Section, Typography } from '@/components/ui';
-import { UserAvatar } from '@/components/UserAvatar';
-import { useAuthStore } from '@/store/auth';
+import { Section, Typography } from '@/shared/ui';
+import { UserAvatar } from '@/shared/ui';
+import { useAuthStore } from '@/modules/auth';
 import { COLORS, radius, spacing } from '@/theme';
 
 export function IdentitySection() {

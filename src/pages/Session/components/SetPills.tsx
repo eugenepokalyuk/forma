@@ -2,10 +2,10 @@ import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api';
-import { Icon, Typography } from '@/components/ui';
+import type { Exercise } from '@/modules/programs';
+import { Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { useSessionStore } from '@/store/session';
+import { useSessionStore } from '@/modules/workout';
 
 interface SetPillsProps {
   exercise: Exercise;

@@ -1,8 +1,8 @@
 import { Redirect } from 'expo-router';
 
-import { ROUTES } from '@/utils/constants/routes';
-import { useAuthStore } from '@/store/auth';
-import { useSessionStore } from '@/store/session';
+import { ROUTES } from '@/shared/constants/routes';
+import { useAuthStore } from '@/modules/auth';
+import { useSessionStore } from '@/modules/workout';
 
 // Если при запуске есть незавершённая локальная сессия, приложение сразу
 // открывает режим выполнения.

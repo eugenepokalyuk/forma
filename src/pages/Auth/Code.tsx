@@ -5,11 +5,11 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { sendOtpApi, verifyOtpApi } from '@/api';
-import { Typography } from '@/components/ui';
+import { sendOtpApi, verifyOtpApi } from '@/modules/auth';
+import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
-import { useAuthStore } from '@/store/auth';
+import { ROUTES } from '@/shared/constants/routes';
+import { useAuthStore } from '@/modules/auth';
 
 const RESEND_SECONDS = 60;
 

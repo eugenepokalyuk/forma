@@ -11,10 +11,10 @@ import * as React from 'react';
 import { View } from 'react-native';
 
 import { COLORS } from '@/theme';
-import { queryClient, queryPersister } from '@/utils/query/queryClient';
-import { useOutboxSync } from '@/utils/hooks/useOutboxSync';
-import { useAuthStore } from '@/store/auth';
-import { useSessionStore } from '@/store/session';
+import { queryClient, queryPersister } from '@/shared/lib/queryClient';
+import { useOutboxSync } from '@/modules/workout';
+import { useAuthStore } from '@/modules/auth';
+import { useSessionStore } from '@/modules/workout';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 

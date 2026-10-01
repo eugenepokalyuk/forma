@@ -1,5 +1,5 @@
-import { useSessions } from '@/queries/sessions';
-import { computeStreak } from '@/utils/helpers/date/calendar';
+import { useSessions } from '@/modules/workout';
+import { computeStreak } from '@/shared/lib/date/calendar';
 
 // Итоги профиля по завершённым тренировкам: серия, количество, тоннаж.
 export function useProfileStats() {

@@ -1,8 +1,8 @@
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet } from 'react-native';
 
-import type { ProgramWeek } from '@/api';
-import { Typography } from '@/components/ui';
+import type { ProgramWeek } from '@/modules/programs';
+import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius } from '@/theme';
 
 interface WeekPillProps {

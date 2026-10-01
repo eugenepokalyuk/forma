@@ -5,11 +5,11 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
-import { sendOtpApi } from '@/api';
-import { Button } from '@/components/Button';
-import { Input, Typography } from '@/components/ui';
+import { sendOtpApi } from '@/modules/auth';
+import { Button } from '@/shared/ui';
+import { Input, Typography } from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

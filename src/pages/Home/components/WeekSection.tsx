@@ -1,8 +1,8 @@
-import { Section, Typography } from '@/components/ui';
+import { Section, Typography } from '@/shared/ui';
 import { WeekStrip } from '@/pages/Home/components/WeekStrip';
 import { useTrainedDates } from '@/pages/Home/hooks/useTrainedDates';
 import { COLORS, spacing } from '@/theme';
-import { formatMonthLabel } from '@/utils/helpers/date/calendar';
+import { formatMonthLabel } from '@/shared/lib/date/calendar';
 
 export function WeekSection() {
   const trainedDates = useTrainedDates();

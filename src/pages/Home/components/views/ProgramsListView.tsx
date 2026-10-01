@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import type { UserProgram } from '@/api';
-import { FadeInItem } from '@/components/FadeInItem';
-import { ProgramCard } from '@/components/ProgramCard';
-import { Section } from '@/components/ui';
+import type { UserProgram } from '@/modules/programs';
+import { FadeInItem } from '@/shared/ui';
+import { ProgramCard } from '@/modules/programs';
+import { Section } from '@/shared/ui';
 import { spacing } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function ProgramsListView({ programs }: { programs: UserProgram[] }) {
   return (

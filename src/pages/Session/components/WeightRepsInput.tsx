@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api';
-import { Button } from '@/components/Button';
+import type { Exercise } from '@/modules/programs';
+import { Button } from '@/shared/ui';
 import { Stepper } from '@/pages/Session/components/Stepper';
-import { Divider, Typography } from '@/components/ui';
+import { Divider, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import type { SetPrefill } from '@/utils/helpers/exercise/setPrefill';
+import type { SetPrefill } from '@/modules/workout';
 
 interface WeightRepsInputProps {
   exercise: Exercise;

@@ -1,16 +1,17 @@
 import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
-import { AppHeader } from '@/components/AppHeader';
-import { useTabBarClearance } from '@/components/TabBar';
-import { ScreenContainer } from '@/components/ui';
+import { AppHeader } from '@/modules/auth';
+import { useTabBarClearance } from '@/shared/ui';
+import { ScreenContainer } from '@/shared/ui';
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
 import { SyncBanner } from '@/pages/Home/components/SyncBanner';
 import { WeekSection } from '@/pages/Home/components/WeekSection';
 import { usePrefetchActivePrograms } from '@/pages/Home/hooks/usePrefetchActivePrograms';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
-import { queryKeys } from '@/queries/keys';
+import { programKeys } from '@/modules/programs';
+import { workoutKeys } from '@/modules/workout';
 
 export default function HomeScreen() {
   const queryClient = ReactQuery.useQueryClient();
@@ -24,8 +25,8 @@ export default function HomeScreen() {
     setIsRefreshing(true);
     try {
       await Promise.all([
-        queryClient.refetchQueries({ queryKey: queryKeys.userPrograms }),
-        queryClient.refetchQueries({ queryKey: queryKeys.sessions }),
+        queryClient.refetchQueries({ queryKey: programKeys.userPrograms }),
+        queryClient.refetchQueries({ queryKey: workoutKeys.sessions }),
       ]);
     } finally {
       setIsRefreshing(false);

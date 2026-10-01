@@ -7,12 +7,12 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 
-import type { WorkoutWithExercises } from '@/api';
-import { Card } from '@/components/Card';
-import { FadeInItem } from '@/components/FadeInItem';
-import { Icon, Typography } from '@/components/ui';
+import type { WorkoutWithExercises } from '@/modules/programs';
+import { Card } from '@/shared/ui';
+import { FadeInItem } from '@/shared/ui';
+import { Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/utils/helpers/exercise/format';
+import { formatSetsLine } from '@/modules/workout';
 
 interface WorkoutListItemProps {
   workout: WorkoutWithExercises;

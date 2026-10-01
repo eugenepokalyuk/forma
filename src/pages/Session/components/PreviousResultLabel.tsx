@@ -1,7 +1,7 @@
-import type { LastLog } from '@/api';
-import { Typography } from '@/components/ui';
+import type { LastLog } from '@/modules/workout';
+import { Typography } from '@/shared/ui';
 import { COLORS } from '@/theme';
-import { formatMMSS } from '@/utils/helpers/string/number';
+import { formatMMSS } from '@/shared/lib/string/number';
 
 // «Прошлый раз: 50 кг × 8» — ничего не рендерит, если истории ещё нет.
 export function PreviousResultLabel({

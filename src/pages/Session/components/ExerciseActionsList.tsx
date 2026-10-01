@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
-import { Icon, Typography } from '@/components/ui';
+import { Icon, Typography } from '@/shared/ui';
 import { COLORS, screenPadding, spacing } from '@/theme';
 
 interface ExerciseActionsListProps {

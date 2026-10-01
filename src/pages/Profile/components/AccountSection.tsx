@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import { Switch } from 'react-native';
 
-import { ListGroup, ListRow, Section } from '@/components/ui';
+import { ListGroup, ListRow, Section } from '@/shared/ui';
 import { useFriendsOnly } from '@/pages/Profile/hooks/useFriendsOnly';
-import { useSocialSummary } from '@/queries/social';
-import { useAuthStore } from '@/store/auth';
+import { useSocialSummary } from '@/modules/social';
+import { useAuthStore } from '@/modules/auth';
 import { COLORS } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function AccountSection() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);

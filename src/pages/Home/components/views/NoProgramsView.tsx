@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/Button';
-import { Section, Typography } from '@/components/ui';
+import { Button } from '@/shared/ui';
+import { Section, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function NoProgramsView() {
   return (

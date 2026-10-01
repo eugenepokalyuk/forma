@@ -2,15 +2,15 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/Button';
+import { Button } from '@/shared/ui';
 import { CommentsModal } from '@/pages/Feed/components/CommentsModal';
 import { PostCard } from '@/pages/Feed/components/PostCard';
-import { FadeInItem } from '@/components/FadeInItem';
-import { ScreenContainer, ScreenHeader, Typography } from '@/components/ui';
-import { useTabBarClearance } from '@/components/TabBar';
+import { FadeInItem } from '@/shared/ui';
+import { ScreenContainer, ScreenHeader, Typography } from '@/shared/ui';
+import { useTabBarClearance } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
-import { ROUTES } from '@/utils/constants/routes';
-import { useFeed, useToggleLike } from '@/queries/social';
+import { ROUTES } from '@/shared/constants/routes';
+import { useFeed, useToggleLike } from '@/modules/social';
 
 export default function FeedScreen() {
   const tabBarClearance = useTabBarClearance();

@@ -2,10 +2,10 @@ import { Stack } from 'expo-router';
 import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import type { FollowRequestItem, PublicUser } from '@/api';
-import { Button } from '@/components/Button';
+import type { FollowRequestItem, PublicUser } from '@/modules/social';
+import { Button } from '@/shared/ui';
 import { FollowButton } from '@/pages/Friends/components/FollowButton';
-import { Input, ScreenContainer, Typography } from '@/components/ui';
+import { Input, ScreenContainer, Typography } from '@/shared/ui';
 import { UserRow } from '@/pages/Friends/components/UserRow';
 import { COLORS, spacing } from '@/theme';
 import {
@@ -14,7 +14,7 @@ import {
   useFollowRequests,
   useRespondToFollowRequest,
   useSearchUsers,
-} from '@/queries/social';
+} from '@/modules/social';
 
 type Tab = 'following' | 'followers' | 'requests';
 

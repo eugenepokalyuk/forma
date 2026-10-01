@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Typography } from '@/components/ui';
-import { getCurrentWeek, isSameDay } from '@/utils/helpers/date/calendar';
+import { Typography } from '@/shared/ui';
+import { getCurrentWeek, isSameDay } from '@/shared/lib/date/calendar';
 import { COLORS, spacing } from '@/theme';
 
 interface WeekStripProps {

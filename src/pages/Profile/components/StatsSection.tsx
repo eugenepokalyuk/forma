@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Section, StatTile } from '@/components/ui';
+import { Section, StatTile } from '@/shared/ui';
 import { useProfileStats } from '@/pages/Profile/hooks/useProfileStats';
 import { COLORS, spacing } from '@/theme';
 

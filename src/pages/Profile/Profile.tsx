@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { useTabBarClearance } from '@/components/TabBar';
-import { ScreenContainer, ScreenHeader } from '@/components/ui';
+import { useTabBarClearance } from '@/shared/ui';
+import { ScreenContainer, ScreenHeader } from '@/shared/ui';
 import { AccountSection } from '@/pages/Profile/components/AccountSection';
 import { IdentitySection } from '@/pages/Profile/components/IdentitySection';
 import { SignOutSection } from '@/pages/Profile/components/SignOutSection';

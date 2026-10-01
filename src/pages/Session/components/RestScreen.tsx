@@ -8,11 +8,11 @@ import Animated, { Easing, withTiming } from 'react-native-reanimated';
 import * as Reanimated from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
 
-import { Button } from '@/components/Button';
-import { Typography } from '@/components/ui';
+import { Button } from '@/shared/ui';
+import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatMMSS } from '@/utils/helpers/string/number';
-import { useSessionStore } from '@/store/session';
+import { formatMMSS } from '@/shared/lib/string/number';
+import { useSessionStore } from '@/modules/workout';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const SIZE = 240;

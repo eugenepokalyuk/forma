@@ -2,13 +2,13 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import type { Program } from '@/api';
-import { Card } from '@/components/Card';
-import { Icon, Typography } from '@/components/ui';
+import type { Program } from '@/modules/programs';
+import { Card } from '@/shared/ui';
+import { Icon, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
-import { ROUTES } from '@/utils/constants/routes';
-import { useReactions } from '@/queries/reactions';
+import { formatProgramSubtitle } from '@/modules/programs';
+import { ROUTES } from '@/shared/constants/routes';
+import { useReactions } from '@/modules/programs';
 
 interface ProgramMediumCardProps {
   program: Program;

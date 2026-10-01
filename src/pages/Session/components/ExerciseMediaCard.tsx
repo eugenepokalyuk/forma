@@ -2,8 +2,8 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api';
-import { Icon, Typography } from '@/components/ui';
+import type { Exercise } from '@/modules/programs';
+import { Icon, Typography } from '@/shared/ui';
 import { COLORS, radius } from '@/theme';
 
 const MEDIA_BG = '#F2F2F4';

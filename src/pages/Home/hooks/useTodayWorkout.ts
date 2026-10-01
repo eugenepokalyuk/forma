@@ -2,17 +2,17 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { Alert } from 'react-native';
 
-import type { UserProgram } from '@/api';
-import { useProgram } from '@/queries/programs';
-import { useSessions } from '@/queries/sessions';
-import { useSessionStore } from '@/store/session';
-import { ROUTES } from '@/utils/constants/routes';
+import type { UserProgram } from '@/modules/programs';
+import { useProgram } from '@/modules/programs';
+import { useSessions } from '@/modules/workout';
+import { useSessionStore } from '@/modules/workout';
+import { ROUTES } from '@/shared/constants/routes';
 import {
   getNextWorkout,
   sessionVolumeKg,
   type BroTodayContext,
-} from '@/utils/helpers/bro/broMessages';
-import { isSameDay } from '@/utils/helpers/date/calendar';
+} from '@/modules/bro';
+import { isSameDay } from '@/shared/lib/date/calendar';
 
 // Контекст «сегодня» для карточек Бро: следующая по плану тренировка
 // активной программы, её статус и действия начать/продолжить.

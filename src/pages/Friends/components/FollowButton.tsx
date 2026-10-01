@@ -1,6 +1,6 @@
-import type { PublicUser } from '@/api';
-import { Button } from '@/components/Button';
-import { useFollowUser, useUnfollowUser } from '@/queries/social';
+import type { PublicUser } from '@/modules/social';
+import { Button } from '@/shared/ui';
+import { useFollowUser, useUnfollowUser } from '@/modules/social';
 
 interface FollowButtonProps {
   user: PublicUser;

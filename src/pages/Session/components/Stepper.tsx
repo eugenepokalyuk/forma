@@ -3,7 +3,7 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Icon } from '@/components/ui';
+import { Icon } from '@/shared/ui';
 import { COLORS, TYPOGRAPHY, motion, radius, spacing } from '@/theme';
 
 interface StepperProps {

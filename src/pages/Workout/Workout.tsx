@@ -4,16 +4,16 @@ import { router, Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
-import { FadeInItem } from '@/components/FadeInItem';
-import { Typography } from '@/components/ui';
+import { Button } from '@/shared/ui';
+import { Card } from '@/shared/ui';
+import { FadeInItem } from '@/shared/ui';
+import { Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/utils/helpers/exercise/format';
-import { ROUTES } from '@/utils/constants/routes';
-import { useSessionStore } from '@/store/session';
-import { useCachedProgram } from '@/queries/programs';
-import { loadLastLogs } from '@/services/lastLogs';
+import { formatSetsLine } from '@/modules/workout';
+import { ROUTES } from '@/shared/constants/routes';
+import { useSessionStore } from '@/modules/workout';
+import { useCachedProgram } from '@/modules/programs';
+import { loadLastLogs } from '@/modules/workout';
 
 export default function WorkoutScreen() {
   const { id, programId } = ExpoRouter.useLocalSearchParams<{

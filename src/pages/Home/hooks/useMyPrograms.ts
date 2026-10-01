@@ -1,4 +1,4 @@
-import { useUserPrograms } from '@/queries/programs';
+import { useUserPrograms } from '@/modules/programs';
 
 // Программы пользователя, активные — первыми.
 export function useMyPrograms() {

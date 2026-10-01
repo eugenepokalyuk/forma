@@ -1,15 +1,15 @@
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api';
+import type { Exercise } from '@/modules/programs';
 import { PreviousResultLabel } from '@/pages/Session/components/PreviousResultLabel';
 import { SetTargetLabel } from '@/pages/Session/components/SetTargetLabel';
 import { TimedInput } from '@/pages/Session/components/TimedInput';
 import { WeightRepsInput } from '@/pages/Session/components/WeightRepsInput';
-import { Divider } from '@/components/ui';
+import { Divider } from '@/shared/ui';
 import { spacing } from '@/theme';
-import { isTimedExercise } from '@/utils/helpers/exercise/format';
-import { getPrefill } from '@/utils/helpers/exercise/setPrefill';
-import { useSessionStore } from '@/store/session';
+import { isTimedExercise } from '@/modules/workout';
+import { getPrefill } from '@/modules/workout';
+import { useSessionStore } from '@/modules/workout';
 
 interface ExerciseInputProps {
   exercise: Exercise;

@@ -3,20 +3,20 @@ import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
 import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
-import type { WorkoutWithExercises } from '@/api';
+import type { WorkoutWithExercises } from '@/modules/programs';
 import { WeekPill } from '@/pages/Program/components/WeekPill';
 import { WorkoutListItem } from '@/pages/Program/components/WorkoutListItem';
-import { ScreenContainer, Typography } from '@/components/ui';
+import { ScreenContainer, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
-import { useAuthStore } from '@/store/auth';
-import { useSessionStore } from '@/store/session';
+import { useAuthStore } from '@/modules/auth';
+import { useSessionStore } from '@/modules/workout';
 import {
   useAddUserProgram,
   useProgram,
   useUserPrograms,
-} from '@/queries/programs';
-import { loadLastLogs } from '@/services/lastLogs';
-import { ROUTES } from '@/utils/constants/routes';
+} from '@/modules/programs';
+import { loadLastLogs } from '@/modules/workout';
+import { ROUTES } from '@/shared/constants/routes';
 
 export default function ProgramScreen() {
   const { id } = ExpoRouter.useLocalSearchParams<{ id: string }>();
