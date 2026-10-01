@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import type { Exercise } from '@/modules/programs';
 import { Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { undoSet, useSessionStore } from '@/modules/workout';
+import { nextSetNumber, undoSet, useSessionStore } from '@/modules/workout';
 
 interface SetPillsProps {
   exercise: Exercise;
@@ -28,7 +28,7 @@ export function SetPills({
   const logs = active.logs.filter(
     (l) => l.exerciseId === exercise.id && !l.skipped,
   );
-  const currentSetNumber = logs.length + 1;
+  const currentSetNumber = nextSetNumber(exercise.id, active.logs);
 
   return (
     <View style={styles.pillsRow}>

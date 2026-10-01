@@ -19,6 +19,7 @@ import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
 import {
   discardWorkout,
   logSet,
+  nextSetNumber,
   skipExercise,
   type LocalLog,
   useSessionStore,
@@ -192,12 +193,11 @@ export default function ActiveSessionScreen() {
     const nextExercise = goingToNext
       ? exercises[active.currentExerciseIndex + 1]
       : exercise;
-    const doneCount = doneCountOf(exercise, active.logs);
     const nextLabel = goingToNext
       ? nextExercise.name
       : complete
         ? 'Итог тренировки'
-        : `${exercise.name} · подход ${doneCount + 1} из ${totalSets}`;
+        : `${exercise.name} · подход ${nextSetNumber(exercise.id, active.logs)} из ${totalSets}`;
 
     return (
       <RestScreen

@@ -15,5 +15,6 @@ export * from './services/workout';
 export * from './hooks/useStartWorkout';
 export * from './queries';
 export * from './helpers/format';
+export * from './helpers/nextSetNumber';
 export * from './helpers/setPrefill';
 export * from './helpers/tonnage';

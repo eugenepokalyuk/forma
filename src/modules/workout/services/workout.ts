@@ -80,6 +80,15 @@ export function logSet(
   const session = useSessionStore.getState();
   if (!session.active) return;
 
+  // Подход с этим номером уже записан — сначала отменяем его и на сервере:
+  // бэкенд дедуплицирует только по clientId, и новый лог того же подхода
+  // иначе лёг бы рядом со старым.
+  const previous = session.active.logs.find(
+    (l) =>
+      l.exerciseId === exercise.id && l.setNumber === setNumber && !l.skipped,
+  );
+  if (previous) undoSet(exercise.id, setNumber);
+
   const entry: LocalLog = {
     clientId: uuid(),
     exerciseId: exercise.id,

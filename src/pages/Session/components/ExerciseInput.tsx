@@ -10,6 +10,7 @@ import { spacing } from '@/theme';
 import {
   getPrefill,
   isTimedExercise,
+  nextSetNumber,
   useSessionStore,
 } from '@/modules/workout';
 
@@ -31,10 +32,7 @@ export function ExerciseInput({ exercise, onLog }: ExerciseInputProps) {
   const active = useSessionStore((s) => s.active);
   if (!active) return null;
 
-  const logs = active.logs.filter(
-    (l) => l.exerciseId === exercise.id && !l.skipped,
-  );
-  const setNumber = logs.length + 1;
+  const setNumber = nextSetNumber(exercise.id, active.logs);
   const timed = isTimedExercise(exercise);
   const lastLogs = exercise.catalogExerciseId
     ? active.lastLogs[exercise.catalogExerciseId]

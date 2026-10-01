@@ -216,6 +216,34 @@ describe('очередь синхронизации тренировки', () =>
     expect(m.outbox.useOutboxStore.getState().ownerId).toBe('userB');
   });
 
+  it('повторная запись отправленного подхода не создаёт дубль на сервере', async () => {
+    m.W.startWorkout({ programId: 'p1', workout });
+    logSet(1);
+    await settle();
+
+    logSet(1);
+    await settle();
+
+    expect(ops()).toEqual([]);
+    expect(calls()).toEqual([
+      'startSessionApi',
+      'logSetApi',
+      'undoSetApi',
+      'logSetApi',
+    ]);
+    expect(m.session.useSessionStore.getState().active?.logs).toHaveLength(1);
+  });
+
+  it('повторная запись неотправленного подхода уходит одним логом', async () => {
+    m.api.startSessionApi.mockRejectedValueOnce(httpError());
+    m.W.startWorkout({ programId: 'p1', workout });
+    logSet(1);
+    logSet(1);
+    await settle();
+
+    expect(ops()).toEqual(['startSession', 'logSet']);
+  });
+
   it('завершение без подходов равносильно отмене', async () => {
     m.W.startWorkout({ programId: 'p1', workout });
     await settle();
