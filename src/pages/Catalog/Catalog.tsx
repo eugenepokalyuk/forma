@@ -9,6 +9,7 @@ import {
   ScreenContainer,
   Typography,
   useTabBarClearance,
+  useUnderStatusBarScroll,
 } from '@/shared/ui';
 import { useCatalog } from '@/modules/programs';
 import { ProgramCard } from '@/modules/programs/ui';
@@ -59,6 +60,7 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // один в один как в forma-project Figma (node 5487-2731).
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
+  const statusBarScroll = useUnderStatusBarScroll();
   const { data, isLoading, isError, refetch } = useCatalog();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
@@ -82,13 +84,19 @@ export default function CatalogScreen() {
   return (
     <ScreenContainer edges={['top']} loading={isLoading}>
       <FlatList
+        {...statusBarScroll.scrollProps}
+        progressViewOffset={statusBarScroll.refreshOffset}
         style={styles.list}
         data={rows}
         keyExtractor={(row) => row.key}
         refreshing={isRefreshing}
         onRefresh={onRefresh}
         contentContainerStyle={[
-          { paddingBottom: tabBarClearance, gap: spacing.md },
+          {
+            paddingTop: statusBarScroll.paddingTop,
+            paddingBottom: tabBarClearance,
+            gap: spacing.md,
+          },
           rows.length === 0 && styles.emptyContent,
         ]}
         ListHeaderComponent={

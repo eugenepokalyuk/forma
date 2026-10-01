@@ -10,6 +10,7 @@ import {
   ScreenHeader,
   Typography,
   useTabBarClearance,
+  useUnderStatusBarScroll,
 } from '@/shared/ui';
 import { CommentsModal } from '@/pages/Feed/components/CommentsModal';
 import { PostCard } from '@/pages/Feed/components/PostCard';
@@ -21,6 +22,7 @@ import { useFeed, useToggleLike } from '@/modules/social';
 
 export default function FeedScreen() {
   const tabBarClearance = useTabBarClearance();
+  const statusBarScroll = useUnderStatusBarScroll();
   const actions = useContentActions();
   const [openCommentsFor, setOpenCommentsFor] = React.useState<string | null>(
     null,
@@ -53,13 +55,19 @@ export default function FeedScreen() {
   return (
     <ScreenContainer edges={['top']} loading={isLoading}>
       <FlatList
+        {...statusBarScroll.scrollProps}
+        progressViewOffset={statusBarScroll.refreshOffset}
         style={styles.list}
         data={posts}
         keyExtractor={(item) => item.id}
         refreshing={isRefreshing}
         onRefresh={onRefresh}
         contentContainerStyle={[
-          { gap: spacing.md, paddingBottom: tabBarClearance },
+          {
+            gap: spacing.md,
+            paddingTop: statusBarScroll.paddingTop,
+            paddingBottom: tabBarClearance,
+          },
           posts.length === 0 && styles.emptyContent,
         ]}
         onEndReachedThreshold={0.4}

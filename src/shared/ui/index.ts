@@ -1,7 +1,7 @@
 export { Typography } from './Typography';
 export { Divider } from './Divider';
 export { Icon, TAB_ICONS, type IconName } from './Icon';
-export { ScreenContainer } from './ScreenContainer';
+export { ScreenContainer, useUnderStatusBarScroll } from './ScreenContainer';
 export { ScreenHeader } from './ScreenHeader';
 export { Section } from './Section';
 export { Input } from './Input';
