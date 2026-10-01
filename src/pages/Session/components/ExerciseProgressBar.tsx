@@ -31,6 +31,11 @@ export function ExerciseProgressBar({
             onPress={() => onPressSegment(i)}
             style={styles.segmentHit}
             hitSlop={6}
+            accessibilityRole="button"
+            accessibilityLabel={`Упражнение ${i + 1} из ${done.length}${
+              isDone ? ', выполнено' : ''
+            }`}
+            accessibilityState={{ selected: i === index }}
           >
             <MotiView
               animate={{

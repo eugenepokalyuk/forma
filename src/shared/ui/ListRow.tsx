@@ -74,6 +74,7 @@ export function ListRow({
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
       android_ripple={{ color: COLORS.Stroke.secondary }}
     >
       {content}

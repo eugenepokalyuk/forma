@@ -25,6 +25,14 @@ const CUSTOM_TAB_ICON: Record<string, CustomIconName> = {
 
 // Раскладка: «Лента» и «Каталог» — самостоятельные плавающие кружки по
 // краям, «Главная» и «Профиль» — общая пилюля по центру (как в макете).
+// Названия вкладок для скринридера — на экране подписей нет, только иконки.
+const TAB_LABELS: Record<string, string> = {
+  feed: 'Лента',
+  home: 'Главная',
+  catalog: 'Каталог',
+  profile: 'Профиль',
+};
+
 const LEFT_ROUTE = 'feed';
 const RIGHT_ROUTE = 'catalog';
 const CENTER_ROUTES = ['home', 'profile'];
@@ -101,6 +109,7 @@ function TabButton({
       onPress={onPress}
       style={styles.item}
       accessibilityRole="tab"
+      accessibilityLabel={TAB_LABELS[route.name] ?? route.name}
       accessibilityState={{ selected: isFocused }}
     >
       <MotiView

@@ -121,7 +121,12 @@ export function BottomSheet({
         <Animated.View
           style={[StyleSheet.absoluteFill, styles.backdrop, backdropStyle]}
         >
-          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel="Закрыть"
+          />
         </Animated.View>
 
         {/* KeyboardAvoidingView с behavior="padding" подменяет paddingBottom
@@ -133,6 +138,9 @@ export function BottomSheet({
         >
           <Animated.View
             onLayout={onSheetLayout}
+            // Фокус VoiceOver не уходит под шторку; жест «назад» закрывает её.
+            accessibilityViewIsModal
+            onAccessibilityEscape={onClose}
             style={[
               styles.sheet,
               {
@@ -145,7 +153,12 @@ export function BottomSheet({
             <View style={styles.header}>
               <Typography variant="heading">{title}</Typography>
 
-              <Pressable onPress={onClose} hitSlop={12}>
+              <Pressable
+                onPress={onClose}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Закрыть"
+              >
                 <Icon name="close" size={20} color={COLORS.Icon.secondary} />
               </Pressable>
             </View>

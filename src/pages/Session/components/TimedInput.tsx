@@ -32,6 +32,10 @@ export function TimedInput({ onDone }: { onDone: (seconds: number) => void }) {
           }
         }}
         style={[styles.btn, running && styles.btnStop]}
+        accessibilityRole="button"
+        accessibilityLabel={
+          running ? 'Остановить и записать подход' : 'Запустить таймер'
+        }
       >
         <Icon
           name={running ? 'stop' : 'play'}

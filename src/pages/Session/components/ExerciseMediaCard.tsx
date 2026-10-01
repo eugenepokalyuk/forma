@@ -70,6 +70,9 @@ export function ExerciseMediaCard({ exercise }: { exercise: Exercise }) {
           <Pressable
             style={styles.viewerClose}
             onPress={() => setViewerOpen(false)}
+            accessibilityRole="button"
+            accessibilityLabel="Закрыть"
+
             hitSlop={16}
           >
             <Icon name="close" size={24} color={COLORS.White} />

@@ -102,7 +102,13 @@ export function PostCard({
 
       <View style={styles.actionsBox}>
         <View style={styles.actionsRow}>
-          <Pressable style={styles.actionBtn} onPress={onToggleLike}>
+          <Pressable
+            style={styles.actionBtn}
+            onPress={onToggleLike}
+            accessibilityRole="button"
+            accessibilityLabel={`Нравится: ${post.likesCount}`}
+            accessibilityState={{ selected: post.isLiked }}
+          >
             <MotiView
               key={post.isLiked ? 'liked' : 'unliked'}
               from={{ scale: 1.3 }}
@@ -123,7 +129,12 @@ export function PostCard({
             </Typography>
           </Pressable>
 
-          <Pressable style={styles.actionBtn} onPress={onOpenComments}>
+          <Pressable
+            style={styles.actionBtn}
+            onPress={onOpenComments}
+            accessibilityRole="button"
+            accessibilityLabel={`Комментарии: ${post.commentsCount}`}
+          >
             <CustomIcon name="cards" size={32} color={COLORS.Icon.primary} />
 
             <Typography variant="title" color={COLORS.Text.secondary}>
@@ -227,7 +238,13 @@ function PhotoSlide({
   onPress: () => void;
 }) {
   return (
-    <Pressable onPress={onPress}>
+    // Лайк по двойному тапу для скринридера недоступен (двойной тап там —
+    // активация), поэтому фото — просто изображение; лайк — кнопкой ниже.
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="image"
+      accessibilityLabel="Фото с тренировки"
+    >
       <View style={[styles.photoWrap, { width }]}>
         <Image
           source={{ uri: photo }}

@@ -44,6 +44,16 @@ export function SetPills({
           <Pressable
             key={setNumber}
             disabled={!done && !isRemovableExtra}
+            accessibilityRole="button"
+            accessibilityLabel={
+              done
+                ? `Подход ${setNumber} выполнен`
+                : isRemovableExtra
+                  ? `Убрать подход ${setNumber}`
+                  : `Подход ${setNumber}${isCurrent ? ', текущий' : ''}`
+            }
+            accessibilityHint={done ? 'Отменить подход' : undefined}
+            accessibilityState={{ disabled: !done && !isRemovableExtra }}
             onPress={() => {
               void Haptics.selectionAsync();
               if (done) {
@@ -79,7 +89,12 @@ export function SetPills({
         );
       })}
 
-      <Pressable onPress={onAddSet} style={styles.addPill}>
+      <Pressable
+        onPress={onAddSet}
+        style={styles.addPill}
+        accessibilityRole="button"
+        accessibilityLabel="Добавить подход"
+      >
         <Icon name="plus" size={18} color={COLORS.Text.accent} />
       </Pressable>
     </View>

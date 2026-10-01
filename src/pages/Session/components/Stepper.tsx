@@ -107,6 +107,8 @@ function RoundButton({
     >
       <Pressable
         onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={icon === 'plus' ? 'Увеличить' : 'Уменьшить'}
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}
         style={compact ? styles.btnCompact : styles.btn}

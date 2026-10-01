@@ -97,6 +97,11 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
           multiline
         />
         <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Отправить комментарий"
+          accessibilityState={{
+            disabled: !text.trim() || addMutation.isPending,
+          }}
           disabled={!text.trim() || addMutation.isPending}
           onPress={() =>
             addMutation.mutate(text.trim(), {

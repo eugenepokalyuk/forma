@@ -32,6 +32,7 @@ export function Card({ onPress, style, children }: CardProps) {
   return (
     <Pressable
       onPress={onPress}
+      accessibilityRole="button"
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
     >
