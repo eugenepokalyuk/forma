@@ -16,13 +16,16 @@ npm start              # только Metro, если dev-клиент уже у
 
 ## Команды
 
-| Команда                           | Что делает                        |
-| --------------------------------- | --------------------------------- |
-| `npm test`                        | тесты (jest)                      |
-| `npm run typecheck`               | проверка типов                    |
-| `npm run format` / `format:check` | prettier                          |
-| `eas build --profile preview`     | внутренняя сборка (Android — apk) |
-| `eas build --profile production`  | сборка в сторы                    |
+| Команда                           | Что делает                                            |
+| --------------------------------- | ----------------------------------------------------- |
+| `npm test`                        | тесты (jest)                                          |
+| `npm run typecheck`               | проверка типов                                        |
+| `npm run lint`                    | ESLint (`eslint-config-expo`, правила React Compiler) |
+| `npm run format` / `format:check` | prettier                                              |
+| `eas build --profile preview`     | внутренняя сборка (Android — apk)                     |
+| `eas build --profile production`  | сборка в сторы                                        |
+
+Те же проверки — типы, линтер, тесты, prettier — запускает CI на каждый push в `main` и pull request (`.github/workflows/ci.yml`).
 
 ## Устройство кода
 
