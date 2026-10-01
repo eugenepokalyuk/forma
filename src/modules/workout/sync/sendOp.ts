@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 
 import { completeSessionApi } from '../api/completeSessionApi';
 import { discardSessionApi } from '../api/discardSessionApi';
@@ -19,7 +19,7 @@ function serverIdOf(localId: string): string {
 }
 
 function isNotFound(e: unknown) {
-  return axios.isAxiosError(e) && e.response?.status === 404;
+  return isAxiosError(e) && e.response?.status === 404;
 }
 
 // 404 на удалении — цель уже удалена, считаем операцию выполненной.

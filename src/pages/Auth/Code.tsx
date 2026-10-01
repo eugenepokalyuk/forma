@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 import { router } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { MotiView } from 'moti';
@@ -39,7 +39,7 @@ export default function CodeScreen() {
     } catch (e) {
       setCode('');
 
-      if (axios.isAxiosError(e) && e.response?.status === 400) {
+      if (isAxiosError(e) && e.response?.status === 400) {
         setError('Неверный или просроченный код.');
       } else {
         setError('Не получилось войти. Проверьте связь.');

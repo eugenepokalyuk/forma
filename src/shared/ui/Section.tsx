@@ -1,14 +1,8 @@
 import type { ReactNode } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Typography } from './Typography';
-import { COLORS, spacing } from '@/theme';
+import { spacing } from '@/theme';
 
 interface SectionProps {
   title?: string;

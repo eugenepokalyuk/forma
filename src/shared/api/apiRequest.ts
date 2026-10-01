@@ -1,11 +1,11 @@
-import axios, { type AxiosRequestConfig } from 'axios';
+import { type AxiosRequestConfig, create, isAxiosError } from 'axios';
 
 import { clearToken, getToken } from '@/shared/lib/storage/tokenStore';
 
 import { getApiBase } from './getApiBase';
 import { notifyUnauthorized } from './unauthorized';
 
-const client = axios.create({
+const client = create({
   baseURL: getApiBase(),
   timeout: 10_000,
 });
@@ -21,7 +21,7 @@ client.interceptors.request.use(async (config) => {
 client.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (axios.isAxiosError(error) && error.response?.status === 401) {
+    if (isAxiosError(error) && error.response?.status === 401) {
       await clearToken();
       notifyUnauthorized();
     }

@@ -1,5 +1,5 @@
 import * as ReactQuery from '@tanstack/react-query';
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 import { Alert } from 'react-native';
 
 import { addUserProgramApi } from './api/addUserProgramApi';
@@ -63,7 +63,7 @@ export function useAddUserProgram(programId: string) {
     onSuccess: invalidate,
     onError: (e) => {
       // 409 — программа уже добавлена: просто обновляем список.
-      if (axios.isAxiosError(e) && e.response?.status === 409) {
+      if (isAxiosError(e) && e.response?.status === 409) {
         invalidate();
         return;
       }

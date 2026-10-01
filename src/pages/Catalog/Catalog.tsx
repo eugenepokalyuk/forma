@@ -6,7 +6,6 @@ import { AppHeader } from '@/modules/auth';
 import {
   FadeInItem,
   ScreenContainer,
-  ScreenHeader,
   Typography,
   useTabBarClearance,
 } from '@/shared/ui';

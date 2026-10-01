@@ -1,11 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/modules/programs';
-import { PreviousResultLabel } from '@/pages/Session/components/PreviousResultLabel';
 import { SetTargetLabel } from '@/pages/Session/components/SetTargetLabel';
 import { TimedInput } from '@/pages/Session/components/TimedInput';
 import { WeightRepsInput } from '@/pages/Session/components/WeightRepsInput';
-import { Divider } from '@/shared/ui';
 import { spacing } from '@/theme';
 import {
   getPrefill,

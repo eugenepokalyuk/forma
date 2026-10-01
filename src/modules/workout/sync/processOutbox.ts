@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 
 import { useOutboxStore } from './outbox';
 import { ParentLostError, sendOp } from './sendOp';
@@ -12,17 +12,17 @@ let attempt = 0;
 let retryAt = 0;
 
 function isUnauthorized(e: unknown) {
-  return axios.isAxiosError(e) && e.response?.status === 401;
+  return isAxiosError(e) && e.response?.status === 401;
 }
 
 function isRetryable(e: unknown): boolean {
-  if (!axios.isAxiosError(e)) return true; // неизвестная ошибка — на всякий случай ретраим
+  if (!isAxiosError(e)) return true; // неизвестная ошибка — на всякий случай ретраим
   if (!e.response) return true; // сеть / таймаут
   return e.response.status >= 500;
 }
 
 function errorMessage(e: unknown) {
-  return axios.isAxiosError(e) ? JSON.stringify(e.response?.data) : String(e);
+  return isAxiosError(e) ? JSON.stringify(e.response?.data) : String(e);
 }
 
 // Отправляет очередь по порядку, пока она не опустеет или не упрётся в

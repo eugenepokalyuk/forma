@@ -1,7 +1,7 @@
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { COLORS, motion, spacing } from '@/theme';
+import { COLORS, motion } from '@/theme';
 
 interface ExerciseProgressBarProps {
   total: number;

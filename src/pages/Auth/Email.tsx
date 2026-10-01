@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { isAxiosError } from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { MotiView } from 'moti';
@@ -30,7 +30,7 @@ export default function EmailScreen() {
       router.push(ROUTES.authCode(email.trim()));
     } catch (e) {
       setError(
-        axios.isAxiosError(e)
+        isAxiosError(e)
           ? 'Не получилось отправить код. Проверьте связь.'
           : 'Что-то пошло не так.',
       );

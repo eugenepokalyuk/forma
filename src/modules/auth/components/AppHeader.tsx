@@ -1,5 +1,4 @@
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
-import * as SafeArea from 'react-native-safe-area-context';
 
 import { Logo, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
@@ -7,8 +6,6 @@ import { useAuthStore } from '../store';
 
 // Шапка главных вкладок — логотип + бейдж ПРО, один в один на всех экранах
 export function AppHeader() {
-  const insets = SafeArea.useSafeAreaInsets();
-
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
 
   const onPress = () => {
