@@ -6,6 +6,8 @@ import {
 } from '@/shared/lib/storage/tokenStore';
 
 import { deleteAccountApi } from '../api/deleteAccountApi';
+import { setMonitoringUser } from '@/shared/lib/monitoring';
+
 import { getMeApi } from '../api/getMeApi';
 import type { User } from '../models/user';
 import { useAuthStore } from '../store';
@@ -22,6 +24,7 @@ export async function bootstrap() {
   try {
     const user = await getMeApi();
     adoptWorkoutData(user.id);
+    setMonitoringUser(user.id);
     setSignedIn(user);
   } catch {
     setSignedIn(null);
@@ -31,6 +34,7 @@ export async function bootstrap() {
 export async function signIn(token: string, user: User) {
   await setToken(token);
   adoptWorkoutData(user.id);
+  setMonitoringUser(user.id);
   useAuthStore.getState().setSignedIn(user);
 }
 
@@ -39,6 +43,7 @@ export async function signIn(token: string, user: User) {
 export async function signOut() {
   await clearToken();
   resetWorkoutData();
+  setMonitoringUser(null);
   useAuthStore.getState().setSignedOut();
 }
 

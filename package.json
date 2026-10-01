@@ -17,6 +17,7 @@
     "@expo-google-fonts/sofia-sans-extra-condensed": "0.4.2",
     "@expo/vector-icons": "15.1.1",
     "@react-native-community/netinfo": "12.0.1",
+    "@sentry/react-native": "~7.11.0",
     "@tanstack/query-sync-storage-persister": "5.103.2",
     "@tanstack/react-query": "5.103.2",
     "@tanstack/react-query-persist-client": "5.103.2",

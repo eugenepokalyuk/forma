@@ -13,6 +13,7 @@ jest.mock('@/shared/lib/storage/mmkv', () => ({
   },
 }));
 jest.mock('../services/lastLogs', () => ({ loadLastLogs: jest.fn() }));
+jest.mock('@/shared/lib/monitoring', () => ({ reportWarning: jest.fn() }));
 
 const API = [
   'startSessionApi',
@@ -49,6 +50,7 @@ function load() {
     processOutbox: typeof import('../sync/processOutbox').processOutbox;
     session: typeof import('../store');
     api: Record<ApiName, jest.Mock>;
+    reportWarning: jest.Mock;
   };
   jest.isolateModules(() => {
     const api = Object.fromEntries(
@@ -67,6 +69,7 @@ function load() {
       processOutbox: require('../sync/processOutbox').processOutbox,
       session: require('../store'),
       api,
+      reportWarning: require('@/shared/lib/monitoring').reportWarning,
     };
   });
   return mods;
@@ -157,6 +160,14 @@ describe('очередь синхронизации тренировки', () =>
       'complete',
     ]);
     expect(m.api.completeSessionApi).toHaveBeenCalledTimes(1);
+    // Потерянные данные пользователя уходят в мониторинг.
+    expect(m.reportWarning).toHaveBeenCalledWith(
+      'outbox: operation rejected',
+      expect.objectContaining({ op: 'startSession' }),
+    );
+    expect(m.reportWarning).toHaveBeenCalledWith('outbox: session lost', {
+      op: 'logSet',
+    });
   });
 
   it('отмена неотправленного подхода не ходит в сеть', async () => {

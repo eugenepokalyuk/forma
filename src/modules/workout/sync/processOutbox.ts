@@ -1,5 +1,7 @@
 import { isAxiosError } from 'axios';
 
+import { reportWarning } from '@/shared/lib/monitoring';
+
 import { useOutboxStore } from './outbox';
 import { ParentLostError, sendOp } from './sendOp';
 
@@ -61,6 +63,7 @@ export async function processOutbox({ force = false } = {}) {
             op.localId,
             'session was not created on server',
           );
+          reportWarning('outbox: session lost', { op: op.type });
           continue;
         }
         if (isRetryable(e)) {
@@ -76,6 +79,11 @@ export async function processOutbox({ force = false } = {}) {
         } else {
           store.markDead(op.opId, errorMessage(e));
         }
+        // Данные пользователя не дошли до сервера — об этом нужно знать.
+        reportWarning('outbox: operation rejected', {
+          op: op.type,
+          error: errorMessage(e),
+        });
       }
     }
   } finally {
