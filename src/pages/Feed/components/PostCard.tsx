@@ -260,8 +260,11 @@ function WorkoutSlide({ width, post }: { width: number; post: Post }) {
     // ленты постов (тоже VirtualizedList) — вложенный FlatList того же
     // направления ломает windowing (см. предупреждение RN про nested
     // VirtualizedLists) и на практике переставал сам скроллиться.
+    // nestedScrollEnabled — на Android вертикальный жест иначе забирает
+    // внешняя лента, и список упражнений выглядит статичным.
     <View style={[styles.workoutSlide, { width, height: width }]}>
       <ScrollView
+        nestedScrollEnabled
         style={styles.workoutList}
         contentContainerStyle={{ gap: spacing.sm }}
         showsVerticalScrollIndicator={false}
