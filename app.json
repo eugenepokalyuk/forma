@@ -23,9 +23,9 @@
       "package": "ru.formaone.app",
       "adaptiveIcon": {
         "backgroundColor": "#0B0B0C",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/branding/android-icon-foreground.png",
+        "backgroundImage": "./assets/branding/android-icon-background.png",
+        "monochromeImage": "./assets/branding/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false
     },
