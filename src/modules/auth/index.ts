@@ -9,4 +9,3 @@ export * from './services/session';
 export * from './hooks/useSignOut';
 export * from './queries';
 export * from './helpers/onboarding';
-export * from './components/AppHeader';

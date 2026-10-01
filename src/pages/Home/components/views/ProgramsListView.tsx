@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import type { UserProgram } from '@/modules/programs';
 import { FadeInItem, Section } from '@/shared/ui';
-import { ProgramCard } from '@/modules/programs';
+import { ProgramCard } from '@/modules/programs/ui';
 import { spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 

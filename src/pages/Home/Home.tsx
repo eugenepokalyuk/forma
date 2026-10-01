@@ -1,7 +1,7 @@
 import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
-import { AppHeader } from '@/modules/auth';
+import { AppHeader } from '@/modules/auth/ui';
 import { ScreenContainer, useTabBarClearance } from '@/shared/ui';
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';

@@ -18,13 +18,6 @@ import type { AchievementsResponse } from '../models/achievement';
 import type { BroCondition, BroPhrase } from '../models/bro';
 import type { UserStats } from '../models/stats';
 
-// Барьер @/modules/auth тянет за собой компоненты и нативные модули UI —
-// чистой функции они не нужны, берём настоящий хелпер напрямую.
-jest.mock('@/modules/auth', () => ({
-  isOnboardingComplete: jest.requireActual('@/modules/auth/helpers/onboarding')
-    .isOnboardingComplete,
-}));
-
 const NOW = new Date('2026-01-15T12:00:00Z');
 const DAY = 86_400_000;
 const daysAgo = (n: number) => new Date(NOW.getTime() - n * DAY).toISOString();

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import type { Program } from '@/modules/programs';
-import { AppHeader } from '@/modules/auth';
+import { AppHeader } from '@/modules/auth/ui';
 import {
   ErrorState,
   FadeInItem,
@@ -10,7 +10,8 @@ import {
   Typography,
   useTabBarClearance,
 } from '@/shared/ui';
-import { ProgramCard, useCatalog } from '@/modules/programs';
+import { useCatalog } from '@/modules/programs';
+import { ProgramCard } from '@/modules/programs/ui';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { ProgramPreviewCard } from '@/pages/Catalog/components/ProgramPreviewCard';
 import { COLORS, spacing } from '@/theme';

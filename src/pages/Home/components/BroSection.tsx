@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { Section } from '@/shared/ui';
-import { getWeeklyGoal, TipsCarousel } from '@/modules/bro';
+import { getWeeklyGoal } from '@/modules/bro';
+import { TipsCarousel } from '@/modules/bro/ui';
 import { useTodayWorkout } from '@/pages/Home/hooks/useTodayWorkout';
 import { useTrainedDates } from '@/pages/Home/hooks/useTrainedDates';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';

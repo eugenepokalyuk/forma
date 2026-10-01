@@ -14,7 +14,7 @@ import { searchUsersApi } from './api/searchUsersApi';
 import { unfollowUserApi } from './api/unfollowUserApi';
 import { unlikePostApi } from './api/unlikePostApi';
 import type { FollowRequestAction, Post } from './models/social';
-import { alertActionFailed } from '@/shared/ui';
+import { alertActionFailed } from '@/shared/ui/alertActionFailed';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
 export const socialKeys = {

@@ -8,4 +8,3 @@ export * from './api/getReactionsApi';
 export * from './api/getUserProgramsApi';
 export * from './queries';
 export * from './helpers/formatProgramSubtitle';
-export * from './components/ProgramCard';

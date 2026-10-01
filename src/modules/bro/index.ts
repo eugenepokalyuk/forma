@@ -9,4 +9,3 @@ export * from './api/getUserStatsApi';
 export * from './api/getWaterTodayApi';
 export * from './queries';
 export * from './helpers/broMessages';
-export * from './components/TipsCarousel';
