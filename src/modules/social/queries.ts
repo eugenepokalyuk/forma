@@ -13,7 +13,12 @@ import { respondToFollowRequestApi } from './api/respondToFollowRequestApi';
 import { searchUsersApi } from './api/searchUsersApi';
 import { unfollowUserApi } from './api/unfollowUserApi';
 import { unlikePostApi } from './api/unlikePostApi';
-import type { FollowRequestAction, Post } from './models/social';
+import { blockUserApi } from './api/blockUserApi';
+import { getBlockedUsersApi } from './api/getBlockedUsersApi';
+import { reportCommentApi } from './api/reportCommentApi';
+import { reportPostApi } from './api/reportPostApi';
+import { unblockUserApi } from './api/unblockUserApi';
+import type { FollowRequestAction, Post, ReportReason } from './models/social';
 import { alertActionFailed } from '@/shared/ui/alertActionFailed';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
@@ -26,6 +31,7 @@ export const socialKeys = {
   followers: ['social', 'followers'] as const,
   requests: ['social', 'requests'] as const,
   summary: ['social', 'summary'] as const,
+  blocked: ['social', 'blocked'] as const,
 };
 
 // --- Лента ---
@@ -174,5 +180,64 @@ export function useUnfollowUser(publicId: string) {
     mutationFn: () => unfollowUserApi(publicId),
     onSuccess: invalidate,
     onError: () => alertActionFailed('отписаться'),
+  });
+}
+
+// --- Блокировка и жалобы ---
+
+export function useBlockedUsers() {
+  return ReactQuery.useQuery({
+    queryKey: socialKeys.blocked,
+    queryFn: getBlockedUsersApi,
+  });
+}
+
+// Блокировка меняет ленту, комментарии и все социальные списки.
+function useInvalidateAfterBlock() {
+  const queryClient = ReactQuery.useQueryClient();
+  return () => {
+    void queryClient.invalidateQueries({ queryKey: socialKeys.all });
+    void queryClient.invalidateQueries({ queryKey: socialKeys.feed });
+    void queryClient.invalidateQueries({ queryKey: ['comments'] });
+  };
+}
+
+export function useBlockUser() {
+  const invalidate = useInvalidateAfterBlock();
+
+  return ReactQuery.useMutation({
+    mutationFn: (publicId: string) => blockUserApi(publicId),
+    onSuccess: invalidate,
+    onError: () => alertActionFailed('заблокировать'),
+  });
+}
+
+export function useUnblockUser() {
+  const invalidate = useInvalidateAfterBlock();
+
+  return ReactQuery.useMutation({
+    mutationFn: (publicId: string) => unblockUserApi(publicId),
+    onSuccess: invalidate,
+    onError: () => alertActionFailed('разблокировать'),
+  });
+}
+
+export type ReportTarget =
+  | { kind: 'post'; postId: string }
+  | { kind: 'comment'; postId: string; commentId: string };
+
+export function useReport() {
+  return ReactQuery.useMutation({
+    mutationFn: ({
+      target,
+      reason,
+    }: {
+      target: ReportTarget;
+      reason: ReportReason;
+    }) =>
+      target.kind === 'post'
+        ? reportPostApi(target.postId, reason)
+        : reportCommentApi(target.postId, target.commentId, reason),
+    onError: () => alertActionFailed('отправить жалобу'),
   });
 }

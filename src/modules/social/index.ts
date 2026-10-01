@@ -1,5 +1,10 @@
 // Публичный API модуля — снаружи импортируем только отсюда.
 export * from './models/social';
+export * from './api/reportCommentApi';
+export * from './api/reportPostApi';
+export * from './api/getBlockedUsersApi';
+export * from './api/unblockUserApi';
+export * from './api/blockUserApi';
 export * from './api/addCommentApi';
 export * from './api/deleteCommentApi';
 export * from './api/followUserApi';

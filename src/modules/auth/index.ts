@@ -7,5 +7,7 @@ export * from './api/verifyOtpApi';
 export * from './store';
 export * from './services/session';
 export * from './hooks/useSignOut';
+export * from './hooks/useDeleteAccount';
+export * from './api/deleteAccountApi';
 export * from './queries';
 export * from './helpers/onboarding';

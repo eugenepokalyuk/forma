@@ -29,6 +29,12 @@ export function AccountSection() {
         />
 
         <ListRow
+          icon="account-cancel-outline"
+          title="Заблокированные"
+          onPress={() => router.push(ROUTES.blocked)}
+        />
+
+        <ListRow
           icon={hasProAccess ? 'crown' : 'crown-outline'}
           tint={hasProAccess ? COLORS.Text.accent : undefined}
           title="Тариф"

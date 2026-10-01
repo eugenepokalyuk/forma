@@ -32,6 +32,7 @@ export default function AppLayout() {
       <Stack.Screen name="program/[id]" />
       <Stack.Screen name="workout/[id]" />
       <Stack.Screen name="friends" />
+      <Stack.Screen name="blocked" />
     </Stack>
   );
 }

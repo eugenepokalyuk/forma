@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@/shared/ui';
 import { FollowButton } from '@/pages/Friends/components/FollowButton';
-import { UserRow } from '@/pages/Friends/components/UserRow';
+import { UserRow } from '@/modules/social/ui';
 import { COLORS, spacing } from '@/theme';
 import {
   useFollowers,

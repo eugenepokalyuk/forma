@@ -5,6 +5,7 @@ import {
   setToken,
 } from '@/shared/lib/storage/tokenStore';
 
+import { deleteAccountApi } from '../api/deleteAccountApi';
 import { getMeApi } from '../api/getMeApi';
 import type { User } from '../models/user';
 import { useAuthStore } from '../store';
@@ -39,4 +40,12 @@ export async function signOut() {
   await clearToken();
   resetWorkoutData();
   useAuthStore.getState().setSignedOut();
+}
+
+// Удаление аккаунта на сервере, затем — как выход: локальные данные
+// (токен, тренировки, очередь синхронизации) больше не нужны. Неотправленные
+// подходы не досылаем — данные аккаунта всё равно удаляются.
+export async function deleteAccount() {
+  await deleteAccountApi();
+  await signOut();
 }

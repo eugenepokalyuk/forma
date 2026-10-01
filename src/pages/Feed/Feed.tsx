@@ -13,12 +13,15 @@ import {
 } from '@/shared/ui';
 import { CommentsModal } from '@/pages/Feed/components/CommentsModal';
 import { PostCard } from '@/pages/Feed/components/PostCard';
+import { ReportSheet } from '@/pages/Feed/components/ReportSheet';
+import { useContentActions } from '@/pages/Feed/hooks/useContentActions';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFeed, useToggleLike } from '@/modules/social';
 
 export default function FeedScreen() {
   const tabBarClearance = useTabBarClearance();
+  const actions = useContentActions();
   const [openCommentsFor, setOpenCommentsFor] = React.useState<string | null>(
     null,
   );
@@ -106,6 +109,15 @@ export default function FeedScreen() {
               post={item}
               onToggleLike={() => toggleLike.mutate(item)}
               onOpenComments={() => setOpenCommentsFor(item.id)}
+              onMore={
+                actions.isMine(item.author)
+                  ? undefined
+                  : () =>
+                      actions.openActions(
+                        { kind: 'post', postId: item.id },
+                        item.author,
+                      )
+              }
             />
           </FadeInItem>
         )}
@@ -115,6 +127,8 @@ export default function FeedScreen() {
         postId={openCommentsFor}
         onClose={() => setOpenCommentsFor(null)}
       />
+
+      <ReportSheet {...actions.reportSheet} />
     </ScreenContainer>
   );
 }

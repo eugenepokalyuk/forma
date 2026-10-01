@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import type { PublicUser } from '@/modules/social';
+import type { PublicUser } from '../models/social';
 import { Typography, UserAvatar } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 

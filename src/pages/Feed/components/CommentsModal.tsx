@@ -12,6 +12,8 @@ import {
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { useAddComment, useComments } from '@/modules/social';
+import { ReportSheet } from '@/pages/Feed/components/ReportSheet';
+import { useContentActions } from '@/pages/Feed/hooks/useContentActions';
 
 interface CommentsModalProps {
   postId: string | null;
@@ -23,6 +25,7 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
 
   const { data: comments, isLoading, isError, refetch } = useComments(postId);
   const addMutation = useAddComment(postId);
+  const actions = useContentActions();
 
   return (
     <BottomSheet
@@ -54,7 +57,23 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
           ) : null
         }
         renderItem={({ item }) => (
-          <View style={styles.commentRow}>
+          // Долгое нажатие на чужой комментарий — пожаловаться/заблокировать.
+          <Pressable
+            style={styles.commentRow}
+            disabled={actions.isMine(item.author) || !postId}
+            onLongPress={() =>
+              postId &&
+              actions.openActions(
+                { kind: 'comment', postId, commentId: item.id },
+                item.author,
+              )
+            }
+            accessibilityHint={
+              actions.isMine(item.author)
+                ? undefined
+                : 'Удерживайте, чтобы пожаловаться или заблокировать'
+            }
+          >
             {item.author.avatarUrl ? (
               <Image
                 source={{ uri: item.author.avatarUrl }}
@@ -84,7 +103,7 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
 
               <Typography variant="body">{item.text}</Typography>
             </View>
-          </View>
+          </Pressable>
         )}
       />
 
@@ -117,6 +136,7 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
           />
         </Pressable>
       </View>
+      <ReportSheet {...actions.reportSheet} />
     </BottomSheet>
   );
 }

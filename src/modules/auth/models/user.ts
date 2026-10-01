@@ -8,6 +8,8 @@ export interface User {
   // мобиле — нужны для Фитнес Бро (см. modules/bro/helpers/broMessages.ts): часовой пояс для
   // времени суток и заполненность профиля для условия «onboarding».
   showOnboarding?: boolean;
+  // Публичный id — тот же, что author.id у постов и комментариев.
+  publicId?: string;
   timezone?: string;
   height?: number | null;
   weight?: number | null;

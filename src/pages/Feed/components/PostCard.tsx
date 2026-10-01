@@ -24,12 +24,15 @@ interface PostCardProps {
   post: Post;
   onToggleLike: () => void;
   onOpenComments: () => void;
+  // Жалоба/блокировка; не передаётся для своих постов.
+  onMore?: () => void;
 }
 
 export function PostCard({
   post,
   onToggleLike,
   onOpenComments,
+  onMore,
 }: PostCardProps) {
   const lastTapRef = React.useRef(0);
   const [showBurst, setShowBurst] = React.useState(false);
@@ -84,6 +87,21 @@ export function PostCard({
             {formatRelativeTime(post.createdAt)}
           </Typography>
         </View>
+
+        {onMore ? (
+          <Pressable
+            onPress={onMore}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Действия с постом"
+          >
+            <Icon
+              name="dots-horizontal"
+              size={24}
+              color={COLORS.Icon.secondary}
+            />
+          </Pressable>
+        ) : null}
       </View>
 
       {slides.length > 0 ? (

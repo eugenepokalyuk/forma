@@ -1,8 +1,9 @@
+import { useDeleteAccount, useSignOut } from '@/modules/auth';
 import { ListGroup, ListRow, Section } from '@/shared/ui';
-import { useSignOut } from '@/modules/auth';
 
 export function SignOutSection() {
   const signOut = useSignOut();
+  const deleteAccount = useDeleteAccount();
 
   return (
     <Section>
@@ -14,6 +15,16 @@ export function SignOutSection() {
           onPress={signOut}
           showChevron={false}
           isFirst
+        />
+
+        <ListRow
+          icon="account-remove-outline"
+          title={
+            deleteAccount.deleting ? 'Удаляем аккаунт…' : 'Удалить аккаунт'
+          }
+          destructive
+          onPress={deleteAccount.deleting ? undefined : deleteAccount.confirm}
+          showChevron={false}
           isLast
         />
       </ListGroup>

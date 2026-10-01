@@ -17,6 +17,8 @@ export interface PublicUser {
   isSelf: boolean;
   isFollowing: boolean;
   isRequested: boolean;
+  // Текущий пользователь заблокировал этого.
+  isBlocked?: boolean;
 }
 
 export interface FollowRequestItem {
@@ -61,3 +63,14 @@ export interface Post {
   isLiked: boolean;
   createdAt: string;
 }
+
+// Причины жалобы — совпадают с social.Report.REASON_CHOICES на бэкенде.
+export type ReportReason = 'spam' | 'abuse' | 'nudity' | 'violence' | 'other';
+
+export const REPORT_REASONS: { value: ReportReason; label: string }[] = [
+  { value: 'spam', label: 'Спам' },
+  { value: 'abuse', label: 'Оскорбления или травля' },
+  { value: 'nudity', label: 'Откровенный контент' },
+  { value: 'violence', label: 'Насилие или опасные действия' },
+  { value: 'other', label: 'Другое' },
+];

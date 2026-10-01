@@ -23,6 +23,7 @@ export const ROUTES = {
     params: { id, programId },
   }),
   friends: '/(app)/friends',
+  blocked: '/(app)/blocked',
 
   sessionActive: '/session/active',
 } as const;
