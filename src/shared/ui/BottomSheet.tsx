@@ -51,24 +51,32 @@ export function BottomSheet({
       <View style={styles.overlay}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
 
+        {/* KeyboardAvoidingView с behavior="padding" подменяет paddingBottom
+            своим значением (0 без клавиатуры) — поэтому он только обёртка,
+            а отступы шторки живут на вложенном View. */}
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={[
-            styles.sheet,
-            { paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.md },
-            maxHeight != null && { maxHeight },
-            style,
-          ]}
+          style={maxHeight != null && { maxHeight }}
         >
-          <View style={styles.header}>
-            <Typography variant="heading">{title}</Typography>
+          <View
+            style={[
+              styles.sheet,
+              {
+                paddingBottom: Math.max(insets.bottom, spacing.md) + spacing.md,
+              },
+              style,
+            ]}
+          >
+            <View style={styles.header}>
+              <Typography variant="heading">{title}</Typography>
 
-            <Pressable onPress={onClose} hitSlop={12}>
-              <Icon name="close" size={20} color={COLORS.Icon.secondary} />
-            </Pressable>
+              <Pressable onPress={onClose} hitSlop={12}>
+                <Icon name="close" size={20} color={COLORS.Icon.secondary} />
+              </Pressable>
+            </View>
+
+            {children}
           </View>
-
-          {children}
         </KeyboardAvoidingView>
       </View>
     </Modal>
@@ -82,6 +90,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Overlay.backdrop,
   },
   sheet: {
+    // Сжимается, когда клавиатура забирает место внутри maxHeight.
+    flexShrink: 1,
     backgroundColor: COLORS.Background.primary,
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,

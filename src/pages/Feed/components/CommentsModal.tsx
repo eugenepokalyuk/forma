@@ -32,7 +32,7 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
           gap: spacing.md,
           paddingBottom: spacing.md,
         }}
-        style={{ maxHeight: 360 }}
+        style={{ maxHeight: 360, flexShrink: 1 }}
         ListEmptyComponent={
           !isLoading ? (
             <Typography
