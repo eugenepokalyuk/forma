@@ -11,7 +11,7 @@ import { Circle, Svg } from 'react-native-svg';
 import { Button } from '@/components/Button';
 import { Typography } from '@/components/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatMMSS } from '@/utils/format';
+import { formatMMSS } from '@/utils/helpers/string/number';
 import { useSessionStore } from '@/store/session';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

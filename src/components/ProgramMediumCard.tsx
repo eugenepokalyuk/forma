@@ -8,8 +8,8 @@ import type { Program } from '@/api';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/utils/format';
-import { ROUTES } from '@/utils/routes';
+import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
+import { ROUTES } from '@/utils/constants/routes';
 
 interface ProgramMediumCardProps {
   program: Program;

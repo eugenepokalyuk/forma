@@ -9,7 +9,7 @@ import { sendOtpApi } from '@/api';
 import { Button } from '@/components/Button';
 import { Input, Typography } from '@/components/ui';
 import { COLORS, motion, spacing } from '@/theme';
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

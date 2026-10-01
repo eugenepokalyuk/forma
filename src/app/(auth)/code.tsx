@@ -8,7 +8,7 @@ import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { sendOtpApi, verifyOtpApi } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 import { useAuthStore } from '@/store/auth';
 
 const RESEND_SECONDS = 60;

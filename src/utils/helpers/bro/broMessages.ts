@@ -9,15 +9,13 @@ import type {
   WaterToday,
   WorkoutWithExercises,
 } from '@/api';
+import { formatTonnage } from '@/utils/helpers/string/number';
 import {
-  formatTonnage,
   pluralizeWeeks,
   pluralizeWorkouts,
-} from '@/utils/format';
-import { isOnboardingComplete } from '@/utils/onboarding';
-import type { TimeOfDay } from '@/utils/timeOfDay';
-
-// TODO: директория utils выглядит странно, лежат все файлы разбросанны это неправильно давай отсортируюем по катгориям в разложим по директориям их, к примеру можно посмотреть как налажена работа с utils в проекте face
+} from '@/utils/helpers/string/plural';
+import { isOnboardingComplete } from '@/utils/helpers/user/onboarding';
+import type { TimeOfDay } from '@/utils/helpers/date/timeOfDay';
 
 // Порт forma-next/src/components/modules/FitnessBro/_utils/broMessages.ts —
 // та же логика подбора реплик Фитнес Бро, что и на сайте (см. AGENTS.md

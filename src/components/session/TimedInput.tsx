@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatMMSS } from '@/utils/format';
+import { formatMMSS } from '@/utils/helpers/string/number';
 
 // Секундомер для кардио/растяжки/йоги — время слева, круглая ▶/■ справа.
 export function TimedInput({ onDone }: { onDone: (seconds: number) => void }) {

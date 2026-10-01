@@ -12,7 +12,7 @@ import { Card } from '@/components/Card';
 import { FadeInItem } from '@/components/FadeInItem';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/utils/format';
+import { formatSetsLine } from '@/utils/helpers/exercise/format';
 
 interface WorkoutListItemProps {
   workout: WorkoutWithExercises;

@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 
-import { clearToken, getToken } from '@/utils/tokenStore';
+import { clearToken, getToken } from '@/utils/storage/tokenStore';
 
 import { getApiBase } from './helpers/getApiBase';
 import { notifyUnauthorized } from './unauthorized';

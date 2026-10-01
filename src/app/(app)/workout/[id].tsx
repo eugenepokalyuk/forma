@@ -12,8 +12,8 @@ import { Card } from '@/components/Card';
 import { FadeInItem } from '@/components/FadeInItem';
 import { Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/utils/format';
-import { ROUTES } from '@/utils/routes';
+import { formatSetsLine } from '@/utils/helpers/exercise/format';
+import { ROUTES } from '@/utils/constants/routes';
 import { useSessionStore } from '@/store/session';
 
 export default function WorkoutScreen() {

@@ -17,9 +17,9 @@ import {
 import { useTabBarClearance } from '@/components/TabBar';
 import { UserAvatar } from '@/components/UserAvatar';
 import { COLORS, radius, spacing } from '@/theme';
-import { computeStreak } from '@/utils/calendar';
+import { computeStreak } from '@/utils/helpers/date/calendar';
 import { useAuthStore } from '@/store/auth';
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 
 export default function ProfileScreen() {
   const user = useAuthStore((s) => s.user);

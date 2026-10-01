@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 import { useAuthStore } from '@/store/auth';
 import { useSessionStore } from '@/store/session';
 

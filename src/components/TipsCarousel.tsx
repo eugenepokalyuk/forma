@@ -28,9 +28,10 @@ import {
   FALLBACK_PHRASES,
   findRecentAchievement,
   isRecordVolume,
-} from '@/utils/bro';
-import { DEFAULT_TIMEZONE, useTimeOfDay } from '@/utils/timeOfDay';
-import { ROUTES } from '@/utils/routes';
+} from '@/utils/helpers/bro/broMessages';
+import { DEFAULT_TIMEZONE } from '@/utils/helpers/date/timeOfDay';
+import { useTimeOfDay } from '@/utils/hooks/useTimeOfDay';
+import { ROUTES } from '@/utils/constants/routes';
 import { useAuthStore } from '@/store/auth';
 
 const GAP = spacing.sm;
@@ -41,7 +42,7 @@ interface TipsCarouselProps {
 }
 
 // Реплики Фитнес Бро — тот же набор источников и тот же порядок, что на
-// сайте (см. src/utils/bro.ts buildBroMessages): динамика (стрик/похвала/
+// сайте (см. src/utils/helpers/bro/broMessages.ts buildBroMessages): динамика (стрик/похвала/
 // ачивка/цель недели) + подходящие сейчас условные фразы из админки + один
 // случайный совет из общего пула. Раньше здесь рендерился весь пул советов
 // разом (десятки карточек) — из-за этого количество не совпадало с сайтом,

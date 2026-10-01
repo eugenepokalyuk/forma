@@ -1,7 +1,7 @@
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 
-import { mmkvStorageAdapter } from '@/utils/mmkv';
+import { mmkvStorageAdapter } from '@/utils/storage/mmkv';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

@@ -15,7 +15,7 @@ import * as SafeArea from 'react-native-safe-area-context';
 import { addCommentApi, getCommentsApi } from '@/api';
 import { CustomIcon, Input, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatRelativeTime } from '@/utils/relativeTime';
+import { formatRelativeTime } from '@/utils/helpers/date/relativeTime';
 
 interface CommentsModalProps {
   postId: string | null;

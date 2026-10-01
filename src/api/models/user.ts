@@ -5,7 +5,7 @@ export interface User {
   hasProAccess: boolean;
   avatarUrl: string | null;
   // Возвращается бэком (см. UserSerializer), но раньше не было нужно на
-  // мобиле — нужны для Фитнес Бро (см. src/utils/bro.ts): часовой пояс для
+  // мобиле — нужны для Фитнес Бро (см. src/utils/helpers/bro/broMessages.ts): часовой пояс для
   // времени суток и заполненность профиля для условия «onboarding».
   showOnboarding?: boolean;
   timezone?: string;

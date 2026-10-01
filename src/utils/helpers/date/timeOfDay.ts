@@ -1,8 +1,6 @@
-import * as React from 'react';
-
 // Порт forma-next/src/utils/timeOfDay — статус времени суток по часовому
 // поясу пользователя, нужен для условия «morning» у Фитнес Бро (см.
-// src/utils/bro.ts).
+// src/utils/helpers/bro/broMessages.ts).
 
 // Часовой пояс по умолчанию — время сервера (Москва = UTC+3), назначается
 // новым пользователям, пока они не выберут свой (на мобиле этого шага пока
@@ -34,20 +32,4 @@ export function getTimeOfDay(
   if (hour < 19) return 'noon';
   if (hour < 21) return 'sunset';
   return 'night';
-}
-
-const MINUTE = 60_000;
-
-export function useTimeOfDay(timezone: string = DEFAULT_TIMEZONE): TimeOfDay {
-  const [timeOfDay, setTimeOfDay] = React.useState<TimeOfDay>(() =>
-    getTimeOfDay(timezone),
-  );
-
-  React.useEffect(() => {
-    setTimeOfDay(getTimeOfDay(timezone));
-    const id = setInterval(() => setTimeOfDay(getTimeOfDay(timezone)), MINUTE);
-    return () => clearInterval(id);
-  }, [timezone]);
-
-  return timeOfDay;
 }

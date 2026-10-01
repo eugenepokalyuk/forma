@@ -6,7 +6,7 @@ import * as SafeArea from 'react-native-safe-area-context';
 import { Button } from '@/components/Button';
 import { Input, StatTile, Typography } from '@/components/ui';
 import { COLORS, spacing } from '@/theme';
-import { formatMMSS } from '@/utils/format';
+import { formatMMSS } from '@/utils/helpers/string/number';
 import { tonnage, useSessionStore } from '@/store/session';
 
 export function SessionSummary({

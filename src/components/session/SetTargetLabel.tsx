@@ -1,6 +1,6 @@
 import type { Exercise } from '@/api';
 import { Typography } from '@/components/ui';
-import { formatTargetLabel } from '@/utils/format';
+import { formatTargetLabel } from '@/utils/helpers/exercise/format';
 import { COLORS } from '@/theme';
 
 // Цель подхода — простой текст без бейджа и иконки («8–12 повторов»).

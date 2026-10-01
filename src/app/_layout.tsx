@@ -11,8 +11,8 @@ import * as React from 'react';
 import { View } from 'react-native';
 
 import { COLORS } from '@/theme';
-import { queryClient, queryPersister } from '@/utils/queryClient';
-import { useOutboxSync } from '@/utils/useOutboxSync';
+import { queryClient, queryPersister } from '@/utils/query/queryClient';
+import { useOutboxSync } from '@/utils/hooks/useOutboxSync';
 import { useAuthStore } from '@/store/auth';
 import { useSessionStore } from '@/store/session';
 

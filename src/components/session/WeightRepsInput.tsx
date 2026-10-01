@@ -6,7 +6,7 @@ import { Button } from '@/components/Button';
 import { Stepper } from '@/components/Stepper';
 import { Divider, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import type { SetPrefill } from '@/utils/setPrefill';
+import type { SetPrefill } from '@/utils/helpers/exercise/setPrefill';
 
 interface WeightRepsInputProps {
   exercise: Exercise;

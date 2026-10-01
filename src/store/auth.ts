@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { getMeApi, setUnauthorizedHandler } from '@/api';
 import type { User } from '@/api';
-import { clearToken, getToken, setToken } from '@/utils/tokenStore';
+import { clearToken, getToken, setToken } from '@/utils/storage/tokenStore';
 import { useOutboxStore } from '@/store/outbox';
 
 interface AuthState {

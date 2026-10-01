@@ -14,14 +14,18 @@ import { useTabBarClearance } from '@/components/TabBar';
 import { TipsCarousel } from '@/components/TipsCarousel';
 import { WeekStrip } from '@/components/WeekStrip';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatMonthLabel, getCurrentWeek, isSameDay } from '@/utils/calendar';
-import { ROUTES } from '@/utils/routes';
+import {
+  formatMonthLabel,
+  getCurrentWeek,
+  isSameDay,
+} from '@/utils/helpers/date/calendar';
+import { ROUTES } from '@/utils/constants/routes';
 import {
   getNextWorkout,
   getWeeklyGoal,
   sessionVolumeKg,
   type BroTodayContext,
-} from '@/utils/bro';
+} from '@/utils/helpers/bro/broMessages';
 import { useAuthStore } from '@/store/auth';
 import { useOutboxStore } from '@/store/outbox';
 import { useSessionStore } from '@/store/session';

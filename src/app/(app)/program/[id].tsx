@@ -18,7 +18,7 @@ import { ScreenContainer, Typography } from '@/components/ui';
 import { COLORS, spacing } from '@/theme';
 import { useAuthStore } from '@/store/auth';
 import { useSessionStore } from '@/store/session';
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 
 export default function ProgramScreen() {
   const { id } = ExpoRouter.useLocalSearchParams<{ id: string }>();

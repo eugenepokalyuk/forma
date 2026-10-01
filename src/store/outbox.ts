@@ -9,7 +9,7 @@ import {
   startSessionApi,
   undoSetApi,
 } from '@/api';
-import { mmkvStorageAdapter } from '@/utils/mmkv';
+import { mmkvStorageAdapter } from '@/utils/storage/mmkv';
 
 // Очередь синхронизации: во время тренировки источник правды — устройство,
 // сервер получает данные из этой очереди, когда появляется сеть. Ни одно

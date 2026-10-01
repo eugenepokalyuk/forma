@@ -8,8 +8,8 @@ import { getReactionsApi } from '@/api';
 import type { Program } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/utils/format';
-import { ROUTES } from '@/utils/routes';
+import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
+import { ROUTES } from '@/utils/constants/routes';
 
 interface ProgramPreviewCardProps {
   program: Program;

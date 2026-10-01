@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import type { LastLog, WorkoutWithExercises } from '@/api';
-import { mmkvStorageAdapter } from '@/utils/mmkv';
+import { mmkvStorageAdapter } from '@/utils/storage/mmkv';
 import { useOutboxStore, processOutbox } from '@/store/outbox';
 
 export interface LocalLog {

@@ -12,7 +12,7 @@ import { FadeInItem } from '@/components/FadeInItem';
 import { ScreenContainer, ScreenHeader, Typography } from '@/components/ui';
 import { useTabBarClearance } from '@/components/TabBar';
 import { COLORS, spacing } from '@/theme';
-import { ROUTES } from '@/utils/routes';
+import { ROUTES } from '@/utils/constants/routes';
 
 export default function FeedScreen() {
   const queryClient = ReactQuery.useQueryClient();

@@ -14,8 +14,8 @@ import {
 import type { Post } from '@/api';
 import { CustomIcon, Icon, Typography } from '@/components/ui';
 import { UserAvatar } from '@/components/UserAvatar';
-import { formatMMSS } from '@/utils/format';
-import { formatRelativeTime } from '@/utils/relativeTime';
+import { formatMMSS } from '@/utils/helpers/string/number';
+import { formatRelativeTime } from '@/utils/helpers/date/relativeTime';
 import { COLORS, motion, radius, shadow, spacing } from '@/theme';
 
 const DOUBLE_TAP_MS = 280;
