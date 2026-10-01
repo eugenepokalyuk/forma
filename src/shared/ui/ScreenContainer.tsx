@@ -30,29 +30,17 @@ interface ScreenContainerProps extends React.PropsWithChildren {
 }
 
 // Прокрутка «под статус-бар», как в нативных iOS-приложениях: в исходном
-// положении контент начинается ниже статус-бара, а при прокрутке уходит под
-// него. На iOS — через contentInset (тогда и индикатор pull-to-refresh
-// появляется ниже статус-бара), на Android contentInset нет — отступ в
-// контенте и сдвиг индикатора.
+// положении контент начинается ниже статус-бара (отступ внутри контента), а
+// при прокрутке уходит под него. Индикатор pull-to-refresh сдвигается ниже
+// статус-бара (progressViewOffset работает на iOS и Android). contentInset +
+// начальный contentOffset не используем: на новой архитектуре начальное
+// смещение не применялось, и контент стартовал под статус-баром.
 export function useUnderStatusBarScroll() {
   const { top } = useSafeAreaInsets();
+  const scrollProps: ScrollViewProps =
+    Platform.OS === 'ios' ? { scrollIndicatorInsets: { top } } : {};
 
-  if (Platform.OS === 'ios') {
-    const scrollProps: ScrollViewProps = {
-      contentInset: { top },
-      contentOffset: { x: 0, y: -top },
-      scrollIndicatorInsets: { top },
-      contentInsetAdjustmentBehavior: 'never',
-      automaticallyAdjustContentInsets: false,
-    };
-    return { scrollProps, paddingTop: 0, refreshOffset: 0 };
-  }
-
-  return {
-    scrollProps: {} as ScrollViewProps,
-    paddingTop: top,
-    refreshOffset: top,
-  };
+  return { scrollProps, paddingTop: top, refreshOffset: top };
 }
 
 // Градиент под статус-баром: время и батарея читаются поверх уехавшего
