@@ -47,11 +47,18 @@ export function Input({
       <TextInput
         placeholderTextColor={COLORS.Text.tertiary}
         multiline={multiline}
-        style={{
-          color: COLORS.Text.primary,
-          fontSize: 16,
-          flex: multiline ? 1 : undefined,
-        }}
+        style={[
+          { color: COLORS.Text.primary, fontSize: 16 },
+          // Многострочное поле растёт по тексту от minHeight до maxHeight
+          // обёртки и только потом прокручивается. Не flex: 1 — с ним высота
+          // поля не зависит от текста, и всё набранное прокручивалось внутри
+          // исходной высоты (в комментариях — одной строки).
+          multiline && {
+            flexGrow: 1,
+            flexShrink: 1,
+            textAlignVertical: 'top',
+          },
+        ]}
         onFocus={(e) => {
           setFocused(true);
           onFocus?.(e);
