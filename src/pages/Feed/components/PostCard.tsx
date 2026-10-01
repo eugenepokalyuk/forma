@@ -159,12 +159,15 @@ function MediaPager({
   const [width, setWidth] = React.useState(0);
   const [page, setPage] = React.useState(0);
 
-  const onViewableItemsChanged = React.useRef(
+  // FlatList не поддерживает смену onViewableItemsChanged на лету —
+  // обработчик стабилен (зависит только от сеттера стейта).
+  const onViewableItemsChanged = React.useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       const first = viewableItems[0];
       if (first?.index != null) setPage(first.index);
     },
-  ).current;
+    [],
+  );
 
   const renderSlide = (slide: Slide) =>
     slide === 'photo' ? (

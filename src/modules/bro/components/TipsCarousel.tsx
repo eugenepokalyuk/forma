@@ -119,12 +119,15 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
     ],
   );
 
-  const onViewableItemsChanged = React.useRef(
+  // FlatList не поддерживает смену onViewableItemsChanged на лету —
+  // обработчик стабилен (зависит только от сеттера стейта).
+  const onViewableItemsChanged = React.useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
       const first = viewableItems[0];
       if (first?.index != null) setIndex(first.index);
     },
-  ).current;
+    [],
+  );
 
   if (!messages.length) return null;
 

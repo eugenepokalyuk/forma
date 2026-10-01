@@ -8,16 +8,14 @@ import {
 
 const MINUTE = 60_000;
 
+// Время суток пересчитывается раз в минуту и сразу — при смене часового пояса.
 export function useTimeOfDay(timezone: string = DEFAULT_TIMEZONE): TimeOfDay {
-  const [timeOfDay, setTimeOfDay] = React.useState<TimeOfDay>(() =>
-    getTimeOfDay(timezone),
-  );
+  const [now, setNow] = React.useState(() => new Date());
 
   React.useEffect(() => {
-    setTimeOfDay(getTimeOfDay(timezone));
-    const id = setInterval(() => setTimeOfDay(getTimeOfDay(timezone)), MINUTE);
+    const id = setInterval(() => setNow(new Date()), MINUTE);
     return () => clearInterval(id);
-  }, [timezone]);
+  }, []);
 
-  return timeOfDay;
+  return getTimeOfDay(timezone, now);
 }

@@ -50,7 +50,11 @@ export default function ActiveSessionScreen() {
   ExpoKeepAwake.useKeepAwake();
   const insets = SafeArea.useSafeAreaInsets();
   const active = useSessionStore((s) => s.active);
-  const [view, setView] = React.useState<Phase>('exercise');
+  // После перезапуска приложения посреди отдыха возвращаемся в отдых —
+  // истёкший таймер сразу завершит его и переведёт дальше (см. finishRest).
+  const [view, setView] = React.useState<Phase>(() =>
+    useSessionStore.getState().active?.restEndsAt ? 'rest' : 'exercise',
+  );
   const [elapsed, setElapsed] = React.useState(0);
   const [noteDraft, setNoteDraft] = React.useState('');
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
@@ -58,12 +62,13 @@ export default function ActiveSessionScreen() {
   // пределах экрана тренировки (не персистятся, как и не персистится exercise.sets).
   const [extraSets, setExtraSets] = React.useState<Record<string, number>>({});
 
+  const startedAt = active?.startedAt;
   React.useEffect(() => {
-    if (!active) return;
+    if (!startedAt) return;
 
     const tick = () =>
       setElapsed(
-        Math.floor((Date.now() - new Date(active.startedAt).getTime()) / 1000),
+        Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000),
       );
 
     tick();
@@ -71,7 +76,7 @@ export default function ActiveSessionScreen() {
     const id = setInterval(tick, 1000);
 
     return () => clearInterval(id);
-  }, [active?.startedAt]);
+  }, [startedAt]);
 
   const exercises = active?.workout.exercises ?? [];
   const exercise = active ? exercises[active.currentExerciseIndex] : undefined;
@@ -83,56 +88,68 @@ export default function ActiveSessionScreen() {
     : 0;
 
   // Заметка — черновик живёт, пока не переключились на другое упражнение.
-  React.useEffect(() => {
+  const [noteExerciseId, setNoteExerciseId] = React.useState(exercise?.id);
+  if (noteExerciseId !== exercise?.id) {
+    setNoteExerciseId(exercise?.id);
     setNoteDraft('');
-  }, [exercise?.id]);
+  }
 
-  const jump = (delta: number) => {
-    if (!active) return;
-    const next = active.currentExerciseIndex + delta;
+  const totalSetsOf = (ex: Exercise) => ex.sets + (extraSets[ex.id] ?? 0);
 
-    if (next < 0) return;
+  // Переход к упражнению index. Уже завершённые (все подходы или пропуск)
+  // проходим насквозь — иначе на них можно было бы записать «фантомный»
+  // подход сверх плана; дальше последнего — итог тренировки. Состояние
+  // берём из стора, а не из рендера: зовётся сразу после записи в стор.
+  const navigate = (index: number) => {
+    const current = useSessionStore.getState().active;
+    if (!current || index < 0) return;
 
-    if (next >= exercises.length) {
+    const list = current.workout.exercises;
+    let target = index;
+    while (
+      target < list.length &&
+      isExerciseComplete(list[target], current.logs, totalSetsOf(list[target]))
+    ) {
+      target += 1;
+    }
+
+    if (target >= list.length) {
       setView('summary');
       return;
     }
 
-    useSessionStore.getState().goToExercise(next);
+    useSessionStore.getState().goToExercise(target);
+    setView('exercise');
+  };
+
+  const jump = (delta: number) => {
+    const current = useSessionStore.getState().active;
+    if (current) navigate(current.currentExerciseIndex + delta);
   };
 
   // Отдых — самостоятельный полноэкранный шаг. Когда он заканчивается (сам
-  // или по «Пропустить»), решаем ПО ТЕКУЩЕМУ состоянию (не по запомненному
-  // флагу): все подходы этого упражнения уже сделаны — идём дальше, иначе
-  // возвращаемся к нему же на следующий подход.
-  React.useEffect(() => {
-    if (view !== 'rest' || !active || !exercise) return;
+  // или по «Пропустить»), решаем по текущему состоянию: все подходы этого
+  // упражнения сделаны — идём дальше, иначе возвращаемся к нему же на
+  // следующий подход.
+  const finishRest = () => {
+    useSessionStore.getState().clearRest();
+    const current = useSessionStore.getState().active;
+    if (!current) return;
 
-    if (active.restEndsAt) return;
-
-    if (isExerciseComplete(exercise, active.logs, totalSets)) {
-      if (isLast) setView('summary');
-      else {
-        useSessionStore
-          .getState()
-          .goToExercise(active.currentExerciseIndex + 1);
-        setView('exercise');
-      }
+    const currentExercise =
+      current.workout.exercises[current.currentExerciseIndex];
+    if (
+      isExerciseComplete(
+        currentExercise,
+        current.logs,
+        totalSetsOf(currentExercise),
+      )
+    ) {
+      navigate(current.currentExerciseIndex + 1);
     } else {
       setView('exercise');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active?.restEndsAt, view]);
-
-  // Защита от «фантомного» подхода сверх exercise.sets — например, если
-  // вручную переключились назад на уже полностью выполненное упражнение.
-  React.useEffect(() => {
-    if (view !== 'exercise' || !active || !exercise) return;
-
-    if (isExerciseComplete(exercise, active.logs, totalSets)) {
-      jump(1);
-    }
-  }, [view, active?.currentExerciseIndex, exercise?.id]);
+  };
 
   if (!active || !exercise) return null;
 
@@ -203,6 +220,7 @@ export default function ActiveSessionScreen() {
       <RestScreen
         nextLabel={nextLabel}
         nextThumbnailUrl={nextExercise.thumbnailUrl}
+        onDone={finishRest}
       />
     );
   }
@@ -244,7 +262,7 @@ export default function ActiveSessionScreen() {
         <ExerciseProgressBar
           total={exercises.length}
           index={active.currentExerciseIndex}
-          onPressSegment={(i) => useSessionStore.getState().goToExercise(i)}
+          onPressSegment={navigate}
         />
       </View>
 

@@ -31,8 +31,9 @@ export default function RootLayout() {
   // Незавершённая локальная сессия должна восстановиться из MMKV ДО того,
   // как index.tsx решит, куда редиректить — иначе на холодном старте
   // мелькнёт «Мои программы» перед возвратом в режим выполнения.
-  const [sessionHydrated, setSessionHydrated] = React.useState(
-    useSessionStore.persist.hasHydrated(),
+  const sessionHydrated = React.useSyncExternalStore(
+    useSessionStore.persist.onFinishHydration,
+    useSessionStore.persist.hasHydrated,
   );
   const ready = authReady && sessionHydrated && fontsLoaded;
 
@@ -40,17 +41,6 @@ export default function RootLayout() {
 
   React.useEffect(() => {
     bootstrap().finally(() => setAuthReady(true));
-  }, []);
-
-  React.useEffect(() => {
-    if (useSessionStore.persist.hasHydrated()) {
-      setSessionHydrated(true);
-      return;
-    }
-
-    return useSessionStore.persist.onFinishHydration(() =>
-      setSessionHydrated(true),
-    );
   }, []);
 
   React.useEffect(() => {

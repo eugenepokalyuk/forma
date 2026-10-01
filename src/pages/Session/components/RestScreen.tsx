@@ -26,18 +26,26 @@ const CIRCUMFERENCE = 2 * Math.PI * R;
 export function RestScreen({
   nextLabel,
   nextThumbnailUrl,
+  onDone,
 }: {
   nextLabel: string;
   nextThumbnailUrl?: string | null;
+  // Отдых закончился сам или по «Пропустить».
+  onDone: () => void;
 }) {
   const insets = SafeArea.useSafeAreaInsets();
   const restEndsAt = useSessionStore((s) => s.active?.restEndsAt ?? null);
   const totalRef = React.useRef<number>(0);
   const extendRest = useSessionStore((s) => s.extendRest);
-  const clearRest = useSessionStore((s) => s.clearRest);
   const [remaining, setRemaining] = React.useState(0);
   const firedRef = React.useRef(false);
   const progress = Reanimated.useSharedValue(0);
+  // Интервал таймера живёт весь отдых — колбэк берём из ref, чтобы не
+  // перезапускать его на каждый рендер родителя.
+  const onDoneRef = React.useRef(onDone);
+  React.useEffect(() => {
+    onDoneRef.current = onDone;
+  });
 
   React.useEffect(() => {
     if (!restEndsAt) return;
@@ -66,14 +74,14 @@ export function RestScreen({
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success,
         );
-        clearRest();
+        onDoneRef.current();
       }
     };
     tick();
     const id = setInterval(tick, 500);
 
     return () => clearInterval(id);
-  }, [restEndsAt, clearRest]);
+  }, [restEndsAt, progress]);
 
   React.useEffect(() => {
     if (!restEndsAt) totalRef.current = 0;
@@ -171,7 +179,7 @@ export function RestScreen({
           style={{ flex: 1 }}
         />
 
-        <Button title="Пропустить" onPress={clearRest} style={{ flex: 1 }} />
+        <Button title="Пропустить" onPress={onDone} style={{ flex: 1 }} />
       </View>
     </MotiView>
   );

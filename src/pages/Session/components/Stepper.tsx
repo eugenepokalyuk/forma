@@ -27,9 +27,6 @@ export function Stepper({
 }: StepperProps) {
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(String(value));
-  const [pulseKey, setPulseKey] = React.useState(0);
-
-  React.useEffect(() => setPulseKey((k) => k + 1), [value]);
 
   const bump = (next: number) => {
     void Haptics.selectionAsync();
@@ -69,7 +66,7 @@ export function Stepper({
           style={compact ? styles.valueBoxCompact : styles.valueBox}
         >
           <MotiView
-            key={pulseKey}
+            key={value}
             from={{ scale: 1.18 }}
             animate={{ scale: 1 }}
             transition={motion.springy}
