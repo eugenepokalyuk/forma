@@ -11,7 +11,7 @@ import type {
 // Соответствует forma-next/src/services/Api/social/social.api.ts —
 // та же лента, тот же Django-бэкенд, поля уже camelCase.
 
-export function fetchFeed(before?: string) {
+export function getFeed(before?: string) {
   return apiClient
     .get<Post[]>('/social/feed', { params: before ? { before } : undefined })
     .then((res) => res.data);
@@ -23,7 +23,7 @@ export function searchUsers(q: string) {
     .then((res) => res.data);
 }
 
-export function fetchPublicProfile(publicId: string) {
+export function getPublicProfile(publicId: string) {
   return apiClient
     .get<PublicUser>(`/social/users/${publicId}`)
     .then((res) => res.data);
@@ -41,25 +41,25 @@ export function unfollowUser(publicId: string) {
     .then((res) => res.data);
 }
 
-export function fetchFollowing() {
+export function getFollowing() {
   return apiClient
     .get<PublicUser[]>('/social/following')
     .then((res) => res.data);
 }
 
-export function fetchFollowers() {
+export function getFollowers() {
   return apiClient
     .get<PublicUser[]>('/social/followers')
     .then((res) => res.data);
 }
 
-export function fetchFollowRequests() {
+export function getFollowRequests() {
   return apiClient
     .get<FollowRequestItem[]>('/social/requests')
     .then((res) => res.data);
 }
 
-export function fetchOutgoingRequests() {
+export function getOutgoingRequests() {
   return apiClient
     .get<PublicUser[]>('/social/requests/outgoing')
     .then((res) => res.data);
@@ -74,7 +74,7 @@ export function respondToFollowRequest(
     .then((res) => res.data);
 }
 
-export function fetchSocialSummary() {
+export function getSocialSummary() {
   return apiClient
     .get<SocialSummary>('/social/summary')
     .then((res) => res.data);
@@ -92,7 +92,7 @@ export function unlikePost(postId: string) {
     .then((res) => res.data);
 }
 
-export function fetchComments(postId: string) {
+export function getComments(postId: string) {
   return apiClient
     .get<Comment[]>(`/social/posts/${postId}/comments`)
     .then((res) => res.data);

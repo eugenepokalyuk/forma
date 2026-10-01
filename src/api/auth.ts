@@ -9,7 +9,7 @@ export function verifyOtp(email: string, code: string) {
   return apiClient.post<VerifyOtpResponse>('/auth/verify-otp', { email, code });
 }
 
-export function fetchMe() {
+export function getMe() {
   return apiClient.get<User>('/auth/me').then((res) => res.data);
 }
 

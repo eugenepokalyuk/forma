@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { addComment, fetchComments } from '@/api/social';
+import { addComment, getComments } from '@/api/social';
 import { CustomIcon, Input, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/utils/relativeTime';
@@ -29,7 +29,7 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
 
   const { data: comments, isLoading } = ReactQuery.useQuery({
     queryKey: ['comments', postId],
-    queryFn: () => fetchComments(postId as string),
+    queryFn: () => getComments(postId as string),
     enabled: !!postId,
   });
 

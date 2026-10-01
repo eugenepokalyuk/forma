@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { fetchMe } from '@/api/auth';
+import { getMe } from '@/api/auth';
 import { setUnauthorizedHandler } from '@/api/client';
 import type { User } from '@/api/types';
 import { clearToken, getToken, setToken } from '@/utils/tokenStore';
@@ -29,7 +29,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // Проверка токена при старте — только если есть сеть; offline —
     // считаем сессию валидной до первого 401 (см. onUnauthorized ниже).
     try {
-      const user = await fetchMe();
+      const user = await getMe();
       set({ status: 'signedIn', user });
     } catch {
       set({ status: 'signedIn', user: null });

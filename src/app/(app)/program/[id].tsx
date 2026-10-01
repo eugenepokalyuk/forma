@@ -5,11 +5,11 @@ import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
 import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
-import { fetchLastLog } from '@/api/exercises';
+import { getLastLog } from '@/api/exercises';
 import {
   addUserProgram,
-  fetchProgram,
-  fetchUserPrograms,
+  getProgram,
+  getUserPrograms,
 } from '@/api/programs';
 import type { LastLog, WorkoutWithExercises } from '@/api/types';
 import { WeekPill } from '@/components/WeekPill';
@@ -26,11 +26,11 @@ export default function ProgramScreen() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
   const { data, isLoading } = ReactQuery.useQuery({
     queryKey: ['program', id],
-    queryFn: () => fetchProgram(id),
+    queryFn: () => getProgram(id),
   });
   const { data: userPrograms } = ReactQuery.useQuery({
     queryKey: ['userPrograms'],
-    queryFn: fetchUserPrograms,
+    queryFn: getUserPrograms,
   });
   const [week, setWeek] = React.useState(1);
   const [expandedWorkoutId, setExpandedWorkoutId] = React.useState<
@@ -85,7 +85,7 @@ export default function ProgramScreen() {
     ];
     void Promise.all(
       catalogIds.map((catalogId) =>
-        fetchLastLog(catalogId)
+        getLastLog(catalogId)
           .then((logs) => [catalogId, logs] as const)
           .catch(() => null),
       ),

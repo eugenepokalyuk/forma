@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { fetchFeed, likePost, unlikePost } from '@/api/social';
+import { getFeed, likePost, unlikePost } from '@/api/social';
 import type { Post } from '@/api/types';
 import { Button } from '@/components/Button';
 import { CommentsModal } from '@/components/feed/CommentsModal';
@@ -30,7 +30,7 @@ export default function FeedScreen() {
     refetch,
   } = ReactQuery.useInfiniteQuery({
     queryKey: ['feed'],
-    queryFn: ({ pageParam }) => fetchFeed(pageParam),
+    queryFn: ({ pageParam }) => getFeed(pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.length > 0 ? lastPage[lastPage.length - 1].createdAt : undefined,

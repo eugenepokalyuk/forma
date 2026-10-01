@@ -6,7 +6,7 @@ import type {
   SessionWithWorkout,
 } from '@/api/types';
 
-export function fetchSessions() {
+export function getSessions() {
   return apiClient
     .get<SessionWithWorkout[]>('/sessions')
     .then((res) => res.data);
@@ -24,7 +24,7 @@ export function startSession(payload: StartSessionPayload) {
     .then((res) => res.data);
 }
 
-export function fetchSession(sessionId: string) {
+export function getSession(sessionId: string) {
   return apiClient
     .get<SessionStart>(`/sessions/${sessionId}`)
     .then((res) => res.data);

@@ -5,8 +5,8 @@ import * as React from 'react';
 import { Switch, View, StyleSheet } from 'react-native';
 
 import { updateProfile } from '@/api/auth';
-import { fetchSessions } from '@/api/sessions';
-import { fetchSocialSummary } from '@/api/social';
+import { getSessions } from '@/api/sessions';
+import { getSocialSummary } from '@/api/social';
 import {
   ListGroup,
   ListRow,
@@ -33,10 +33,10 @@ export default function ProfileScreen() {
     data: sessions,
     isLoading,
     refetch,
-  } = ReactQuery.useQuery({ queryKey: ['sessions'], queryFn: fetchSessions });
+  } = ReactQuery.useQuery({ queryKey: ['sessions'], queryFn: getSessions });
   const { data: socialSummary } = ReactQuery.useQuery({
     queryKey: ['social', 'summary'],
-    queryFn: fetchSocialSummary,
+    queryFn: getSocialSummary,
   });
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 

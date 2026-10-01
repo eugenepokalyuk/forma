@@ -5,7 +5,7 @@ import { router, Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
-import { fetchLastLog } from '@/api/exercises';
+import { getLastLog } from '@/api/exercises';
 import type { LastLog, ProgramWithWorkouts } from '@/api/types';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
@@ -49,7 +49,7 @@ export default function WorkoutScreen() {
     ];
     void Promise.all(
       catalogIds.map((catalogId) =>
-        fetchLastLog(catalogId)
+        getLastLog(catalogId)
           .then((logs) => [catalogId, logs] as const)
           .catch(() => null),
       ),

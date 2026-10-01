@@ -4,9 +4,9 @@ import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import {
-  fetchFollowers,
-  fetchFollowing,
-  fetchFollowRequests,
+  getFollowers,
+  getFollowing,
+  getFollowRequests,
   respondToFollowRequest,
   searchUsers,
 } from '@/api/social';
@@ -54,20 +54,20 @@ export default function FriendsScreen() {
   const { data: following, isLoading: isFollowingLoading } =
     ReactQuery.useQuery({
       queryKey: ['social', 'following'],
-      queryFn: fetchFollowing,
+      queryFn: getFollowing,
       enabled: !isSearching && tab === 'following',
     });
 
   const { data: followers, isLoading: isFollowersLoading } =
     ReactQuery.useQuery({
       queryKey: ['social', 'followers'],
-      queryFn: fetchFollowers,
+      queryFn: getFollowers,
       enabled: !isSearching && tab === 'followers',
     });
 
   const { data: requests, isLoading: isRequestsLoading } = ReactQuery.useQuery({
     queryKey: ['social', 'requests'],
-    queryFn: fetchFollowRequests,
+    queryFn: getFollowRequests,
     enabled: !isSearching && tab === 'requests',
   });
 

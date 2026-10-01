@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { fetchReactions } from '@/api/reactions';
+import { getReactions } from '@/api/reactions';
 import type { Program } from '@/api/types';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
@@ -32,7 +32,7 @@ interface ProgramCardProps {
 export function ProgramCard({ program, active }: ProgramCardProps) {
   const { data: reactionTypes } = ReactQuery.useQuery({
     queryKey: ['reactions'],
-    queryFn: fetchReactions,
+    queryFn: getReactions,
     staleTime: Infinity,
   });
 
