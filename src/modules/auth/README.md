@@ -1,6 +1,7 @@
 # auth — вход и текущий пользователь
 
-- `services/session.ts` — `bootstrap()` (проверка токена при старте), `signIn()`, `signOut()`
+- `services/session.ts` — `bootstrap()` (проверка токена при старте), `signIn()`, `signOut()`, `deleteAccount()`
+- `hooks/useDeleteAccount` — удаление аккаунта с подтверждением (требование сторов)
 - `hooks/useSignOut` — выход с предупреждением, если есть несинхронизированные тренировки
 - `store.ts` — статус входа и текущий пользователь; 401 от API переводит в `signedOut`
 - `queries.ts` — `useUpdateProfile`
