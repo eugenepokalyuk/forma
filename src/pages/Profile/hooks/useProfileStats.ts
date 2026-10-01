@@ -1,14 +1,9 @@
-import * as ReactQuery from '@tanstack/react-query';
-
-import { getSessionsApi } from '@/api';
+import { useSessions } from '@/queries/sessions';
 import { computeStreak } from '@/utils/helpers/date/calendar';
 
 // Итоги профиля по завершённым тренировкам: серия, количество, тоннаж.
 export function useProfileStats() {
-  const query = ReactQuery.useQuery({
-    queryKey: ['sessions'],
-    queryFn: getSessionsApi,
-  });
+  const query = useSessions();
 
   const completed = (query.data ?? []).filter((s) => s.status === 'completed');
   const totalTonnage = completed.reduce(

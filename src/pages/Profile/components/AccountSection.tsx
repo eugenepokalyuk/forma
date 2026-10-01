@@ -1,10 +1,9 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { Switch } from 'react-native';
 
-import { getSocialSummaryApi } from '@/api';
 import { ListGroup, ListRow, Section } from '@/components/ui';
 import { useFriendsOnly } from '@/pages/Profile/hooks/useFriendsOnly';
+import { useSocialSummary } from '@/queries/social';
 import { useAuthStore } from '@/store/auth';
 import { COLORS } from '@/theme';
 import { ROUTES } from '@/utils/constants/routes';
@@ -12,10 +11,7 @@ import { ROUTES } from '@/utils/constants/routes';
 export function AccountSection() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
   const { friendsOnly, isPending, setFriendsOnly } = useFriendsOnly();
-  const { data: socialSummary } = ReactQuery.useQuery({
-    queryKey: ['social', 'summary'],
-    queryFn: getSocialSummaryApi,
-  });
+  const { data: socialSummary } = useSocialSummary();
 
   return (
     <Section title="Аккаунт">

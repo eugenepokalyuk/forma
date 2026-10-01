@@ -1,8 +1,6 @@
-import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { getCatalogApi } from '@/api';
 import type { Program } from '@/api';
 import { AppHeader } from '@/components/AppHeader';
 import { FadeInItem } from '@/components/FadeInItem';
@@ -12,6 +10,7 @@ import { ProgramPreviewCard } from '@/pages/Catalog/components/ProgramPreviewCar
 import { ScreenContainer, ScreenHeader, Typography } from '@/components/ui';
 import { useTabBarClearance } from '@/components/TabBar';
 import { COLORS, spacing } from '@/theme';
+import { useCatalog } from '@/queries/programs';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program }
@@ -56,10 +55,7 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // один в один как в forma-project Figma (node 5487-2731).
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
-  const { data, isLoading, refetch } = ReactQuery.useQuery({
-    queryKey: ['catalog'],
-    queryFn: getCatalogApi,
-  });
+  const { data, isLoading, refetch } = useCatalog();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   // Единственная закреплённая preview-программа (см. Program.catalog_layout

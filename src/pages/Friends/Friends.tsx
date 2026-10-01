@@ -1,21 +1,20 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import {
-  getFollowRequestsApi,
-  getFollowersApi,
-  getFollowingApi,
-  respondToFollowRequestApi,
-  searchUsersApi,
-} from '@/api';
 import type { FollowRequestItem, PublicUser } from '@/api';
 import { Button } from '@/components/Button';
 import { FollowButton } from '@/pages/Friends/components/FollowButton';
 import { Input, ScreenContainer, Typography } from '@/components/ui';
 import { UserRow } from '@/pages/Friends/components/UserRow';
 import { COLORS, spacing } from '@/theme';
+import {
+  useFollowers,
+  useFollowing,
+  useFollowRequests,
+  useRespondToFollowRequest,
+  useSearchUsers,
+} from '@/queries/social';
 
 type Tab = 'following' | 'followers' | 'requests';
 
@@ -42,41 +41,21 @@ export default function FriendsScreen() {
   const [query, setQuery] = React.useState('');
   const debouncedQuery = useDebouncedValue(query.trim(), 300);
   const isSearching = debouncedQuery.length >= 2;
-  const queryClient = ReactQuery.useQueryClient();
 
-  const { data: searchResults, isLoading: isSearchLoading } =
-    ReactQuery.useQuery({
-      queryKey: ['social', 'search', debouncedQuery],
-      queryFn: () => searchUsersApi(debouncedQuery),
-      enabled: isSearching,
-    });
-
-  const { data: following, isLoading: isFollowingLoading } =
-    ReactQuery.useQuery({
-      queryKey: ['social', 'following'],
-      queryFn: getFollowingApi,
-      enabled: !isSearching && tab === 'following',
-    });
-
-  const { data: followers, isLoading: isFollowersLoading } =
-    ReactQuery.useQuery({
-      queryKey: ['social', 'followers'],
-      queryFn: getFollowersApi,
-      enabled: !isSearching && tab === 'followers',
-    });
-
-  const { data: requests, isLoading: isRequestsLoading } = ReactQuery.useQuery({
-    queryKey: ['social', 'requests'],
-    queryFn: getFollowRequestsApi,
-    enabled: !isSearching && tab === 'requests',
-  });
-
-  const respondMutation = ReactQuery.useMutation({
-    mutationFn: ({ id, action }: { id: string; action: 'accept' | 'reject' }) =>
-      respondToFollowRequestApi(id, action),
-    onSuccess: () =>
-      void queryClient.invalidateQueries({ queryKey: ['social'] }),
-  });
+  const { data: searchResults, isLoading: isSearchLoading } = useSearchUsers(
+    debouncedQuery,
+    isSearching,
+  );
+  const { data: following, isLoading: isFollowingLoading } = useFollowing(
+    !isSearching && tab === 'following',
+  );
+  const { data: followers, isLoading: isFollowersLoading } = useFollowers(
+    !isSearching && tab === 'followers',
+  );
+  const { data: requests, isLoading: isRequestsLoading } = useFollowRequests(
+    !isSearching && tab === 'requests',
+  );
+  const respondMutation = useRespondToFollowRequest();
 
   const tabData: PublicUser[] =
     tab === 'following'

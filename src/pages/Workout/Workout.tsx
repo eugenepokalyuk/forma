@@ -1,12 +1,9 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 
-import { getLastLogApi } from '@/api';
-import type { LastLog, ProgramWithWorkouts } from '@/api';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { FadeInItem } from '@/components/FadeInItem';
@@ -15,21 +12,19 @@ import { COLORS, radius, spacing } from '@/theme';
 import { formatSetsLine } from '@/utils/helpers/exercise/format';
 import { ROUTES } from '@/utils/constants/routes';
 import { useSessionStore } from '@/store/session';
+import { useCachedProgram } from '@/queries/programs';
+import { loadLastLogs } from '@/services/lastLogs';
 
 export default function WorkoutScreen() {
   const { id, programId } = ExpoRouter.useLocalSearchParams<{
     id: string;
     programId: string;
   }>();
-  const queryClient = ReactQuery.useQueryClient();
   const active = useSessionStore((s) => s.active);
   const start = useSessionStore((s) => s.start);
   const completeSession = useSessionStore((s) => s.completeSession);
 
-  const program = queryClient.getQueryData<ProgramWithWorkouts>([
-    'program',
-    programId,
-  ]);
+  const program = useCachedProgram(programId);
   const workout = program?.workouts.find((w) => w.id === id);
 
   if (!program || !workout) return null;
@@ -37,30 +32,7 @@ export default function WorkoutScreen() {
   const beginWorkout = () => {
     start({ programId: program.id, workoutId: workout.id, workout });
     router.replace(ROUTES.sessionActive);
-
-    // Подсказка «прошлый раз» — необязательна, начинаем без неё, если сети
-    // нет; подтягиваем в фоне и докладываем в стор, когда придёт.
-    const catalogIds = [
-      ...new Set(
-        workout.exercises
-          .map((e) => e.catalogExerciseId)
-          .filter((v): v is string => !!v),
-      ),
-    ];
-    void Promise.all(
-      catalogIds.map((catalogId) =>
-        getLastLogApi(catalogId)
-          .then((logs) => [catalogId, logs] as const)
-          .catch(() => null),
-      ),
-    ).then((results) => {
-      const merged: Record<string, LastLog[]> = {};
-      for (const r of results) {
-        if (r) merged[r[0]] = r[1];
-      }
-      if (Object.keys(merged).length > 0)
-        useSessionStore.getState().mergeLastLogs(merged);
-    });
+    loadLastLogs(workout);
   };
 
   const onStart = () => {

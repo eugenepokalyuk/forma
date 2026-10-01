@@ -1,4 +1,3 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { router } from 'expo-router';
 import * as React from 'react';
 import {
@@ -12,12 +11,12 @@ import {
 } from 'react-native';
 
 import {
-  getAchievementsApi,
-  getBroPhrasesApi,
-  getSessionsApi,
-  getUserStatsApi,
-  getWaterTodayApi,
-} from '@/api';
+  useAchievements,
+  useBroPhrases,
+  useUserStats,
+  useWaterToday,
+} from '@/queries/bro';
+import { useSessions } from '@/queries/sessions';
 import { Typography } from '@/components/ui';
 import { COLORS, screenPadding, spacing } from '@/theme';
 import {
@@ -53,26 +52,11 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
   const [index, setIndex] = React.useState(0);
   const user = useAuthStore((s) => s.user);
 
-  const { data: phrases } = ReactQuery.useQuery({
-    queryKey: ['broPhrases'],
-    queryFn: getBroPhrasesApi,
-  });
-  const { data: stats } = ReactQuery.useQuery({
-    queryKey: ['stats'],
-    queryFn: getUserStatsApi,
-  });
-  const { data: water } = ReactQuery.useQuery({
-    queryKey: ['water', 'today'],
-    queryFn: getWaterTodayApi,
-  });
-  const { data: achievementsRes } = ReactQuery.useQuery({
-    queryKey: ['achievements'],
-    queryFn: getAchievementsApi,
-  });
-  const { data: sessions } = ReactQuery.useQuery({
-    queryKey: ['sessions'],
-    queryFn: getSessionsApi,
-  });
+  const { data: phrases } = useBroPhrases();
+  const { data: stats } = useUserStats();
+  const { data: water } = useWaterToday();
+  const { data: achievementsRes } = useAchievements();
+  const { data: sessions } = useSessions();
 
   const timeOfDay = useTimeOfDay(user?.timezone ?? DEFAULT_TIMEZONE);
 

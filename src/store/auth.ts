@@ -14,7 +14,10 @@ interface AuthState {
   setUser: (user: User) => void;
 }
 
-// TODO: Ох, как мне не нравится текующая работа с бизнес логикой. Не хватает стейт менеджера, давай обсудим возможные варианты для данного приложения
+// Разделение состояния: серверные данные — только react-query
+// (src/queries), в zustand — то, что живёт на устройстве: статус
+// авторизации, активная тренировка (store/session), очередь синхронизации
+// (store/outbox). Сценарии поверх API — в src/services.
 export const useAuthStore = create<AuthState>((set) => ({
   status: 'loading',
   user: null,

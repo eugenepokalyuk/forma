@@ -1,16 +1,15 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { getReactionsApi } from '@/api';
 import type { Program } from '@/api';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
 import { ROUTES } from '@/utils/constants/routes';
+import { useReactions } from '@/queries/reactions';
 
 // Сумма всех реакций программы — для сортировки каталога по популярности.
 export function totalReactions(program: Program): number {
@@ -30,11 +29,7 @@ interface ProgramCardProps {
 // главном были два разных вида карточек, теперь один компонент везде
 // (см. forma-project Figma, node 5487-2731).
 export function ProgramCard({ program, active }: ProgramCardProps) {
-  const { data: reactionTypes } = ReactQuery.useQuery({
-    queryKey: ['reactions'],
-    queryFn: getReactionsApi,
-    staleTime: Infinity,
-  });
+  const { data: reactionTypes } = useReactions();
 
   const reactions = (reactionTypes ?? [])
     .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)

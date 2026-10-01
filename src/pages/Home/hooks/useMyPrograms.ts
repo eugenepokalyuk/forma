@@ -1,13 +1,8 @@
-import * as ReactQuery from '@tanstack/react-query';
-
-import { getUserProgramsApi } from '@/api';
+import { useUserPrograms } from '@/queries/programs';
 
 // Программы пользователя, активные — первыми.
-export function useUserPrograms() {
-  const query = ReactQuery.useQuery({
-    queryKey: ['userPrograms'],
-    queryFn: getUserProgramsApi,
-  });
+export function useMyPrograms() {
+  const query = useUserPrograms();
 
   const programs = [...(query.data ?? [])].sort(
     (a, b) => Number(b.isActive) - Number(a.isActive),

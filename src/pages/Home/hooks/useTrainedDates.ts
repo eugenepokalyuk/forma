@@ -1,14 +1,10 @@
-import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
-import { getSessionsApi } from '@/api';
+import { useSessions } from '@/queries/sessions';
 
 // Даты завершённых тренировок — для полосы недели и цели недели.
 export function useTrainedDates() {
-  const { data: sessions } = ReactQuery.useQuery({
-    queryKey: ['sessions'],
-    queryFn: getSessionsApi,
-  });
+  const { data: sessions } = useSessions();
 
   return React.useMemo(
     () =>

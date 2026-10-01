@@ -1,4 +1,3 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import * as React from 'react';
 import {
@@ -12,10 +11,10 @@ import {
 } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { addCommentApi, getCommentsApi } from '@/api';
 import { CustomIcon, Input, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/utils/helpers/date/relativeTime';
+import { useAddComment, useComments } from '@/queries/social';
 
 interface CommentsModalProps {
   postId: string | null;
@@ -24,23 +23,10 @@ interface CommentsModalProps {
 
 export function CommentsModal({ postId, onClose }: CommentsModalProps) {
   const insets = SafeArea.useSafeAreaInsets();
-  const queryClient = ReactQuery.useQueryClient();
   const [text, setText] = React.useState('');
 
-  const { data: comments, isLoading } = ReactQuery.useQuery({
-    queryKey: ['comments', postId],
-    queryFn: () => getCommentsApi(postId as string),
-    enabled: !!postId,
-  });
-
-  const addMutation = ReactQuery.useMutation({
-    mutationFn: (value: string) => addCommentApi(postId as string, value),
-    onSuccess: () => {
-      setText('');
-      void queryClient.invalidateQueries({ queryKey: ['comments', postId] });
-      void queryClient.invalidateQueries({ queryKey: ['feed'] });
-    },
-  });
+  const { data: comments, isLoading } = useComments(postId);
+  const addMutation = useAddComment(postId);
 
   return (
     <Modal
@@ -139,7 +125,11 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
             />
             <Pressable
               disabled={!text.trim() || addMutation.isPending}
-              onPress={() => addMutation.mutate(text.trim())}
+              onPress={() =>
+                addMutation.mutate(text.trim(), {
+                  onSuccess: () => setText(''),
+                })
+              }
               style={styles.sendBtn}
             >
               <CustomIcon

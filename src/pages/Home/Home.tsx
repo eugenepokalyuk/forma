@@ -9,12 +9,13 @@ import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
 import { SyncBanner } from '@/pages/Home/components/SyncBanner';
 import { WeekSection } from '@/pages/Home/components/WeekSection';
 import { usePrefetchActivePrograms } from '@/pages/Home/hooks/usePrefetchActivePrograms';
-import { useUserPrograms } from '@/pages/Home/hooks/useUserPrograms';
+import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
+import { queryKeys } from '@/queries/keys';
 
 export default function HomeScreen() {
   const queryClient = ReactQuery.useQueryClient();
   const tabBarClearance = useTabBarClearance();
-  const { data, isLoading } = useUserPrograms();
+  const { data, isLoading } = useMyPrograms();
 
   usePrefetchActivePrograms(data);
 
@@ -23,8 +24,8 @@ export default function HomeScreen() {
     setIsRefreshing(true);
     try {
       await Promise.all([
-        queryClient.refetchQueries({ queryKey: ['userPrograms'] }),
-        queryClient.refetchQueries({ queryKey: ['sessions'] }),
+        queryClient.refetchQueries({ queryKey: queryKeys.userPrograms }),
+        queryClient.refetchQueries({ queryKey: queryKeys.sessions }),
       ]);
     } finally {
       setIsRefreshing(false);

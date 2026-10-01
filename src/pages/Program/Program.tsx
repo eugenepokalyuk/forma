@@ -1,37 +1,28 @@
-import * as ReactQuery from '@tanstack/react-query';
-import axios from 'axios';
 import { router, Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
 import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
-import {
-  addUserProgramApi,
-  getLastLogApi,
-  getProgramApi,
-  getUserProgramsApi,
-} from '@/api';
-import type { LastLog, WorkoutWithExercises } from '@/api';
+import type { WorkoutWithExercises } from '@/api';
 import { WeekPill } from '@/pages/Program/components/WeekPill';
 import { WorkoutListItem } from '@/pages/Program/components/WorkoutListItem';
 import { ScreenContainer, Typography } from '@/components/ui';
 import { COLORS, spacing } from '@/theme';
 import { useAuthStore } from '@/store/auth';
 import { useSessionStore } from '@/store/session';
+import {
+  useAddUserProgram,
+  useProgram,
+  useUserPrograms,
+} from '@/queries/programs';
+import { loadLastLogs } from '@/services/lastLogs';
 import { ROUTES } from '@/utils/constants/routes';
 
 export default function ProgramScreen() {
   const { id } = ExpoRouter.useLocalSearchParams<{ id: string }>();
-  const queryClient = ReactQuery.useQueryClient();
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
-  const { data, isLoading } = ReactQuery.useQuery({
-    queryKey: ['program', id],
-    queryFn: () => getProgramApi(id),
-  });
-  const { data: userPrograms } = ReactQuery.useQuery({
-    queryKey: ['userPrograms'],
-    queryFn: getUserProgramsApi,
-  });
+  const { data, isLoading } = useProgram(id);
+  const { data: userPrograms } = useUserPrograms();
   const [week, setWeek] = React.useState(1);
   const [expandedWorkoutId, setExpandedWorkoutId] = React.useState<
     string | null
@@ -41,19 +32,7 @@ export default function ProgramScreen() {
   const startSession = useSessionStore((s) => s.start);
   const completeSession = useSessionStore((s) => s.completeSession);
 
-  const addMutation = ReactQuery.useMutation({
-    mutationFn: () => addUserProgramApi(id),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['userPrograms'] });
-    },
-    onError: (e) => {
-      if (axios.isAxiosError(e) && e.response?.status === 409) {
-        void queryClient.invalidateQueries({ queryKey: ['userPrograms'] });
-        return;
-      }
-      Alert.alert('Не получилось добавить программу');
-    },
-  });
+  const addMutation = useAddUserProgram(id);
 
   // Спиннер только при пустом кэше — данные из кэша показываются мгновенно,
   // обновление идёт в фоне.
@@ -73,30 +52,7 @@ export default function ProgramScreen() {
   const beginWorkout = (workout: WorkoutWithExercises) => {
     startSession({ programId: data.id, workoutId: workout.id, workout });
     router.replace(ROUTES.sessionActive);
-
-    // Подсказка «прошлый раз» — необязательна, начинаем без неё, если сети
-    // нет; подтягиваем в фоне и докладываем в стор, когда придёт.
-    const catalogIds = [
-      ...new Set(
-        workout.exercises
-          .map((e) => e.catalogExerciseId)
-          .filter((v): v is string => !!v),
-      ),
-    ];
-    void Promise.all(
-      catalogIds.map((catalogId) =>
-        getLastLogApi(catalogId)
-          .then((logs) => [catalogId, logs] as const)
-          .catch(() => null),
-      ),
-    ).then((results) => {
-      const merged: Record<string, LastLog[]> = {};
-      for (const r of results) {
-        if (r) merged[r[0]] = r[1];
-      }
-      if (Object.keys(merged).length > 0)
-        useSessionStore.getState().mergeLastLogs(merged);
-    });
+    loadLastLogs(workout);
   };
 
   const onStartWorkout = (workout: WorkoutWithExercises) => {

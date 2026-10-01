@@ -1,17 +1,10 @@
-import * as ReactQuery from '@tanstack/react-query';
-
-import { updateProfileApi } from '@/api';
+import { useUpdateProfile } from '@/queries/user';
 import { useAuthStore } from '@/store/auth';
 
 // Настройка «Показывать только друзьям».
 export function useFriendsOnly() {
   const isPublic = useAuthStore((s) => s.user?.isPublic);
-  const setUser = useAuthStore((s) => s.setUser);
-
-  const mutation = ReactQuery.useMutation({
-    mutationFn: updateProfileApi,
-    onSuccess: setUser,
-  });
+  const mutation = useUpdateProfile();
 
   return {
     // По умолчанию выключено — isPublic на бэке по умолчанию true, поэтому

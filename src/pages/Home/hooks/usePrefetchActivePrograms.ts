@@ -1,7 +1,8 @@
 import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
-import { getProgramApi, type UserProgram } from '@/api';
+import type { UserProgram } from '@/api';
+import { programQueryOptions } from '@/queries/programs';
 
 // Предзагружаем программу целиком для каждой активной — она будет в
 // кэше до прихода в зал.
@@ -12,10 +13,7 @@ export function usePrefetchActivePrograms(programs: UserProgram[] | undefined) {
     programs
       ?.filter((up) => up.isActive)
       .forEach((up) => {
-        void queryClient.prefetchQuery({
-          queryKey: ['program', up.programId],
-          queryFn: () => getProgramApi(up.programId),
-        });
+        void queryClient.prefetchQuery(programQueryOptions(up.programId));
       });
   }, [programs, queryClient]);
 }

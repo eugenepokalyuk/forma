@@ -1,9 +1,10 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { router } from 'expo-router';
 import * as React from 'react';
 import { Alert } from 'react-native';
 
-import { getProgramApi, getSessionsApi, type UserProgram } from '@/api';
+import type { UserProgram } from '@/api';
+import { useProgram } from '@/queries/programs';
+import { useSessions } from '@/queries/sessions';
 import { useSessionStore } from '@/store/session';
 import { ROUTES } from '@/utils/constants/routes';
 import {
@@ -21,18 +22,11 @@ export function useTodayWorkout(
   const activeSession = useSessionStore((s) => s.active);
   const startSession = useSessionStore((s) => s.start);
 
-  const { data: sessions } = ReactQuery.useQuery({
-    queryKey: ['sessions'],
-    queryFn: getSessionsApi,
-  });
+  const { data: sessions } = useSessions();
 
   // Полная активная программа (уже в кэше — см. usePrefetchActivePrograms) —
   // нужна, чтобы посчитать следующую по плану тренировку.
-  const { data: activeProgramDetails } = ReactQuery.useQuery({
-    queryKey: ['program', activeProgram?.programId],
-    queryFn: () => getProgramApi(activeProgram!.programId),
-    enabled: !!activeProgram,
-  });
+  const { data: activeProgramDetails } = useProgram(activeProgram?.programId);
 
   const todayWorkout = React.useMemo(() => {
     if (!activeProgram) return null;

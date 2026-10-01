@@ -1,15 +1,14 @@
-import * as ReactQuery from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { getReactionsApi } from '@/api';
 import type { Program } from '@/api';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '@/utils/helpers/program/formatProgramSubtitle';
 import { ROUTES } from '@/utils/constants/routes';
+import { useReactions } from '@/queries/reactions';
 
 interface ProgramMediumCardProps {
   program: Program;
@@ -19,11 +18,7 @@ interface ProgramMediumCardProps {
 // Карточка каталога 1/2 ширины — аватар программы в кружке, заголовок,
 // описание и реакции под ним (forma-project Figma, каталог, тип medium).
 export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
-  const { data: reactionTypes } = ReactQuery.useQuery({
-    queryKey: ['reactions'],
-    queryFn: getReactionsApi,
-    staleTime: Infinity,
-  });
+  const { data: reactionTypes } = useReactions();
 
   const reactions = (reactionTypes ?? [])
     .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
