@@ -16,3 +16,11 @@ expo-env.d.ts
 .DS_Store
 
 .vscode/*
+
+# Локальные переменные окружения — только пример попадает в репозиторий
+.env
+.env*.local
+!.env.example
+
+# Тесты
+coverage/
