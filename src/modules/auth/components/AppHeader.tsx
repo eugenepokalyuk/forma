@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Logo, Typography } from '@/shared/ui';
-import { COLORS, radius, spacing } from '@/theme';
+import { COLORS, HEADING_ITALIC, radius, spacing } from '@/theme';
 import { showProInfo } from '../helpers/showProInfo';
 import { useAuthStore } from '../store';
 
@@ -15,11 +15,19 @@ export function AppHeader() {
 
       {hasProAccess ? null : (
         <Pressable onPress={showProInfo} style={styles.proBadge}>
-          <Typography variant="title" color={COLORS.Text.accent}>
+          <Typography
+            variant="title"
+            color={COLORS.Text.accent}
+            style={styles.badgeText}
+          >
             {'ПРО'}
           </Typography>
 
-          <Typography variant="title" color={COLORS.Text.primary}>
+          <Typography
+            variant="title"
+            color={COLORS.Text.primary}
+            style={styles.badgeText}
+          >
             {'БЕСПЛАТНО'}
           </Typography>
         </Pressable>
@@ -37,6 +45,8 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.lg,
     paddingHorizontal: spacing.md,
   },
+  // «ПРО БЕСПЛАТНО» — курсивом, как бейджи ПРО на карточках.
+  badgeText: { fontFamily: HEADING_ITALIC.bold },
   proBadge: {
     flexDirection: 'row',
     gap: 4,

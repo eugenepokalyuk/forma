@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import type { Program } from '@/modules/programs';
-import { Card, Icon, Typography } from '@/shared/ui';
+import { Card, Icon, ProBadge, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle, useReactions } from '@/modules/programs';
 import { ROUTES } from '@/shared/constants/routes';
@@ -13,8 +13,8 @@ interface ProgramMediumCardProps {
   style?: StyleProp<ViewStyle>;
 }
 
-// Карточка каталога 1/2 ширины — аватар программы в кружке, заголовок,
-// описание и реакции под ним (forma-project Figma, каталог, тип medium).
+// Карточка каталога 1/2 ширины — без рамки и фона: обложка на всю ширину
+// (бейдж ПРО внизу справа), заголовок, описание и реакции под ним.
 export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
   const { data: reactionTypes } = useReactions();
 
@@ -32,17 +32,21 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
         style={styles.card}
         onPress={() => router.push(ROUTES.program(program.id))}
       >
-        {program.coverImageUrl ? (
-          <Image
-            source={{ uri: program.coverImageUrl }}
-            style={styles.avatar}
-            contentFit="cover"
-          />
-        ) : (
-          <View style={[styles.avatar, styles.avatarPlaceholder]}>
-            <Icon name="dumbbell" size={36} color={COLORS.Icon.tertiary} />
-          </View>
-        )}
+        <View style={styles.cover}>
+          {program.coverImageUrl ? (
+            <Image
+              source={{ uri: program.coverImageUrl }}
+              style={styles.coverImage}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={[styles.coverImage, styles.coverPlaceholder]}>
+              <Icon name="dumbbell" size={36} color={COLORS.Icon.tertiary} />
+            </View>
+          )}
+
+          {program.tier === 'pro' ? <ProBadge style={styles.proBadge} /> : null}
+        </View>
 
         <Typography
           variant="title"
@@ -83,18 +87,23 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
 const styles = StyleSheet.create({
   card: {
     minHeight: 314,
-    alignItems: 'center',
     gap: spacing.xs,
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    padding: 0,
+    shadowOpacity: 0,
+    elevation: 0,
   },
-  avatar: {
-    width: 114,
-    height: 114,
-    borderRadius: 57,
+  // Обложка на всю ширину карточки, квадратная.
+  cover: { width: '100%', aspectRatio: 1 },
+  coverImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: radius.md,
     backgroundColor: COLORS.Surface.secondary,
-    borderWidth: 1,
-    borderColor: COLORS.Stroke.hairline,
   },
-  avatarPlaceholder: { alignItems: 'center', justifyContent: 'center' },
+  proBadge: { position: 'absolute', right: spacing.xs, bottom: spacing.xs },
+  coverPlaceholder: { alignItems: 'center', justifyContent: 'center' },
   title: { marginTop: spacing.xs },
   reactions: {
     flexDirection: 'row',

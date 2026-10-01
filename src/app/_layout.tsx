@@ -1,7 +1,9 @@
 import {
   SofiaSansExtraCondensed_600SemiBold,
   SofiaSansExtraCondensed_700Bold,
+  SofiaSansExtraCondensed_700Bold_Italic,
   SofiaSansExtraCondensed_800ExtraBold,
+  SofiaSansExtraCondensed_800ExtraBold_Italic,
   useFonts,
 } from '@expo-google-fonts/sofia-sans-extra-condensed';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
@@ -29,6 +31,9 @@ export default function RootLayout() {
     SofiaSansExtraCondensed_600SemiBold,
     SofiaSansExtraCondensed_700Bold,
     SofiaSansExtraCondensed_800ExtraBold,
+    // Курсив — для бейджей «ПРО».
+    SofiaSansExtraCondensed_700Bold_Italic,
+    SofiaSansExtraCondensed_800ExtraBold_Italic,
   });
   // Незавершённая локальная сессия должна восстановиться из MMKV ДО того,
   // как index.tsx решит, куда редиректить — иначе на холодном старте

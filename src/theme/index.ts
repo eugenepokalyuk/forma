@@ -9,4 +9,8 @@ export {
   gradients,
   screenPadding,
 } from './tokens';
-export { TYPOGRAPHY, type TypographyVariant } from './typography';
+export {
+  HEADING_ITALIC,
+  TYPOGRAPHY,
+  type TypographyVariant,
+} from './typography';

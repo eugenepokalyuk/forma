@@ -4,7 +4,7 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { Program } from '../models/program';
-import { Card, Icon, Typography } from '@/shared/ui';
+import { Card, Icon, ProBadge, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
 import { ROUTES } from '@/shared/constants/routes';
@@ -61,15 +61,7 @@ export function ProgramCard({ program, active }: ProgramCardProps) {
 
           {isPro || active ? (
             <View style={styles.badgeRow}>
-              {isPro ? (
-                <View style={styles.proBadge}>
-                  <Icon name="crown" size={11} color={COLORS.Text.inverse} />
-
-                  <Typography variant="caption" color={COLORS.Text.inverse}>
-                    {'ПРО'}
-                  </Typography>
-                </View>
-              ) : null}
+              {isPro ? <ProBadge /> : null}
               {active ? (
                 <View style={styles.activeBadge}>
                   <Typography variant="caption" color={COLORS.Text.positive}>
@@ -129,15 +121,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   subtitle: { marginTop: 4 },
-  proBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    backgroundColor: COLORS.Surface.accent,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-  },
   activeBadge: {
     backgroundColor: COLORS.Surface.positiveSubdued,
     borderRadius: radius.pill,

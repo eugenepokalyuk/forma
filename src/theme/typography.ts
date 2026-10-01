@@ -25,6 +25,14 @@ const HEADING_FONT = {
   extraBold: 'SofiaSansExtraCondensed_800ExtraBold',
 } as const;
 
+// Курсивные начертания заголовочного шрифта — отдельные файлы. iOS не
+// наклоняет кастомный шрифт сам по fontStyle: 'italic', поэтому курсив —
+// только через эти fontFamily (загружаются в app/_layout).
+export const HEADING_ITALIC = {
+  bold: 'SofiaSansExtraCondensed_700Bold_Italic',
+  extraBold: 'SofiaSansExtraCondensed_800ExtraBold_Italic',
+} as const;
+
 // ВАЖНО: для вариантов с кастомным fontFamily fontWeight держим на '400'.
 // Каждый вес шрифта из @expo-google-fonts — отдельный статический файл
 // (ExtraBold ≠ вариант той же семьи, а собственная «семья» сама по себе);
