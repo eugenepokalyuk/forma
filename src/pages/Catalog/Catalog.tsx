@@ -1,3 +1,4 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -58,6 +59,9 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // отдельная карточка с описанием и кнопкой «Добавить»; теперь добавление
 // программы делается на её странице (см. pages/Program), а список тут
 // один в один как в forma-project Figma (node 5487-2731).
+// Насколько секция с программами заходит на обложку снизу.
+const SHEET_OVERLAP = 28;
+
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
   const statusBarScroll = useUnderStatusBarScroll();
@@ -82,7 +86,12 @@ export default function CatalogScreen() {
   }, [refetch]);
 
   return (
-    <ScreenContainer edges={['top']} loading={isLoading}>
+    <ScreenContainer
+      edges={['top']}
+      loading={isLoading}
+      // Обложка сверху во всю высоту — со своим тёмным градиентом.
+      statusBarScrim={!previewProgram}
+    >
       <FlatList
         {...statusBarScroll.scrollProps}
         progressViewOffset={statusBarScroll.refreshOffset}
@@ -93,7 +102,8 @@ export default function CatalogScreen() {
         onRefresh={onRefresh}
         contentContainerStyle={[
           {
-            paddingTop: statusBarScroll.paddingTop,
+            // Обложка начинается от самого верха экрана, под статус-баром.
+            paddingTop: previewProgram ? 0 : statusBarScroll.paddingTop,
             paddingBottom: tabBarClearance,
             gap: spacing.md,
           },
@@ -101,12 +111,35 @@ export default function CatalogScreen() {
         ]}
         ListHeaderComponent={
           previewProgram ? (
-            <View style={styles.previewWrap}>
-              <ProgramPreviewCard program={previewProgram} />
+            <View>
+              <View style={styles.previewWrap}>
+                <ProgramPreviewCard
+                  program={previewProgram}
+                  bottomOverlap={SHEET_OVERLAP}
+                />
 
-              <View style={styles.previewHeaderOverlay}>
-                <AppHeader />
+                {/* Время и батарея читаются на фото. */}
+                <LinearGradient
+                  pointerEvents="none"
+                  colors={['rgba(0, 0, 0, 0.45)', 'rgba(0, 0, 0, 0)']}
+                  style={[
+                    styles.previewTopShade,
+                    { height: statusBarScroll.paddingTop + 64 },
+                  ]}
+                />
+
+                <View
+                  style={[
+                    styles.previewHeaderOverlay,
+                    { paddingTop: statusBarScroll.paddingTop },
+                  ]}
+                >
+                  <AppHeader />
+                </View>
               </View>
+
+              {/* Всё ниже обложки — секция, которая заходит на неё снизу. */}
+              <View style={styles.sheetTop} />
             </View>
           ) : (
             <AppHeader />
@@ -168,7 +201,20 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   previewWrap: { position: 'relative' },
-  previewHeaderOverlay: { position: 'absolute', top: 0, left: 0, right: 0 },
+  previewHeaderOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  previewTopShade: { position: 'absolute', top: 0, left: 0, right: 0 },
+  sheetTop: {
+    height: SHEET_OVERLAP,
+    marginTop: -SHEET_OVERLAP,
+    backgroundColor: COLORS.Background.primary,
+    borderTopLeftRadius: SHEET_OVERLAP,
+    borderTopRightRadius: SHEET_OVERLAP,
+  },
   mediumRow: { flexDirection: 'row', gap: spacing.md },
   mediumItemPaired: { flex: 1 },
   mediumItemAlone: { width: '48%' },

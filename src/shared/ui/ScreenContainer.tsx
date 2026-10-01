@@ -27,6 +27,9 @@ interface ScreenContainerProps extends React.PropsWithChildren {
   edges?: Edge[];
   withPadding?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
+  // Градиент цвета фона под статус-баром. Выключают экраны, у которых
+  // сверху во всю высоту картинка — там свой тёмный градиент.
+  statusBarScrim?: boolean;
 }
 
 // Прокрутка «под статус-бар», как в нативных iOS-приложениях: в исходном
@@ -69,6 +72,7 @@ export function ScreenContainer({
   edges = ['top', 'bottom'],
   withPadding = true,
   contentStyle,
+  statusBarScrim = true,
 }: ScreenContainerProps) {
   // Верхний край — не отступ контейнера, а место под статус-баром, куда
   // уезжает контент (см. useUnderStatusBarScroll). Экраны со своими списками
@@ -122,7 +126,7 @@ export function ScreenContainer({
         </View>
       )}
 
-      {underStatusBar ? <StatusBarScrim /> : null}
+      {underStatusBar && statusBarScrim ? <StatusBarScrim /> : null}
     </SafeAreaView>
   );
 }

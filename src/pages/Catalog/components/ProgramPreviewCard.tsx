@@ -11,13 +11,19 @@ import { ROUTES } from '@/shared/constants/routes';
 
 interface ProgramPreviewCardProps {
   program: Program;
+  // Насколько снизу на карточку заходит следующий за ней контент — текст
+  // поднимаем на столько же, чтобы его не закрыло.
+  bottomOverlap?: number;
 }
 
 // Единственная закреплённая карточка каталога — во всю ширину устройства,
 // а не контейнера (см. отрицательный marginHorizontal), поэтому ширину
 // берём из окна, а не из процентов родителя. Верхние углы остаются острыми
 // (карточка примыкает к краям экрана), скруглены только нижние.
-export function ProgramPreviewCard({ program }: ProgramPreviewCardProps) {
+export function ProgramPreviewCard({
+  program,
+  bottomOverlap = 0,
+}: ProgramPreviewCardProps) {
   const { width } = useWindowDimensions();
 
   const { data: reactionTypes } = useReactions();
@@ -46,7 +52,9 @@ export function ProgramPreviewCard({ program }: ProgramPreviewCardProps) {
         style={StyleSheet.absoluteFill}
       />
 
-      <View style={styles.content}>
+      <View
+        style={[styles.content, { paddingBottom: spacing.lg + bottomOverlap }]}
+      >
         <Typography variant="display" numberOfLines={2}>
           {program.title}
         </Typography>
