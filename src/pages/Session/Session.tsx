@@ -21,6 +21,9 @@ import {
   discardWorkout,
   isExerciseDone,
   isExerciseFinished,
+  stepAfterRest,
+  stepToExercise,
+  type WorkoutStep,
   logSet,
   nextSetNumber,
   skipExercise,
@@ -80,30 +83,28 @@ export default function ActiveSessionScreen() {
 
   const totalSetsOf = (ex: Exercise) => ex.sets + (extraSets[ex.id] ?? 0);
 
-  // Переход к упражнению index. Уже завершённые (все подходы или пропуск)
-  // проходим насквозь — иначе на них можно было бы записать «фантомный»
-  // подход сверх плана; дальше последнего — итог тренировки. Состояние
-  // берём из стора, а не из рендера: зовётся сразу после записи в стор.
-  const navigate = (index: number) => {
-    const current = useSessionStore.getState().active;
-    if (!current || index < 0) return;
-
-    const list = current.workout.exercises;
-    let target = index;
-    while (
-      target < list.length &&
-      isExerciseFinished(list[target], current.logs, totalSetsOf(list[target]))
-    ) {
-      target += 1;
-    }
-
-    if (target >= list.length) {
+  // Применяет шаг: перейти к упражнению или открыть итог. Состояние берём
+  // из стора, а не из рендера: зовётся сразу после записи в стор.
+  const goTo = (step: WorkoutStep) => {
+    if (step.kind === 'summary') {
       setView('summary');
       return;
     }
-
-    useSessionStore.getState().goToExercise(target);
+    useSessionStore.getState().goToExercise(step.index);
     setView('exercise');
+  };
+
+  const navigate = (index: number) => {
+    const current = useSessionStore.getState().active;
+    if (!current || index < 0) return;
+    goTo(
+      stepToExercise(
+        current.workout.exercises,
+        current.logs,
+        index,
+        totalSetsOf,
+      ),
+    );
   };
 
   const jump = (delta: number) => {
@@ -121,19 +122,14 @@ export default function ActiveSessionScreen() {
     const current = useSessionStore.getState().active;
     if (!current) return;
 
-    const currentExercise =
-      current.workout.exercises[current.currentExerciseIndex];
-    if (
-      isExerciseFinished(
-        currentExercise,
+    goTo(
+      stepAfterRest(
+        current.workout.exercises,
         current.logs,
-        totalSetsOf(currentExercise),
-      )
-    ) {
-      navigate(current.currentExerciseIndex + 1);
-    } else {
-      setView('exercise');
-    }
+        current.currentExerciseIndex,
+        totalSetsOf,
+      ),
+    );
   };
 
   if (!active || !exercise) return null;

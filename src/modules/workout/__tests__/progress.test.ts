@@ -5,6 +5,8 @@ import {
   isExerciseDone,
   isExerciseFinished,
   isExerciseSkipped,
+  stepAfterRest,
+  stepToExercise,
 } from '../helpers/progress';
 import type { LocalLog } from '../store';
 
@@ -56,5 +58,92 @@ describe('прогресс упражнения', () => {
   it('подходы другого упражнения не считаются', () => {
     const other = [log(1, { exerciseId: 'e2' }), log(2, { exerciseId: 'e2' })];
     expect(doneSetsCount(exercise, other)).toBe(0);
+  });
+});
+
+describe('переходы между упражнениями', () => {
+  // Три упражнения по 2 подхода.
+  const exercises = ['a', 'b', 'c'].map((id) => ({ id, sets: 2 }) as Exercise);
+  const totalSetsOf = (ex: Exercise) => ex.sets;
+  const sets = (exerciseId: string, count: number) =>
+    Array.from({ length: count }, (_, i) =>
+      log(i + 1, { exerciseId, clientId: `${exerciseId}${i}` }),
+    );
+  const skipped = (exerciseId: string) => ({
+    ...skipMarker,
+    exerciseId,
+    clientId: `${exerciseId}-skip`,
+  });
+
+  describe('stepToExercise', () => {
+    it('незаконченное упражнение — переходим к нему', () => {
+      expect(stepToExercise(exercises, [], 1, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 1,
+      });
+    });
+
+    it('законченные проходим насквозь — выполненные и пропущенные', () => {
+      const logs = [...sets('b', 2), skipped('c')];
+      expect(stepToExercise(exercises, logs, 1, totalSetsOf)).toEqual({
+        kind: 'summary',
+      });
+      expect(stepToExercise(exercises, sets('a', 2), 0, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 1,
+      });
+    });
+
+    it('назад на законченное — возвращает вперёд к незаконченному', () => {
+      const logs = [...sets('a', 2)];
+      expect(stepToExercise(exercises, logs, 0, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 1,
+      });
+    });
+
+    it('дальше последнего — итог', () => {
+      expect(stepToExercise(exercises, [], 3, totalSetsOf)).toEqual({
+        kind: 'summary',
+      });
+    });
+
+    it('добавленный подход делает упражнение снова незаконченным', () => {
+      const withExtra = (ex: Exercise) => (ex.id === 'a' ? 3 : ex.sets);
+      expect(stepToExercise(exercises, sets('a', 2), 0, withExtra)).toEqual({
+        kind: 'exercise',
+        index: 0,
+      });
+    });
+  });
+
+  describe('stepAfterRest', () => {
+    it('подходы ещё остались — к тому же упражнению', () => {
+      expect(stepAfterRest(exercises, sets('a', 1), 0, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 0,
+      });
+    });
+
+    it('последний подход сделан — к следующему', () => {
+      expect(stepAfterRest(exercises, sets('a', 2), 0, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 1,
+      });
+    });
+
+    it('следующее уже закончено — перескакиваем его', () => {
+      const logs = [...sets('a', 2), skipped('b')];
+      expect(stepAfterRest(exercises, logs, 0, totalSetsOf)).toEqual({
+        kind: 'exercise',
+        index: 2,
+      });
+    });
+
+    it('последнее упражнение закончено — итог', () => {
+      expect(stepAfterRest(exercises, sets('c', 2), 2, totalSetsOf)).toEqual({
+        kind: 'summary',
+      });
+    });
   });
 });

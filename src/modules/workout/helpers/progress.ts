@@ -34,3 +34,43 @@ export function isExerciseFinished(
     isExerciseDone(exercise, logs, totalSets)
   );
 }
+
+// --- Переходы между упражнениями тренировки ---
+
+export type WorkoutStep =
+  { kind: 'exercise'; index: number } | { kind: 'summary' };
+
+// Переход к упражнению index. Уже законченные (все подходы или пропуск)
+// проходим насквозь — иначе на них можно было бы записать «фантомный»
+// подход сверх плана; дальше последнего — итог тренировки.
+export function stepToExercise(
+  exercises: Exercise[],
+  logs: LocalLog[],
+  index: number,
+  totalSetsOf: (exercise: Exercise) => number,
+): WorkoutStep {
+  let target = Math.max(0, index);
+  while (
+    target < exercises.length &&
+    isExerciseFinished(exercises[target], logs, totalSetsOf(exercises[target]))
+  ) {
+    target += 1;
+  }
+  return target >= exercises.length
+    ? { kind: 'summary' }
+    : { kind: 'exercise', index: target };
+}
+
+// Конец отдыха: упражнение закончено — дальше, иначе к нему же на
+// следующий подход.
+export function stepAfterRest(
+  exercises: Exercise[],
+  logs: LocalLog[],
+  currentIndex: number,
+  totalSetsOf: (exercise: Exercise) => number,
+): WorkoutStep {
+  const current = exercises[currentIndex];
+  return isExerciseFinished(current, logs, totalSetsOf(current))
+    ? stepToExercise(exercises, logs, currentIndex + 1, totalSetsOf)
+    : { kind: 'exercise', index: currentIndex };
+}
