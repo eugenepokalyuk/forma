@@ -6,6 +6,9 @@ yarn-error.log*
 /.pnp
 .pnp.js
 
+# Локальные сборки APK (scripts/build-apk.sh)
+/apk/
+
 # Expo
 .expo/
 dist/

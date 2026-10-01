@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest"
+    "test": "jest",
+    "build:apk": "scripts/build-apk.sh"
   },
   "dependencies": {
     "@expo-google-fonts/sofia-sans-extra-condensed": "0.4.2",
