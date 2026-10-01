@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/modules/programs';
+import { PreviousResultLabel } from '@/pages/Session/components/PreviousResultLabel';
 import { SetTargetLabel } from '@/pages/Session/components/SetTargetLabel';
 import { TimedInput } from '@/pages/Session/components/TimedInput';
 import { WeightRepsInput } from '@/pages/Session/components/WeightRepsInput';
@@ -8,6 +9,7 @@ import { spacing } from '@/theme';
 import {
   getPrefill,
   isTimedExercise,
+  lastLogForSet,
   nextSetNumber,
   useSessionStore,
 } from '@/modules/workout';
@@ -40,6 +42,7 @@ export function ExerciseInput({ exercise, onLog }: ExerciseInputProps) {
   return (
     <View style={styles.container}>
       <SetTargetLabel exercise={exercise} />
+      <PreviousResultLabel lastLog={lastLogForSet(lastLogs, setNumber)} />
 
       {timed ? (
         <TimedInput

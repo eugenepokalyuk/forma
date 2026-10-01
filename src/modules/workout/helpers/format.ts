@@ -1,4 +1,6 @@
 import type { Exercise } from '@/modules/programs';
+
+import type { LastLog } from '../models/session';
 import { formatMMSS } from '@/shared/lib/string/number';
 
 const TIMED_TYPES = new Set(['cardio', 'stretch', 'yoga']);
@@ -44,4 +46,14 @@ export function formatSetsLine(exercise: Exercise): string {
   }
 
   return `${exercise.sets} × ${target}`;
+}
+
+// «40 кг × 10», «12 повт.» (свой вес), «5:00» (на время).
+export function formatLastLog(log: LastLog): string {
+  if (log.weight && log.repsDone != null) {
+    return `${log.weight} кг × ${log.repsDone}`;
+  }
+  if (log.weight) return `${log.weight} кг`;
+  if (log.repsDone != null) return `${log.repsDone} повт.`;
+  return formatMMSS(log.durationSeconds ?? 0);
 }

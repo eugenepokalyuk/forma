@@ -2,6 +2,14 @@ import type { Exercise } from '@/modules/programs';
 import type { LastLog } from '../models/session';
 import type { LocalLog } from '../store';
 
+// Прошлый раз для подхода: тот же номер подхода, иначе — первый записанный.
+export function lastLogForSet(
+  lastLogs: LastLog[] | undefined,
+  setNumber: number,
+): LastLog | undefined {
+  return lastLogs?.find((l) => l.setNumber === setNumber) ?? lastLogs?.[0];
+}
+
 export interface SetPrefill {
   weight: number;
   reps: number;
@@ -26,8 +34,7 @@ export function getPrefill(
     };
   }
 
-  const lastLogSameSet =
-    lastLogs?.find((l) => l.setNumber === setNumber) ?? lastLogs?.[0];
+  const lastLogSameSet = lastLogForSet(lastLogs, setNumber);
   if (lastLogSameSet) {
     return {
       weight: lastLogSameSet.weight ?? 0,
