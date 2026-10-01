@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import * as React from 'react';
 import {
-  Alert,
   FlatList,
   Pressable,
   StyleSheet,
@@ -31,7 +30,7 @@ import {
 import { DEFAULT_TIMEZONE } from '@/shared/lib/date/timeOfDay';
 import { useTimeOfDay } from '@/shared/lib/hooks/useTimeOfDay';
 import { ROUTES } from '@/shared/constants/routes';
-import { useAuthStore } from '@/modules/auth';
+import { showProInfo, useAuthStore } from '@/modules/auth';
 
 const GAP = spacing.sm;
 
@@ -97,11 +96,7 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
         showPro,
         speechSeed,
         onNavigatePrograms: () => router.push(ROUTES.catalog),
-        onShowProInfo: () =>
-          Alert.alert(
-            'ПРО доступен на сайте',
-            'Оформить подписку можно на forma-one.ru',
-          ),
+        onShowProInfo: showProInfo,
       }),
     [
       phrases,

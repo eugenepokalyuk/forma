@@ -11,3 +11,4 @@ export * from './hooks/useDeleteAccount';
 export * from './api/deleteAccountApi';
 export * from './queries';
 export * from './helpers/onboarding';
+export * from './helpers/showProInfo';
