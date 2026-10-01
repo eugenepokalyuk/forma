@@ -17,7 +17,7 @@ import {
   useWaterToday,
 } from '../queries';
 import { useSessions } from '@/modules/workout';
-import { Typography } from '@/shared/ui';
+import { AuroraBackground, Typography } from '@/shared/ui';
 import { COLORS, screenPadding, spacing } from '@/theme';
 import {
   type BroMessage,
@@ -133,6 +133,9 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
 
   return (
     <View style={styles.bleed}>
+      {/* Едва заметное плавающее сияние за репликами Бро. */}
+      <AuroraBackground />
+
       <Typography
         variant="title"
         color={COLORS.Text.accent}
