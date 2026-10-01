@@ -10,7 +10,9 @@ export const DEFAULT_TIMEZONE = 'UTC+3';
 export type TimeOfDay =
   'midnight' | 'sunrise' | 'morning' | 'day' | 'noon' | 'sunset' | 'night';
 
+// «UTC+3» → 3, «UTC-5» → -5, «UTC» → 0; нераспознанное — московские +3.
 function offsetHours(timezone: string): number {
+  if (timezone === 'UTC') return 0;
   const n = parseInt(timezone.replace('UTC', ''), 10);
   return Number.isNaN(n) ? 3 : n;
 }
