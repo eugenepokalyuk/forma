@@ -1,4 +1,4 @@
-import type { LastLog } from '@/api/types';
+import type { LastLog } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS } from '@/theme';
 import { formatMMSS } from '@/utils/format';

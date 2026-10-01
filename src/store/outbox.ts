@@ -2,7 +2,13 @@ import axios from 'axios';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { apiClient } from '@/api/client';
+import {
+  completeSessionApi,
+  discardSessionApi,
+  logSetApi,
+  startSessionApi,
+  undoSetApi,
+} from '@/api';
 import { mmkvStorageAdapter } from '@/utils/mmkv';
 
 // Очередь синхронизации: во время тренировки источник правды — устройство,
@@ -142,18 +148,18 @@ async function sendOp(op: Operation): Promise<void> {
 
   switch (op.type) {
     case 'startSession': {
-      const res = await apiClient.post('/sessions', {
+      const session = await startSessionApi({
         workoutId: op.workoutId,
         programId: op.programId,
         startedAt: op.startedAt,
       });
-      setServerId(op.localId, res.data.id);
+      setServerId(op.localId, session.id);
       return;
     }
     case 'logSet': {
       const serverId = serverIds[op.localId];
       if (!serverId) throw new WaitingForParentError();
-      await apiClient.post(`/sessions/${serverId}/logs`, {
+      await logSetApi(serverId, {
         clientId: op.clientId,
         exerciseId: op.exerciseId,
         setNumber: op.setNumber,
@@ -171,9 +177,7 @@ async function sendOp(op: Operation): Promise<void> {
       const serverId = serverIds[op.localId];
       if (!serverId) throw new WaitingForParentError();
       try {
-        await apiClient.delete(`/sessions/${serverId}/logs`, {
-          params: { exerciseId: op.exerciseId, setNumber: op.setNumber },
-        });
+        await undoSetApi(serverId, op.exerciseId, op.setNumber);
       } catch (e) {
         if (!isNotFound(e)) throw e;
       }
@@ -182,16 +186,14 @@ async function sendOp(op: Operation): Promise<void> {
     case 'complete': {
       const serverId = serverIds[op.localId];
       if (!serverId) throw new WaitingForParentError();
-      await apiClient.patch(`/sessions/${serverId}/complete`, {
-        notes: op.notes,
-      });
+      await completeSessionApi(serverId, op.notes);
       return;
     }
     case 'discard': {
       const serverId = serverIds[op.localId];
       if (!serverId) return; // сессия не успела создаться на сервере — нечего удалять
       try {
-        await apiClient.delete(`/sessions/${serverId}`);
+        await discardSessionApi(serverId);
       } catch (e) {
         if (!isNotFound(e)) throw e;
       }

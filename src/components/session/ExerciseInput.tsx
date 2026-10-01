@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { PreviousResultLabel } from '@/components/session/PreviousResultLabel';
 import { SetTargetLabel } from '@/components/session/SetTargetLabel';
 import { TimedInput } from '@/components/session/TimedInput';

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 

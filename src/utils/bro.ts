@@ -8,7 +8,7 @@ import type {
   UserStats,
   WaterToday,
   WorkoutWithExercises,
-} from '@/api/types';
+} from '@/api';
 import {
   formatTonnage,
   pluralizeWeeks,

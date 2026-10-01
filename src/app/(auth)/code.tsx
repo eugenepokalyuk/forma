@@ -5,7 +5,7 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { sendOtp, verifyOtp } from '@/api/auth';
+import { sendOtpApi, verifyOtpApi } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { ROUTES } from '@/utils/routes';
@@ -35,8 +35,8 @@ export default function CodeScreen() {
     setError(null);
 
     try {
-      const res = await verifyOtp(email, value);
-      await signIn(res.data.accessToken, res.data.user);
+      const res = await verifyOtpApi(email, value);
+      await signIn(res.accessToken, res.user);
       router.replace(ROUTES.home);
     } catch (e) {
       setCode('');
@@ -64,7 +64,7 @@ export default function CodeScreen() {
     setResendIn(RESEND_SECONDS);
     setError(null);
     try {
-      await sendOtp(email);
+      await sendOtpApi(email);
     } catch {
       setError('Не получилось отправить код повторно.');
     }

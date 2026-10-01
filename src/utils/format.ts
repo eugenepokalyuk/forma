@@ -1,4 +1,4 @@
-import type { Exercise, Program } from '@/api/types';
+import type { Exercise, Program } from '@/api';
 
 const TIMED_TYPES = new Set(['cardio', 'stretch', 'yoga']);
 

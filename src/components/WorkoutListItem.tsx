@@ -7,7 +7,7 @@ import Animated, {
   LinearTransition,
 } from 'react-native-reanimated';
 
-import type { WorkoutWithExercises } from '@/api/types';
+import type { WorkoutWithExercises } from '@/api';
 import { Card } from '@/components/Card';
 import { FadeInItem } from '@/components/FadeInItem';
 import { Icon, Typography } from '@/components/ui';

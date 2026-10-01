@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { Button } from '@/components/Button';
 import { Stepper } from '@/components/Stepper';
 import { Divider, Typography } from '@/components/ui';

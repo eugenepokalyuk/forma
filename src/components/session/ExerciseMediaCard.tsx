@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius } from '@/theme';
 

@@ -1,4 +1,4 @@
-import type { Exercise, LastLog } from '@/api/types';
+import type { Exercise, LastLog } from '@/api';
 import type { LocalLog } from '@/store/session';
 
 export interface SetPrefill {

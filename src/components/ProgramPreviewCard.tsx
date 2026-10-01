@@ -4,8 +4,8 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
-import { getReactions } from '@/api/reactions';
-import type { Program } from '@/api/types';
+import { getReactionsApi } from '@/api';
+import type { Program } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
 import { formatProgramSubtitle } from '@/utils/format';
@@ -24,7 +24,7 @@ export function ProgramPreviewCard({ program }: ProgramPreviewCardProps) {
 
   const { data: reactionTypes } = ReactQuery.useQuery({
     queryKey: ['reactions'],
-    queryFn: getReactions,
+    queryFn: getReactionsApi,
     staleTime: Infinity,
   });
 

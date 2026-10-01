@@ -3,8 +3,8 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { getReactions } from '@/api/reactions';
-import type { Program } from '@/api/types';
+import { getReactionsApi } from '@/api';
+import type { Program } from '@/api';
 import { Card } from '@/components/Card';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
@@ -21,7 +21,7 @@ interface ProgramMediumCardProps {
 export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
   const { data: reactionTypes } = ReactQuery.useQuery({
     queryKey: ['reactions'],
-    queryFn: getReactions,
+    queryFn: getReactionsApi,
     staleTime: Infinity,
   });
 

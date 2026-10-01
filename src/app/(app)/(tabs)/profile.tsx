@@ -4,9 +4,7 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { Switch, View, StyleSheet } from 'react-native';
 
-import { updateProfile } from '@/api/auth';
-import { getSessions } from '@/api/sessions';
-import { getSocialSummary } from '@/api/social';
+import { getSessionsApi, getSocialSummaryApi, updateProfileApi } from '@/api';
 import {
   ListGroup,
   ListRow,
@@ -33,10 +31,10 @@ export default function ProfileScreen() {
     data: sessions,
     isLoading,
     refetch,
-  } = ReactQuery.useQuery({ queryKey: ['sessions'], queryFn: getSessions });
+  } = ReactQuery.useQuery({ queryKey: ['sessions'], queryFn: getSessionsApi });
   const { data: socialSummary } = ReactQuery.useQuery({
     queryKey: ['social', 'summary'],
-    queryFn: getSocialSummary,
+    queryFn: getSocialSummaryApi,
   });
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
@@ -44,7 +42,7 @@ export default function ProfileScreen() {
   // «только друзьям» считаем включённым лишь при явном isPublic === false.
   const friendsOnly = user?.isPublic === false;
   const updateProfileMutation = ReactQuery.useMutation({
-    mutationFn: updateProfile,
+    mutationFn: updateProfileApi,
     onSuccess: setUser,
   });
   const completed = (sessions ?? []).filter((s) => s.status === 'completed');

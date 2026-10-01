@@ -1,4 +1,4 @@
-import type { User } from '@/api/types';
+import type { User } from '@/api';
 
 // Порт forma-next/src/utils/onboarding.ts — поля, которые считаем
 // обязательными для «полного» профиля (условие «onboarding» у Фитнес Бро).

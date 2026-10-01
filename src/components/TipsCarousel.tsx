@@ -11,11 +11,13 @@ import {
   type ViewToken,
 } from 'react-native';
 
-import { getAchievements } from '@/api/achievements';
-import { getBroPhrases } from '@/api/bro';
-import { getSessions } from '@/api/sessions';
-import { getUserStats } from '@/api/stats';
-import { getWaterToday } from '@/api/water';
+import {
+  getAchievementsApi,
+  getBroPhrasesApi,
+  getSessionsApi,
+  getUserStatsApi,
+  getWaterTodayApi,
+} from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, screenPadding, spacing } from '@/theme';
 import {
@@ -52,23 +54,23 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
 
   const { data: phrases } = ReactQuery.useQuery({
     queryKey: ['broPhrases'],
-    queryFn: getBroPhrases,
+    queryFn: getBroPhrasesApi,
   });
   const { data: stats } = ReactQuery.useQuery({
     queryKey: ['stats'],
-    queryFn: getUserStats,
+    queryFn: getUserStatsApi,
   });
   const { data: water } = ReactQuery.useQuery({
     queryKey: ['water', 'today'],
-    queryFn: getWaterToday,
+    queryFn: getWaterTodayApi,
   });
   const { data: achievementsRes } = ReactQuery.useQuery({
     queryKey: ['achievements'],
-    queryFn: getAchievements,
+    queryFn: getAchievementsApi,
   });
   const { data: sessions } = ReactQuery.useQuery({
     queryKey: ['sessions'],
-    queryFn: getSessions,
+    queryFn: getSessionsApi,
   });
 
   const timeOfDay = useTimeOfDay(user?.timezone ?? DEFAULT_TIMEZONE);

@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 
-import { getMe } from '@/api/auth';
-import { setUnauthorizedHandler } from '@/api/client';
-import type { User } from '@/api/types';
+import { getMeApi, setUnauthorizedHandler } from '@/api';
+import type { User } from '@/api';
 import { clearToken, getToken, setToken } from '@/utils/tokenStore';
 import { useOutboxStore } from '@/store/outbox';
 
@@ -29,7 +28,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     // Проверка токена при старте — только если есть сеть; offline —
     // считаем сессию валидной до первого 401 (см. onUnauthorized ниже).
     try {
-      const user = await getMe();
+      const user = await getMeApi();
       set({ status: 'signedIn', user });
     } catch {
       set({ status: 'signedIn', user: null });

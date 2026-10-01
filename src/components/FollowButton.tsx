@@ -1,7 +1,7 @@
 import * as ReactQuery from '@tanstack/react-query';
 
-import { followUser, unfollowUser } from '@/api/social';
-import type { PublicUser } from '@/api/types';
+import { followUserApi, unfollowUserApi } from '@/api';
+import type { PublicUser } from '@/api';
 import { Button } from '@/components/Button';
 
 interface FollowButtonProps {
@@ -17,11 +17,11 @@ export function FollowButton({ user }: FollowButtonProps) {
     void queryClient.invalidateQueries({ queryKey: ['social'] });
 
   const followMutation = ReactQuery.useMutation({
-    mutationFn: () => followUser(user.id),
+    mutationFn: () => followUserApi(user.id),
     onSuccess: invalidate,
   });
   const unfollowMutation = ReactQuery.useMutation({
-    mutationFn: () => unfollowUser(user.id),
+    mutationFn: () => unfollowUserApi(user.id),
     onSuccess: invalidate,
   });
 

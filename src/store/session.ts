@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import type { LastLog, WorkoutWithExercises } from '@/api/types';
+import type { LastLog, WorkoutWithExercises } from '@/api';
 import { mmkvStorageAdapter } from '@/utils/mmkv';
 import { useOutboxStore, processOutbox } from '@/store/outbox';
 

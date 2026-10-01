@@ -11,7 +11,7 @@ import {
   type ViewToken,
 } from 'react-native';
 
-import type { Post } from '@/api/types';
+import type { Post } from '@/api';
 import { CustomIcon, Icon, Typography } from '@/components/ui';
 import { UserAvatar } from '@/components/UserAvatar';
 import { formatMMSS } from '@/utils/format';

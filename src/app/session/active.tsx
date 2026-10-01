@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { ExerciseActionsList } from '@/components/session/ExerciseActionsList';
 import { ExerciseHeaderCard } from '@/components/session/ExerciseHeaderCard';
 import { ExerciseInput } from '@/components/session/ExerciseInput';

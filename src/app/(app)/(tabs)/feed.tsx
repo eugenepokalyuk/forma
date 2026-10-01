@@ -3,8 +3,8 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { getFeed, likePost, unlikePost } from '@/api/social';
-import type { Post } from '@/api/types';
+import { getFeedApi, likePostApi, unlikePostApi } from '@/api';
+import type { Post } from '@/api';
 import { Button } from '@/components/Button';
 import { CommentsModal } from '@/components/feed/CommentsModal';
 import { PostCard } from '@/components/feed/PostCard';
@@ -30,7 +30,7 @@ export default function FeedScreen() {
     refetch,
   } = ReactQuery.useInfiniteQuery({
     queryKey: ['feed'],
-    queryFn: ({ pageParam }) => getFeed(pageParam),
+    queryFn: ({ pageParam }) => getFeedApi(pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) =>
       lastPage.length > 0 ? lastPage[lastPage.length - 1].createdAt : undefined,
@@ -50,7 +50,7 @@ export default function FeedScreen() {
 
   const toggleLike = ReactQuery.useMutation({
     mutationFn: (post: Post) =>
-      post.isLiked ? unlikePost(post.id) : likePost(post.id),
+      post.isLiked ? unlikePostApi(post.id) : likePostApi(post.id),
     onMutate: (post) => {
       queryClient.setQueryData<typeof data>(['feed'], (current) => {
         if (!current) return current;

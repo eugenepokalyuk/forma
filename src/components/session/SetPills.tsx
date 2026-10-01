@@ -2,7 +2,7 @@ import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { Icon, Typography } from '@/components/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { useSessionStore } from '@/store/session';

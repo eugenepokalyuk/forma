@@ -4,8 +4,7 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { getProgram, getUserPrograms } from '@/api/programs';
-import { getSessions } from '@/api/sessions';
+import { getProgramApi, getSessionsApi, getUserProgramsApi } from '@/api';
 import { AppHeader } from '@/components/AppHeader';
 import { Button } from '@/components/Button';
 import { FadeInItem } from '@/components/FadeInItem';
@@ -42,12 +41,12 @@ export default function HomeScreen() {
     refetch: refetchPrograms,
   } = ReactQuery.useQuery({
     queryKey: ['userPrograms'],
-    queryFn: getUserPrograms,
+    queryFn: getUserProgramsApi,
   });
 
   const { data: sessions, refetch: refetchSessions } = ReactQuery.useQuery({
     queryKey: ['sessions'],
-    queryFn: getSessions,
+    queryFn: getSessionsApi,
   });
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
@@ -68,7 +67,7 @@ export default function HomeScreen() {
       .forEach((up) => {
         void queryClient.prefetchQuery({
           queryKey: ['program', up.programId],
-          queryFn: () => getProgram(up.programId),
+          queryFn: () => getProgramApi(up.programId),
         });
       });
   }, [data, queryClient]);
@@ -92,7 +91,7 @@ export default function HomeScreen() {
   // чтобы посчитать следующую по плану тренировку для карточки Бро.
   const { data: activeProgramDetails } = ReactQuery.useQuery({
     queryKey: ['program', activeProgram?.programId],
-    queryFn: () => getProgram(activeProgram!.programId),
+    queryFn: () => getProgramApi(activeProgram!.programId),
     enabled: !!activeProgram,
   });
 

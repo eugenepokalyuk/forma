@@ -5,7 +5,7 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
-import { sendOtp } from '@/api/auth';
+import { sendOtpApi } from '@/api';
 import { Button } from '@/components/Button';
 import { Input, Typography } from '@/components/ui';
 import { COLORS, motion, spacing } from '@/theme';
@@ -27,7 +27,7 @@ export default function EmailScreen() {
     setError(null);
 
     try {
-      await sendOtp(email.trim());
+      await sendOtpApi(email.trim());
       router.push(ROUTES.authCode(email.trim()));
     } catch (e) {
       setError(

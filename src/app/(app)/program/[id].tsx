@@ -5,13 +5,13 @@ import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
 import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
-import { getLastLog } from '@/api/exercises';
 import {
-  addUserProgram,
-  getProgram,
-  getUserPrograms,
-} from '@/api/programs';
-import type { LastLog, WorkoutWithExercises } from '@/api/types';
+  addUserProgramApi,
+  getLastLogApi,
+  getProgramApi,
+  getUserProgramsApi,
+} from '@/api';
+import type { LastLog, WorkoutWithExercises } from '@/api';
 import { WeekPill } from '@/components/WeekPill';
 import { WorkoutListItem } from '@/components/WorkoutListItem';
 import { ScreenContainer, Typography } from '@/components/ui';
@@ -26,11 +26,11 @@ export default function ProgramScreen() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
   const { data, isLoading } = ReactQuery.useQuery({
     queryKey: ['program', id],
-    queryFn: () => getProgram(id),
+    queryFn: () => getProgramApi(id),
   });
   const { data: userPrograms } = ReactQuery.useQuery({
     queryKey: ['userPrograms'],
-    queryFn: getUserPrograms,
+    queryFn: getUserProgramsApi,
   });
   const [week, setWeek] = React.useState(1);
   const [expandedWorkoutId, setExpandedWorkoutId] = React.useState<
@@ -42,7 +42,7 @@ export default function ProgramScreen() {
   const completeSession = useSessionStore((s) => s.completeSession);
 
   const addMutation = ReactQuery.useMutation({
-    mutationFn: () => addUserProgram(id),
+    mutationFn: () => addUserProgramApi(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['userPrograms'] });
     },
@@ -85,7 +85,7 @@ export default function ProgramScreen() {
     ];
     void Promise.all(
       catalogIds.map((catalogId) =>
-        getLastLog(catalogId)
+        getLastLogApi(catalogId)
           .then((logs) => [catalogId, logs] as const)
           .catch(() => null),
       ),

@@ -4,13 +4,13 @@ import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import {
-  getFollowers,
-  getFollowing,
-  getFollowRequests,
-  respondToFollowRequest,
-  searchUsers,
-} from '@/api/social';
-import type { FollowRequestItem, PublicUser } from '@/api/types';
+  getFollowRequestsApi,
+  getFollowersApi,
+  getFollowingApi,
+  respondToFollowRequestApi,
+  searchUsersApi,
+} from '@/api';
+import type { FollowRequestItem, PublicUser } from '@/api';
 import { Button } from '@/components/Button';
 import { FollowButton } from '@/components/FollowButton';
 import { Input, ScreenContainer, Typography } from '@/components/ui';
@@ -47,33 +47,33 @@ export default function FriendsScreen() {
   const { data: searchResults, isLoading: isSearchLoading } =
     ReactQuery.useQuery({
       queryKey: ['social', 'search', debouncedQuery],
-      queryFn: () => searchUsers(debouncedQuery),
+      queryFn: () => searchUsersApi(debouncedQuery),
       enabled: isSearching,
     });
 
   const { data: following, isLoading: isFollowingLoading } =
     ReactQuery.useQuery({
       queryKey: ['social', 'following'],
-      queryFn: getFollowing,
+      queryFn: getFollowingApi,
       enabled: !isSearching && tab === 'following',
     });
 
   const { data: followers, isLoading: isFollowersLoading } =
     ReactQuery.useQuery({
       queryKey: ['social', 'followers'],
-      queryFn: getFollowers,
+      queryFn: getFollowersApi,
       enabled: !isSearching && tab === 'followers',
     });
 
   const { data: requests, isLoading: isRequestsLoading } = ReactQuery.useQuery({
     queryKey: ['social', 'requests'],
-    queryFn: getFollowRequests,
+    queryFn: getFollowRequestsApi,
     enabled: !isSearching && tab === 'requests',
   });
 
   const respondMutation = ReactQuery.useMutation({
     mutationFn: ({ id, action }: { id: string; action: 'accept' | 'reject' }) =>
-      respondToFollowRequest(id, action),
+      respondToFollowRequestApi(id, action),
     onSuccess: () =>
       void queryClient.invalidateQueries({ queryKey: ['social'] }),
   });

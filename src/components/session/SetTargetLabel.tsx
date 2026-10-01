@@ -1,4 +1,4 @@
-import type { Exercise } from '@/api/types';
+import type { Exercise } from '@/api';
 import { Typography } from '@/components/ui';
 import { formatTargetLabel } from '@/utils/format';
 import { COLORS } from '@/theme';

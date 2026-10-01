@@ -2,8 +2,8 @@ import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { getCatalog } from '@/api/programs';
-import type { Program } from '@/api/types';
+import { getCatalogApi } from '@/api';
+import type { Program } from '@/api';
 import { AppHeader } from '@/components/AppHeader';
 import { FadeInItem } from '@/components/FadeInItem';
 import { ProgramCard } from '@/components/ProgramCard';
@@ -58,7 +58,7 @@ export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
   const { data, isLoading, refetch } = ReactQuery.useQuery({
     queryKey: ['catalog'],
-    queryFn: getCatalog,
+    queryFn: getCatalogApi,
   });
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 

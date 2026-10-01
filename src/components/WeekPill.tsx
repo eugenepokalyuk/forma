@@ -1,7 +1,7 @@
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet } from 'react-native';
 
-import type { ProgramWeek } from '@/api/types';
+import type { ProgramWeek } from '@/api';
 import { Typography } from '@/components/ui';
 import { COLORS, motion, radius } from '@/theme';
 
