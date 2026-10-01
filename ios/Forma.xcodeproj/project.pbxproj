@@ -14,6 +14,7 @@
 		5FAA8F4904676E70792E4ACC /* libPods-Forma.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DECA0F4864F19B04D45BB36 /* libPods-Forma.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		658F57C2FFE245ADBE203360 /* Forma.icon in Resources */ = {isa = PBXBuildFile; fileRef = CFB0F451959A4609A846E86E /* Forma.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Forma/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Forma-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Forma-Bridging-Header.h"; path = "Forma/Forma-Bridging-Header.h"; sourceTree = "<group>"; };
+		CFB0F451959A4609A846E86E /* Forma.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = Forma.icon; path = Forma/Forma.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				2ED3B03776B3DB84DE7F043B /* PrivacyInfo.xcprivacy */,
+				CFB0F451959A4609A846E86E /* Forma.icon */,
 			);
 			name = Forma;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
 				056ABCF18CDB01DD84002A58 /* PrivacyInfo.xcprivacy in Resources */,
+				658F57C2FFE245ADBE203360 /* Forma.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +368,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8356CED7013168854B22881C /* Pods-Forma.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Forma;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Forma/Forma.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -402,7 +406,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DEFEE7CCD1DCAF5D750828C7 /* Pods-Forma.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Forma;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Forma/Forma.entitlements;
 				CURRENT_PROJECT_VERSION = 1;

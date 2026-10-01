@@ -10,11 +10,7 @@
     "backgroundColor": "#0B0B0C",
     "ios": {
       "bundleIdentifier": "ru.formaone.app",
-      "icon": {
-        "light": "./assets/branding/logo_yellow.png",
-        "dark": "./assets/branding/logo_black.png",
-        "tinted": "./assets/branding/logo_black.png"
-      },
+      "icon": "./assets/branding/Forma.icon",
       "infoPlist": {
         "UIBackgroundModes": []
       },
