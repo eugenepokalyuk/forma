@@ -1,10 +1,10 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/api';
-import { PreviousResultLabel } from '@/components/session/PreviousResultLabel';
-import { SetTargetLabel } from '@/components/session/SetTargetLabel';
-import { TimedInput } from '@/components/session/TimedInput';
-import { WeightRepsInput } from '@/components/session/WeightRepsInput';
+import { PreviousResultLabel } from '@/pages/Session/components/PreviousResultLabel';
+import { SetTargetLabel } from '@/pages/Session/components/SetTargetLabel';
+import { TimedInput } from '@/pages/Session/components/TimedInput';
+import { WeightRepsInput } from '@/pages/Session/components/WeightRepsInput';
 import { Divider } from '@/components/ui';
 import { spacing } from '@/theme';
 import { isTimedExercise } from '@/utils/helpers/exercise/format';

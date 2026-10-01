@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/api';
 import { Button } from '@/components/Button';
-import { Stepper } from '@/components/Stepper';
+import { Stepper } from '@/pages/Session/components/Stepper';
 import { Divider, Typography } from '@/components/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import type { SetPrefill } from '@/utils/helpers/exercise/setPrefill';

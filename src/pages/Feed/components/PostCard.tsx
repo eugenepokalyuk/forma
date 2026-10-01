@@ -27,7 +27,6 @@ interface PostCardProps {
   onOpenComments: () => void;
 }
 
-// TODO: Почему компоненты feed экрана здесь лежат?
 export function PostCard({
   post,
   onToggleLike,
