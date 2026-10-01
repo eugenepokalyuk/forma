@@ -53,6 +53,8 @@ export const COLORS = {
   },
   Overlay: {
     scrim: 'rgba(0, 0, 0, 0.92)',
+    // Затемнение под шторками (BottomSheet).
+    backdrop: 'rgba(0, 0, 0, 0.6)',
     tint: 'rgba(0, 0, 0, 0.36)',
     sheen: 'rgba(255, 255, 255, 0.05)',
   },

@@ -1,8 +1,4 @@
-import * as React from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
-
-import { Button, Icon, Input, Typography } from '@/shared/ui';
-import { COLORS, radius, spacing } from '@/theme';
+import { BottomSheet, Button, Input } from '@/shared/ui';
 
 interface NoteModalProps {
   visible: boolean;
@@ -19,54 +15,16 @@ export function NoteModal({
   onClose,
 }: NoteModalProps) {
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-    >
-      <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
-          <View style={styles.header}>
-            <Typography variant="heading">Заметка к подходу</Typography>
+    <BottomSheet visible={visible} title="Заметка к подходу" onClose={onClose}>
+      <Input
+        value={value}
+        onChangeText={onChange}
+        placeholder="Например: было тяжело последние 2 повтора"
+        multiline
+        autoFocus
+      />
 
-            <Pressable onPress={onClose} hitSlop={12}>
-              <Icon name="close" size={20} color={COLORS.Icon.secondary} />
-            </Pressable>
-          </View>
-
-          <Input
-            value={value}
-            onChangeText={onChange}
-            placeholder="Например: было тяжело последние 2 повтора"
-            multiline
-            autoFocus
-          />
-
-          <Button title="Готово" onPress={onClose} style={{ width: '100%' }} />
-        </Pressable>
-      </Pressable>
-    </Modal>
+      <Button title="Готово" onPress={onClose} style={{ width: '100%' }} />
+    </BottomSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'flex-end',
-  },
-  sheet: {
-    backgroundColor: COLORS.Background.primary,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    padding: spacing.md,
-    paddingBottom: spacing.xl,
-    gap: spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
