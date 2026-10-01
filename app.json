@@ -31,7 +31,11 @@
         "monochromeImage": "./assets/branding/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "permissions": ["android.permission.VIBRATE"]
+      "permissions": ["android.permission.VIBRATE"],
+      "blockedPermissions": [
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -69,6 +73,12 @@
         "projectId": "bc0d1c1b-b021-4a4b-a6db-cf87593487a0"
       }
     },
-    "owner": "wazzupjohnny"
+    "owner": "wazzupjohnny",
+    "updates": {
+      "url": "https://u.expo.dev/bc0d1c1b-b021-4a4b-a6db-cf87593487a0"
+    },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    }
   }
 }
