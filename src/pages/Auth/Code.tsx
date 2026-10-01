@@ -5,17 +5,15 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { sendOtpApi, verifyOtpApi } from '@/modules/auth';
+import { sendOtpApi, signIn, verifyOtpApi } from '@/modules/auth';
 import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
-import { useAuthStore } from '@/modules/auth';
 
 const RESEND_SECONDS = 60;
 
 export default function CodeScreen() {
   const { email } = ExpoRouter.useLocalSearchParams<{ email: string }>();
-  const signIn = useAuthStore((s) => s.signIn);
   const [code, setCode] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);

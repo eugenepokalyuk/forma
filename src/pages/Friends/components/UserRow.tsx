@@ -2,8 +2,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { PublicUser } from '@/modules/social';
-import { Typography } from '@/shared/ui';
-import { UserAvatar } from '@/shared/ui';
+import { Typography, UserAvatar } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 
 interface UserRowProps {

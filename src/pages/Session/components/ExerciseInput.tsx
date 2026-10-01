@@ -7,9 +7,11 @@ import { TimedInput } from '@/pages/Session/components/TimedInput';
 import { WeightRepsInput } from '@/pages/Session/components/WeightRepsInput';
 import { Divider } from '@/shared/ui';
 import { spacing } from '@/theme';
-import { isTimedExercise } from '@/modules/workout';
-import { getPrefill } from '@/modules/workout';
-import { useSessionStore } from '@/modules/workout';
+import {
+  getPrefill,
+  isTimedExercise,
+  useSessionStore,
+} from '@/modules/workout';
 
 interface ExerciseInputProps {
   exercise: Exercise;

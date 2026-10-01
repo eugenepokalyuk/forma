@@ -3,12 +3,10 @@ import { router } from 'expo-router';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import type { Program } from '@/modules/programs';
-import { Card } from '@/shared/ui';
-import { Icon, Typography } from '@/shared/ui';
+import { Card, Icon, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/modules/programs';
+import { formatProgramSubtitle, useReactions } from '@/modules/programs';
 import { ROUTES } from '@/shared/constants/routes';
-import { useReactions } from '@/modules/programs';
 
 interface ProgramMediumCardProps {
   program: Program;

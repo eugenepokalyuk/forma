@@ -6,8 +6,7 @@ import * as React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 import { sendOtpApi } from '@/modules/auth';
-import { Button } from '@/shared/ui';
-import { Input, Typography } from '@/shared/ui';
+import { Button, Input, Typography } from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 

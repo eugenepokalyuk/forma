@@ -4,8 +4,7 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { Program } from '../models/program';
-import { Card } from '@/shared/ui';
-import { Icon, Typography } from '@/shared/ui';
+import { Card, Icon, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
 import { ROUTES } from '@/shared/constants/routes';

@@ -2,9 +2,8 @@ import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import type { UserProgram } from '@/modules/programs';
-import { FadeInItem } from '@/shared/ui';
+import { FadeInItem, Section } from '@/shared/ui';
 import { ProgramCard } from '@/modules/programs';
-import { Section } from '@/shared/ui';
 import { spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 

@@ -12,15 +12,13 @@ import { View } from 'react-native';
 
 import { COLORS } from '@/theme';
 import { queryClient, queryPersister } from '@/shared/lib/queryClient';
-import { useOutboxSync } from '@/modules/workout';
-import { useAuthStore } from '@/modules/auth';
-import { useSessionStore } from '@/modules/workout';
+import { useOutboxSync, useSessionStore } from '@/modules/workout';
+import { bootstrap, useAuthStore } from '@/modules/auth';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function RootLayout() {
   const status = useAuthStore((s) => s.status);
-  const bootstrap = useAuthStore((s) => s.bootstrap);
   const [authReady, setAuthReady] = React.useState(false);
   // Загружаем шрифт заголовков ДО показа контента — иначе на холодном
   // старте был бы виден системный шрифт с последующим «скачком» раскладки,
@@ -42,7 +40,7 @@ export default function RootLayout() {
 
   React.useEffect(() => {
     bootstrap().finally(() => setAuthReady(true));
-  }, [bootstrap]);
+  }, []);
 
   React.useEffect(() => {
     if (useSessionStore.persist.hasHydrated()) {

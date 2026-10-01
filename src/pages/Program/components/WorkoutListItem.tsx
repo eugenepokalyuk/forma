@@ -8,9 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import type { WorkoutWithExercises } from '@/modules/programs';
-import { Card } from '@/shared/ui';
-import { FadeInItem } from '@/shared/ui';
-import { Icon, Typography } from '@/shared/ui';
+import { Card, FadeInItem, Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { formatSetsLine } from '@/modules/workout';
 

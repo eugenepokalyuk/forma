@@ -1,57 +1,27 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
-import { Alert, FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/shared/ui';
-import { Card } from '@/shared/ui';
-import { FadeInItem } from '@/shared/ui';
-import { Typography } from '@/shared/ui';
+import { Button, Card, FadeInItem, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/modules/workout';
-import { ROUTES } from '@/shared/constants/routes';
-import { useSessionStore } from '@/modules/workout';
+import { formatSetsLine, useStartWorkout } from '@/modules/workout';
 import { useCachedProgram } from '@/modules/programs';
-import { loadLastLogs } from '@/modules/workout';
 
 export default function WorkoutScreen() {
   const { id, programId } = ExpoRouter.useLocalSearchParams<{
     id: string;
     programId: string;
   }>();
-  const active = useSessionStore((s) => s.active);
-  const start = useSessionStore((s) => s.start);
-  const completeSession = useSessionStore((s) => s.completeSession);
+  const startWorkout = useStartWorkout();
 
   const program = useCachedProgram(programId);
   const workout = program?.workouts.find((w) => w.id === id);
 
   if (!program || !workout) return null;
 
-  const beginWorkout = () => {
-    start({ programId: program.id, workoutId: workout.id, workout });
-    router.replace(ROUTES.sessionActive);
-    loadLastLogs(workout);
-  };
-
-  const onStart = () => {
-    if (active) {
-      Alert.alert('Завершить текущую и начать новую?', undefined, [
-        { text: 'Отмена', style: 'cancel' },
-        {
-          text: 'Завершить и начать',
-          style: 'destructive',
-          onPress: () => {
-            completeSession();
-            beginWorkout();
-          },
-        },
-      ]);
-      return;
-    }
-    beginWorkout();
-  };
+  const onStart = () => startWorkout({ programId: program.id, workout });
 
   return (
     <View style={styles.container}>

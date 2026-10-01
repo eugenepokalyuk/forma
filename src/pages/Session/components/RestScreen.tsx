@@ -8,8 +8,7 @@ import Animated, { Easing, withTiming } from 'react-native-reanimated';
 import * as Reanimated from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
 
-import { Button } from '@/shared/ui';
-import { Typography } from '@/shared/ui';
+import { Button, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { formatMMSS } from '@/shared/lib/string/number';
 import { useSessionStore } from '@/modules/workout';
@@ -34,7 +33,6 @@ export function RestScreen({
   const insets = SafeArea.useSafeAreaInsets();
   const restEndsAt = useSessionStore((s) => s.active?.restEndsAt ?? null);
   const totalRef = React.useRef<number>(0);
-  const skipRest = useSessionStore((s) => s.skipRest);
   const extendRest = useSessionStore((s) => s.extendRest);
   const clearRest = useSessionStore((s) => s.clearRest);
   const [remaining, setRemaining] = React.useState(0);
@@ -173,7 +171,7 @@ export function RestScreen({
           style={{ flex: 1 }}
         />
 
-        <Button title="Пропустить" onPress={skipRest} style={{ flex: 1 }} />
+        <Button title="Пропустить" onPress={clearRest} style={{ flex: 1 }} />
       </View>
     </MotiView>
   );

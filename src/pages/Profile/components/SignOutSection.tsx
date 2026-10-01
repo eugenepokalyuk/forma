@@ -1,8 +1,8 @@
 import { ListGroup, ListRow, Section } from '@/shared/ui';
-import { useAuthStore } from '@/modules/auth';
+import { useSignOut } from '@/modules/auth';
 
 export function SignOutSection() {
-  const signOut = useAuthStore((s) => s.signOut);
+  const signOut = useSignOut();
 
   return (
     <Section>
@@ -11,7 +11,7 @@ export function SignOutSection() {
           icon="logout"
           title="Выйти"
           destructive
-          onPress={() => void signOut()}
+          onPress={signOut}
           showChevron={false}
           isFirst
           isLast

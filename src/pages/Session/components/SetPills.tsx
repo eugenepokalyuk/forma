@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import type { Exercise } from '@/modules/programs';
 import { Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { useSessionStore } from '@/modules/workout';
+import { undoSet, useSessionStore } from '@/modules/workout';
 
 interface SetPillsProps {
   exercise: Exercise;
@@ -22,7 +22,6 @@ export function SetPills({
   onRemoveExtraSet,
 }: SetPillsProps) {
   const active = useSessionStore((s) => s.active);
-  const undoSet = useSessionStore((s) => s.undoSet);
 
   if (!active) return null;
 

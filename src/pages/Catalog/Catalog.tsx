@@ -3,14 +3,17 @@ import { FlatList, StyleSheet, View } from 'react-native';
 
 import type { Program } from '@/modules/programs';
 import { AppHeader } from '@/modules/auth';
-import { FadeInItem } from '@/shared/ui';
-import { ProgramCard } from '@/modules/programs';
+import {
+  FadeInItem,
+  ScreenContainer,
+  ScreenHeader,
+  Typography,
+  useTabBarClearance,
+} from '@/shared/ui';
+import { ProgramCard, useCatalog } from '@/modules/programs';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { ProgramPreviewCard } from '@/pages/Catalog/components/ProgramPreviewCard';
-import { ScreenContainer, ScreenHeader, Typography } from '@/shared/ui';
-import { useTabBarClearance } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
-import { useCatalog } from '@/modules/programs';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program }

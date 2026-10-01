@@ -5,6 +5,8 @@ export * from './api/sendOtpApi';
 export * from './api/updateProfileApi';
 export * from './api/verifyOtpApi';
 export * from './store';
+export * from './services/session';
+export * from './hooks/useSignOut';
 export * from './queries';
 export * from './helpers/onboarding';
 export * from './components/AppHeader';

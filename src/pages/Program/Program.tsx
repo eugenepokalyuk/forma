@@ -1,7 +1,7 @@
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
-import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 
 import type { WorkoutWithExercises } from '@/modules/programs';
 import { WeekPill } from '@/pages/Program/components/WeekPill';
@@ -9,14 +9,12 @@ import { WorkoutListItem } from '@/pages/Program/components/WorkoutListItem';
 import { ScreenContainer, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { useAuthStore } from '@/modules/auth';
-import { useSessionStore } from '@/modules/workout';
+import { useStartWorkout } from '@/modules/workout';
 import {
   useAddUserProgram,
   useProgram,
   useUserPrograms,
 } from '@/modules/programs';
-import { loadLastLogs } from '@/modules/workout';
-import { ROUTES } from '@/shared/constants/routes';
 
 export default function ProgramScreen() {
   const { id } = ExpoRouter.useLocalSearchParams<{ id: string }>();
@@ -28,9 +26,7 @@ export default function ProgramScreen() {
     string | null
   >(null);
 
-  const activeSession = useSessionStore((s) => s.active);
-  const startSession = useSessionStore((s) => s.start);
-  const completeSession = useSessionStore((s) => s.completeSession);
+  const startWorkout = useStartWorkout();
 
   const addMutation = useAddUserProgram(id);
 
@@ -49,29 +45,8 @@ export default function ProgramScreen() {
 
   const workoutsOfWeek = data.workouts.filter((w) => w.weekNumber === week);
 
-  const beginWorkout = (workout: WorkoutWithExercises) => {
-    startSession({ programId: data.id, workoutId: workout.id, workout });
-    router.replace(ROUTES.sessionActive);
-    loadLastLogs(workout);
-  };
-
-  const onStartWorkout = (workout: WorkoutWithExercises) => {
-    if (activeSession) {
-      Alert.alert('Завершить текущую и начать новую?', undefined, [
-        { text: 'Отмена', style: 'cancel' },
-        {
-          text: 'Завершить и начать',
-          style: 'destructive',
-          onPress: () => {
-            completeSession();
-            beginWorkout(workout);
-          },
-        },
-      ]);
-      return;
-    }
-    beginWorkout(workout);
-  };
+  const onStartWorkout = (workout: WorkoutWithExercises) =>
+    startWorkout({ programId: data.id, workout });
 
   return (
     <ScreenContainer edges={[]}>

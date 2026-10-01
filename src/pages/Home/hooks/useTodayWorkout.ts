@@ -1,11 +1,13 @@
 import { router } from 'expo-router';
 import * as React from 'react';
-import { Alert } from 'react-native';
 
 import type { UserProgram } from '@/modules/programs';
 import { useProgram } from '@/modules/programs';
-import { useSessions } from '@/modules/workout';
-import { useSessionStore } from '@/modules/workout';
+import {
+  useSessions,
+  useSessionStore,
+  useStartWorkout,
+} from '@/modules/workout';
 import { ROUTES } from '@/shared/constants/routes';
 import {
   getNextWorkout,
@@ -20,7 +22,7 @@ export function useTodayWorkout(
   activeProgram: UserProgram | undefined,
 ): BroTodayContext {
   const activeSession = useSessionStore((s) => s.active);
-  const startSession = useSessionStore((s) => s.start);
+  const startWorkout = useStartWorkout();
 
   const { data: sessions } = useSessions();
 
@@ -56,30 +58,8 @@ export function useTodayWorkout(
 
   const beginTodayWorkout = React.useCallback(() => {
     if (!activeProgram || !todayWorkout) return;
-    const begin = () => {
-      startSession({
-        programId: activeProgram.programId,
-        workoutId: todayWorkout.id,
-        workout: todayWorkout,
-      });
-      router.replace(ROUTES.sessionActive);
-    };
-    if (activeSession && activeSession.programId !== activeProgram.programId) {
-      Alert.alert('Завершить текущую и начать новую?', undefined, [
-        { text: 'Отмена', style: 'cancel' },
-        {
-          text: 'Завершить и начать',
-          style: 'destructive',
-          onPress: () => {
-            useSessionStore.getState().completeSession();
-            begin();
-          },
-        },
-      ]);
-      return;
-    }
-    begin();
-  }, [activeProgram, todayWorkout, activeSession, startSession]);
+    startWorkout({ programId: activeProgram.programId, workout: todayWorkout });
+  }, [activeProgram, todayWorkout, startWorkout]);
 
   return React.useMemo(
     () => ({

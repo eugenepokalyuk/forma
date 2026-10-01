@@ -16,7 +16,13 @@ import { SessionSummary } from '@/pages/Session/components/SessionSummary';
 import { SetPills } from '@/pages/Session/components/SetPills';
 import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
-import { type LocalLog, useSessionStore } from '@/modules/workout';
+import {
+  discardWorkout,
+  logSet,
+  skipExercise,
+  type LocalLog,
+  useSessionStore,
+} from '@/modules/workout';
 
 type Phase = 'exercise' | 'rest' | 'summary';
 
@@ -144,7 +150,7 @@ export default function ActiveSessionScreen() {
               {
                 text: 'Выйти',
                 style: 'destructive',
-                onPress: () => useSessionStore.getState().discardSession(),
+                onPress: discardWorkout,
               },
             ],
           ),
@@ -161,19 +167,16 @@ export default function ActiveSessionScreen() {
       durationSeconds?: number | null;
     },
   ) => {
-    useSessionStore
-      .getState()
-      .logSet(
-        { id: exercise.id, restSeconds: exercise.restSeconds },
-        setNumber,
-        { ...values, notes: noteDraft || null },
-      );
+    logSet({ id: exercise.id, restSeconds: exercise.restSeconds }, setNumber, {
+      ...values,
+      notes: noteDraft || null,
+    });
     setNoteDraft('');
     setView('rest');
   };
 
   const handleSkip = () => {
-    useSessionStore.getState().skipExercise(exercise.id);
+    skipExercise(exercise.id);
     jump(1);
   };
 

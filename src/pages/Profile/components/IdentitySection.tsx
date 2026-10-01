@@ -1,8 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 
-import { Section, Typography } from '@/shared/ui';
-import { UserAvatar } from '@/shared/ui';
+import { Section, Typography, UserAvatar } from '@/shared/ui';
 import { useAuthStore } from '@/modules/auth';
 import { COLORS, radius, spacing } from '@/theme';
 

@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import { Section } from '@/shared/ui';
-import { TipsCarousel } from '@/modules/bro';
+import { getWeeklyGoal, TipsCarousel } from '@/modules/bro';
 import { useTodayWorkout } from '@/pages/Home/hooks/useTodayWorkout';
 import { useTrainedDates } from '@/pages/Home/hooks/useTrainedDates';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
 import { useAuthStore } from '@/modules/auth';
-import { getWeeklyGoal } from '@/modules/bro';
 import { getCurrentWeek, isSameDay } from '@/shared/lib/date/calendar';
 
 // Карточки Фитнес Бро: контекст «сегодня» и цель недели.

@@ -1,5 +1,4 @@
-import { useUpdateProfile } from '@/modules/auth';
-import { useAuthStore } from '@/modules/auth';
+import { useAuthStore, useUpdateProfile } from '@/modules/auth';
 
 // Настройка «Показывать только друзьям».
 export function useFriendsOnly() {

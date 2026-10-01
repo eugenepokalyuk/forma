@@ -2,8 +2,7 @@ import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
 
 import { AppHeader } from '@/modules/auth';
-import { useTabBarClearance } from '@/shared/ui';
-import { ScreenContainer } from '@/shared/ui';
+import { ScreenContainer, useTabBarClearance } from '@/shared/ui';
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
 import { SyncBanner } from '@/pages/Home/components/SyncBanner';

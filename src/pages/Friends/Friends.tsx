@@ -3,9 +3,8 @@ import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import type { FollowRequestItem, PublicUser } from '@/modules/social';
-import { Button } from '@/shared/ui';
+import { Button, Input, ScreenContainer, Typography } from '@/shared/ui';
 import { FollowButton } from '@/pages/Friends/components/FollowButton';
-import { Input, ScreenContainer, Typography } from '@/shared/ui';
 import { UserRow } from '@/pages/Friends/components/UserRow';
 import { COLORS, spacing } from '@/theme';
 import {

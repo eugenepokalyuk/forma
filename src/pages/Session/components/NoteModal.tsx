@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/shared/ui';
-import { Icon, Input, Typography } from '@/shared/ui';
+import { Button, Icon, Input, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 
 interface NoteModalProps {

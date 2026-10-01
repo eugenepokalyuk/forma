@@ -1,17 +1,12 @@
-import axios from 'axios';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { completeSessionApi } from '../api/completeSessionApi';
-import { discardSessionApi } from '../api/discardSessionApi';
-import { logSetApi } from '../api/logSetApi';
-import { startSessionApi } from '../api/startSessionApi';
-import { undoSetApi } from '../api/undoSetApi';
 import { mmkvStorageAdapter } from '@/shared/lib/storage/mmkv';
 
 // Очередь синхронизации: во время тренировки источник правды — устройство,
 // сервер получает данные из этой очереди, когда появляется сеть. Ни одно
 // действие в режиме выполнения не ждёт ответа сети (см. ТЗ, Offline).
+// Здесь только состояние очереди; отправка — sync/processOutbox.ts.
 
 export interface StartSessionOp {
   type: 'startSession';
@@ -63,62 +58,110 @@ export interface DiscardOp {
 export type Operation =
   StartSessionOp | LogSetOp | UndoSetOp | CompleteOp | DiscardOp;
 
+export interface DeadOp {
+  op: Operation;
+  error: string;
+}
+
+// «Мёртвые» операции храним только для диагностики — последние N.
+const DEAD_OPS_LIMIT = 50;
+
 interface OutboxState {
   ops: Operation[];
   serverIds: Record<string, string>; // localId -> session short_id на сервере
-  deadOps: { op: Operation; error: string }[];
+  deadOps: DeadOp[];
+  // Чьи операции в очереди — чтобы не отправить их с токеном другого
+  // пользователя после повторного входа (см. auth/services).
+  ownerId: string | null;
   paused: boolean;
   enqueue: (op: Operation) => void;
-  setServerId: (localId: string, serverId: string) => void;
-  clearSessionOps: (localId: string) => void;
-  setPaused: (paused: boolean) => void;
-  markDead: (opId: string, error: string) => void;
   removeOp: (opId: string) => void;
+  setServerId: (localId: string, serverId: string) => void;
+  // Убирает ещё не отправленные операции сессии и её серверный id.
+  forgetSession: (localId: string) => void;
+  forgetServerId: (localId: string) => void;
+  markDead: (opId: string, error: string) => void;
+  // Все операции сессии — в «мёртвые»: без созданной на сервере сессии
+  // их некуда отправить.
+  markSessionDead: (localId: string, error: string) => void;
+  setPaused: (paused: boolean) => void;
+  setOwner: (ownerId: string | null) => void;
+  reset: () => void;
 }
+
+const appendDead = (dead: DeadOp[], extra: DeadOp[]) =>
+  [...dead, ...extra].slice(-DEAD_OPS_LIMIT);
 
 export const useOutboxStore = create<OutboxState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       ops: [],
       serverIds: {},
       deadOps: [],
+      ownerId: null,
       paused: false,
 
-      enqueue: (op) => {
-        // Взаимное уничтожение: undoSet отменяет ещё неотправленный logSet
-        // на тот же подход — обе операции убираем без похода в сеть.
-        if (op.type === 'undoSet') {
-          const pendingIndex = get().ops.findIndex(
-            (o) => o.type === 'logSet' && o.clientId === op.targetClientId,
-          );
-          if (pendingIndex !== -1) {
-            set({ ops: get().ops.filter((_, i) => i !== pendingIndex) });
-            return;
+      enqueue: (op) =>
+        set((s) => {
+          // Взаимное уничтожение: undoSet отменяет ещё неотправленный logSet
+          // на тот же подход — обе операции убираем без похода в сеть.
+          if (op.type === 'undoSet') {
+            const pending = s.ops.find(
+              (o) => o.type === 'logSet' && o.clientId === op.targetClientId,
+            );
+            if (pending) return { ops: s.ops.filter((o) => o !== pending) };
           }
-        }
-        set({ ops: [...get().ops, op] });
-      },
+          return { ops: [...s.ops, op] };
+        }),
 
-      setServerId: (localId, serverId) => {
-        set({ serverIds: { ...get().serverIds, [localId]: serverId } });
-      },
+      removeOp: (opId) =>
+        set((s) => ({ ops: s.ops.filter((o) => o.opId !== opId) })),
 
-      clearSessionOps: (localId) => {
-        set({ ops: get().ops.filter((o) => o.localId !== localId) });
-      },
+      setServerId: (localId, serverId) =>
+        set((s) => ({ serverIds: { ...s.serverIds, [localId]: serverId } })),
+
+      forgetSession: (localId) =>
+        set((s) => ({ ops: s.ops.filter((o) => o.localId !== localId) })),
+
+      forgetServerId: (localId) =>
+        set((s) => {
+          const { [localId]: _, ...rest } = s.serverIds;
+          return { serverIds: rest };
+        }),
+
+      markDead: (opId, error) =>
+        set((s) => {
+          const op = s.ops.find((o) => o.opId === opId);
+          if (!op) return s;
+          return {
+            ops: s.ops.filter((o) => o !== op),
+            deadOps: appendDead(s.deadOps, [{ op, error }]),
+          };
+        }),
+
+      markSessionDead: (localId, error) =>
+        set((s) => ({
+          ops: s.ops.filter((o) => o.localId !== localId),
+          deadOps: appendDead(
+            s.deadOps,
+            s.ops
+              .filter((o) => o.localId === localId)
+              .map((op) => ({ op, error })),
+          ),
+        })),
 
       setPaused: (paused) => set({ paused }),
 
-      markDead: (opId, error) => {
-        const op = get().ops.find((o) => o.opId === opId);
-        set({
-          ops: get().ops.filter((o) => o.opId !== opId),
-          deadOps: op ? [...get().deadOps, { op, error }] : get().deadOps,
-        });
-      },
+      setOwner: (ownerId) => set({ ownerId }),
 
-      removeOp: (opId) =>
-        set({ ops: get().ops.filter((o) => o.opId !== opId) }),
+      reset: () =>
+        set({
+          ops: [],
+          serverIds: {},
+          deadOps: [],
+          ownerId: null,
+          paused: false,
+        }),
     }),
     {
       name: 'forma.outbox',
@@ -127,131 +170,8 @@ export const useOutboxStore = create<OutboxState>()(
         ops: state.ops,
         serverIds: state.serverIds,
         deadOps: state.deadOps,
+        ownerId: state.ownerId,
       }),
     },
   ),
 );
-
-let processing = false;
-const RETRY_BASE_MS = 2_000;
-const RETRY_MAX_MS = 5 * 60_000;
-const attemptCounts = new Map<string, number>();
-
-function backoffMs(attempt: number) {
-  return Math.min(RETRY_MAX_MS, RETRY_BASE_MS * 2 ** attempt);
-}
-
-async function sendOp(op: Operation): Promise<void> {
-  const { serverIds, setServerId } = useOutboxStore.getState();
-
-  switch (op.type) {
-    case 'startSession': {
-      const session = await startSessionApi({
-        workoutId: op.workoutId,
-        programId: op.programId,
-        startedAt: op.startedAt,
-      });
-      setServerId(op.localId, session.id);
-      return;
-    }
-    case 'logSet': {
-      const serverId = serverIds[op.localId];
-      if (!serverId) throw new WaitingForParentError();
-      await logSetApi(serverId, {
-        clientId: op.clientId,
-        exerciseId: op.exerciseId,
-        setNumber: op.setNumber,
-        repsDone: op.repsDone,
-        weight: op.weight,
-        durationSeconds: op.durationSeconds,
-        skipped: op.skipped,
-        notes: op.notes,
-        loggedAt: op.loggedAt,
-        actualCatalogExerciseId: op.actualCatalogExerciseId,
-      });
-      return;
-    }
-    case 'undoSet': {
-      const serverId = serverIds[op.localId];
-      if (!serverId) throw new WaitingForParentError();
-      try {
-        await undoSetApi(serverId, op.exerciseId, op.setNumber);
-      } catch (e) {
-        if (!isNotFound(e)) throw e;
-      }
-      return;
-    }
-    case 'complete': {
-      const serverId = serverIds[op.localId];
-      if (!serverId) throw new WaitingForParentError();
-      await completeSessionApi(serverId, op.notes);
-      return;
-    }
-    case 'discard': {
-      const serverId = serverIds[op.localId];
-      if (!serverId) return; // сессия не успела создаться на сервере — нечего удалять
-      try {
-        await discardSessionApi(serverId);
-      } catch (e) {
-        if (!isNotFound(e)) throw e;
-      }
-      return;
-    }
-  }
-}
-
-class WaitingForParentError extends Error {}
-
-function isNotFound(e: unknown) {
-  return axios.isAxiosError(e) && e.response?.status === 404;
-}
-
-function isRetryable(e: unknown): boolean {
-  if (e instanceof WaitingForParentError) return true;
-  if (!axios.isAxiosError(e)) return true; // неизвестная ошибка — на всякий случай ретраим
-  if (!e.response) return true; // сеть / таймаут
-  return e.response.status >= 500;
-}
-
-export async function processOutbox() {
-  if (processing) return;
-  const { paused } = useOutboxStore.getState();
-  if (paused) return;
-
-  processing = true;
-  try {
-    for (;;) {
-      const { ops } = useOutboxStore.getState();
-      const op = ops[0];
-      if (!op) break;
-
-      try {
-        await sendOp(op);
-        attemptCounts.delete(op.opId);
-        useOutboxStore.getState().removeOp(op.opId);
-      } catch (e) {
-        if (axios.isAxiosError(e) && e.response?.status === 401) {
-          useOutboxStore.getState().setPaused(true);
-          break;
-        }
-        if (isRetryable(e)) {
-          const attempt = attemptCounts.get(op.opId) ?? 0;
-          attemptCounts.set(op.opId, attempt + 1);
-          await new Promise((r) => setTimeout(r, backoffMs(attempt)));
-          continue; // тот же op — очередь строго по порядку, один процессор
-        }
-        // Прочие 4xx — в «мёртвые», чтобы не блокировать очередь.
-        const message = axios.isAxiosError(e)
-          ? JSON.stringify(e.response?.data)
-          : String(e);
-        useOutboxStore.getState().markDead(op.opId, message);
-      }
-    }
-  } finally {
-    processing = false;
-  }
-}
-
-export function pendingCount() {
-  return useOutboxStore.getState().ops.length;
-}

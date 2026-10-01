@@ -12,8 +12,7 @@ import {
 } from 'react-native';
 
 import type { Post } from '@/modules/social';
-import { CustomIcon, Icon, Typography } from '@/shared/ui';
-import { UserAvatar } from '@/shared/ui';
+import { CustomIcon, Icon, Typography, UserAvatar } from '@/shared/ui';
 import { formatMMSS } from '@/shared/lib/string/number';
 import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { COLORS, motion, radius, shadow, spacing } from '@/theme';

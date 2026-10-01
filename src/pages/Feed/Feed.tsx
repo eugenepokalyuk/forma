@@ -2,12 +2,16 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/shared/ui';
+import {
+  Button,
+  FadeInItem,
+  ScreenContainer,
+  ScreenHeader,
+  Typography,
+  useTabBarClearance,
+} from '@/shared/ui';
 import { CommentsModal } from '@/pages/Feed/components/CommentsModal';
 import { PostCard } from '@/pages/Feed/components/PostCard';
-import { FadeInItem } from '@/shared/ui';
-import { ScreenContainer, ScreenHeader, Typography } from '@/shared/ui';
-import { useTabBarClearance } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFeed, useToggleLike } from '@/modules/social';

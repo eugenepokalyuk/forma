@@ -6,9 +6,8 @@ import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import type { Program } from '@/modules/programs';
 import { Typography } from '@/shared/ui';
 import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
-import { formatProgramSubtitle } from '@/modules/programs';
+import { formatProgramSubtitle, useReactions } from '@/modules/programs';
 import { ROUTES } from '@/shared/constants/routes';
-import { useReactions } from '@/modules/programs';
 
 interface ProgramPreviewCardProps {
   program: Program;

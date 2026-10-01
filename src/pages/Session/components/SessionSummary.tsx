@@ -3,11 +3,10 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { Button } from '@/shared/ui';
-import { Input, StatTile, Typography } from '@/shared/ui';
+import { Button, Input, StatTile, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { formatMMSS } from '@/shared/lib/string/number';
-import { tonnage, useSessionStore } from '@/modules/workout';
+import { completeWorkout, tonnage, useSessionStore } from '@/modules/workout';
 
 export function SessionSummary({
   elapsed,
@@ -18,7 +17,6 @@ export function SessionSummary({
 }) {
   const insets = SafeArea.useSafeAreaInsets();
   const active = useSessionStore((s) => s.active);
-  const completeSession = useSessionStore((s) => s.completeSession);
   const [notes, setNotes] = React.useState('');
 
   const stats = React.useMemo(() => {
@@ -62,7 +60,7 @@ export function SessionSummary({
 
           <Button
             title="Завершить"
-            onPress={() => completeSession(notes)}
+            onPress={() => completeWorkout(notes)}
             style={{ flex: 1 }}
           />
         </View>
@@ -120,7 +118,7 @@ export function SessionSummary({
         />
         <Button
           title="Готово"
-          onPress={() => completeSession(notes)}
+          onPress={() => completeWorkout(notes)}
           style={{ flex: 1 }}
         />
       </View>

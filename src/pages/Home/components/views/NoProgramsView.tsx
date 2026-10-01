@@ -1,8 +1,7 @@
 import { router } from 'expo-router';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/shared/ui';
-import { Section, Typography } from '@/shared/ui';
+import { Button, Section, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
