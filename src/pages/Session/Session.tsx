@@ -19,10 +19,11 @@ import { Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
 import {
   discardWorkout,
+  isExerciseDone,
+  isExerciseFinished,
   logSet,
   nextSetNumber,
   skipExercise,
-  type LocalLog,
   useSessionStore,
 } from '@/modules/workout';
 
@@ -31,25 +32,6 @@ type Phase = 'exercise' | 'rest' | 'summary';
 // Сигнал конца отдыха. Смешивается с музыкой пользователя (interruptionMode
 // по умолчанию — mixWithOthers), не ставя её на паузу.
 const REST_END_SOUND = require('@/assets/sounds/beep.wav');
-
-function doneCountOf(exercise: Exercise, logs: LocalLog[]): number {
-  return logs.filter((l) => l.exerciseId === exercise.id && !l.skipped).length;
-}
-
-function isExerciseSkipped(exercise: Exercise, logs: LocalLog[]): boolean {
-  return logs.some((l) => l.exerciseId === exercise.id && l.skipped);
-}
-
-function isExerciseComplete(
-  exercise: Exercise,
-  logs: LocalLog[],
-  totalSets: number,
-): boolean {
-  return (
-    isExerciseSkipped(exercise, logs) ||
-    doneCountOf(exercise, logs) >= totalSets
-  );
-}
 
 export default function ActiveSessionScreen() {
   ExpoKeepAwake.useKeepAwake();
@@ -114,7 +96,7 @@ export default function ActiveSessionScreen() {
     let target = index;
     while (
       target < list.length &&
-      isExerciseComplete(list[target], current.logs, totalSetsOf(list[target]))
+      isExerciseFinished(list[target], current.logs, totalSetsOf(list[target]))
     ) {
       target += 1;
     }
@@ -148,7 +130,7 @@ export default function ActiveSessionScreen() {
     const currentExercise =
       current.workout.exercises[current.currentExerciseIndex];
     if (
-      isExerciseComplete(
+      isExerciseFinished(
         currentExercise,
         current.logs,
         totalSetsOf(currentExercise),
@@ -214,7 +196,7 @@ export default function ActiveSessionScreen() {
   }
 
   if (view === 'rest') {
-    const complete = isExerciseComplete(exercise, active.logs, totalSets);
+    const complete = isExerciseFinished(exercise, active.logs, totalSets);
     const goingToNext = complete && !isLast;
     const nextExercise = goingToNext
       ? exercises[active.currentExerciseIndex + 1]
@@ -269,7 +251,9 @@ export default function ActiveSessionScreen() {
 
       <View style={{ paddingHorizontal: screenPadding }}>
         <ExerciseProgressBar
-          total={exercises.length}
+          done={exercises.map((ex) =>
+            isExerciseDone(ex, active.logs, totalSetsOf(ex)),
+          )}
           index={active.currentExerciseIndex}
           onPressSegment={navigate}
         />

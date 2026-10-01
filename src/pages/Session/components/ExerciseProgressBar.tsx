@@ -4,21 +4,24 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { COLORS, motion } from '@/theme';
 
 interface ExerciseProgressBarProps {
-  total: number;
+  // По сегменту на упражнение: true — все подходы выполнены.
+  done: boolean[];
   index: number;
   onPressSegment: (index: number) => void;
 }
 
 const ACTIVE_SCALE = 6;
 
+// Полоса упражнений тренировки: текущее — широкий сегмент, выполненные —
+// жёлтые. Пропущенные и недоделанные остаются серыми, даже если они позади.
 export function ExerciseProgressBar({
-  total,
+  done,
   index,
   onPressSegment,
 }: ExerciseProgressBarProps) {
   return (
     <View style={styles.row}>
-      {Array.from({ length: total }, (_, i) => (
+      {done.map((isDone, i) => (
         <MotiView
           key={i}
           animate={{ flex: i === index ? ACTIVE_SCALE : 1 }}
@@ -31,8 +34,9 @@ export function ExerciseProgressBar({
           >
             <MotiView
               animate={{
-                backgroundColor:
-                  i <= index ? COLORS.Surface.accent : COLORS.Surface.secondary,
+                backgroundColor: isDone
+                  ? COLORS.Surface.accent
+                  : COLORS.Surface.secondary,
               }}
               transition={{ type: 'timing', duration: motion.fast }}
               style={styles.segment}
