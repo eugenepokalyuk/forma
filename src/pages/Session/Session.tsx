@@ -1,7 +1,7 @@
 import * as ExpoKeepAwake from 'expo-keep-awake';
 import { AnimatePresence, MotiView } from 'moti';
 import * as React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
 import type { Exercise } from '@/modules/programs';
@@ -219,24 +219,16 @@ export default function ActiveSessionScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.xs }]}>
+      {/* В шапке — только номер упражнения; «Добавить упражнение» и
+          «Завершить тренировку» — в списке действий внизу экрана. */}
       <View style={styles.header}>
-        <Typography variant="title" color={COLORS.Text.primary}>
+        <Typography
+          variant="title"
+          color={COLORS.Text.primary}
+          accessibilityLabel={`Упражнение ${active.currentExerciseIndex + 1} из ${exercises.length}`}
+        >
           {active.currentExerciseIndex + 1}/{exercises.length}
         </Typography>
-
-        <Pressable onPress={onAddExercise} hitSlop={8}>
-          <Typography variant="title" color={COLORS.Text.secondary}>
-            {'ДОБАВИТЬ'}
-          </Typography>
-        </Pressable>
-
-        <View style={{ flex: 1 }} />
-
-        <Pressable onPress={onFinishMenu} hitSlop={8}>
-          <Typography variant="title" color={COLORS.Text.secondary}>
-            {'ЗАВЕРШИТЬ'}
-          </Typography>
-        </Pressable>
       </View>
 
       <View style={{ paddingHorizontal: screenPadding }}>
@@ -294,6 +286,7 @@ export default function ActiveSessionScreen() {
               noteDraft={noteDraft}
               onOpenNote={() => setNoteModalOpen(true)}
               onSkip={handleSkip}
+              onAddExercise={onAddExercise}
               onFinish={onFinishMenu}
             />
           </ScrollView>
@@ -316,10 +309,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Background.primary,
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: screenPadding,
-    gap: spacing.sm,
   },
   section: {
     display: 'flex',

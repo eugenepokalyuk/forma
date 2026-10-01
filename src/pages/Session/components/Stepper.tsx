@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Icon } from '@/shared/ui';
+import { GlassView } from '@/shared/ui/glass';
 import { COLORS, TYPOGRAPHY, motion, radius, spacing } from '@/theme';
 
 interface StepperProps {
@@ -111,8 +112,19 @@ function RoundButton({
         accessibilityLabel={icon === 'plus' ? 'Увеличить' : 'Уменьшить'}
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}
-        style={compact ? styles.btnCompact : styles.btn}
+        style={[
+          compact ? styles.btnCompact : styles.btn,
+          // iOS 26+: стекло вместо заливки (как у Button).
+          GlassView && styles.btnGlass,
+        ]}
       >
+        {GlassView ? (
+          <GlassView
+            glassEffectStyle="regular"
+            isInteractive
+            style={[StyleSheet.absoluteFill, styles.glass]}
+          />
+        ) : null}
         <Icon name={icon} size={24} color={COLORS.Icon.primary} />
       </Pressable>
     </MotiView>
@@ -124,6 +136,12 @@ function roundTo(n: number) {
 }
 
 const styles = StyleSheet.create({
+  glass: { borderRadius: radius.pill },
+  btnGlass: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    overflow: 'hidden',
+  },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   rowCompact: { gap: spacing.sm },
   btn: {

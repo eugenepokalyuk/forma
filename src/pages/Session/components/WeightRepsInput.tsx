@@ -5,19 +5,26 @@ import type { Exercise } from '@/modules/programs';
 import { Button, Divider, Typography } from '@/shared/ui';
 import { Stepper } from '@/pages/Session/components/Stepper';
 import { COLORS, radius, spacing } from '@/theme';
-import type { SetPrefill } from '@/modules/workout';
+import {
+  formatLastLog,
+  formatTarget,
+  type LastLog,
+  type SetPrefill,
+} from '@/modules/workout';
 
 interface WeightRepsInputProps {
   exercise: Exercise;
   prefill: SetPrefill;
+  lastLog: LastLog | undefined;
   onDone: (values: { repsDone: number; weight: number | null }) => void;
 }
 
-// Вес (для strength/band) + повторения — степперы в компактных строках,
-// подпись слева, значение справа.
+// Вес (для strength/band) + повторения — карточки: степпер, подпись и под ней
+// подсказка — прошлый вес под «Вес», цель подхода под «Повторы».
 export function WeightRepsInput({
   exercise,
   prefill,
+  lastLog,
   onDone,
 }: WeightRepsInputProps) {
   const [weight, setWeight] = React.useState(prefill.weight);
@@ -25,15 +32,25 @@ export function WeightRepsInput({
   const showWeight =
     exercise.exerciseType === 'strength' || exercise.exerciseType === 'band';
 
+  const target = formatTarget(exercise);
+  const weightHint = lastLog?.weight
+    ? `в прошлый раз ${lastLog.weight} кг`
+    : undefined;
+  const repsHints = [
+    target !== '—' ? `цель ${target}` : undefined,
+    // Без карточки «Вес» прошлый результат показываем здесь.
+    !showWeight && lastLog
+      ? `в прошлый раз ${formatLastLog(lastLog)}`
+      : undefined,
+  ];
+
   const repsField = (
     <View style={[styles.fieldRow, showWeight && styles.fieldHalf]}>
-      <Typography variant="body" color={COLORS.Text.primary}>
-        {'Повторы'}
-      </Typography>
+      <Stepper value={reps} step={1} compact={showWeight} onChange={setReps} />
 
       <Divider />
 
-      <Stepper value={reps} step={1} compact={showWeight} onChange={setReps} />
+      <FieldLabel label="Повторы" hints={repsHints} />
     </View>
   );
 
@@ -42,12 +59,6 @@ export function WeightRepsInput({
       {showWeight ? (
         <View style={styles.columns}>
           <View style={[styles.fieldRow, styles.fieldHalf]}>
-            <Typography variant="body" color={COLORS.Text.primary}>
-              {'Вес'}
-            </Typography>
-
-            <Divider />
-
             <Stepper
               value={weight}
               step={2.5}
@@ -55,6 +66,10 @@ export function WeightRepsInput({
               compact
               onChange={setWeight}
             />
+
+            <Divider />
+
+            <FieldLabel label="Вес" hints={[weightHint]} />
           </View>
 
           {repsField}
@@ -74,11 +89,40 @@ export function WeightRepsInput({
   );
 }
 
+// Подпись карточки и подсказки под ней (пустые не выводятся).
+function FieldLabel({
+  label,
+  hints,
+}: {
+  label: string;
+  hints: (string | undefined)[];
+}) {
+  return (
+    <View style={styles.label}>
+      <Typography variant="body" color={COLORS.Text.primary}>
+        {label}
+      </Typography>
+
+      {hints.filter(Boolean).map((hint) => (
+        <Typography
+          key={hint}
+          variant="caption"
+          color={COLORS.Text.secondary}
+          align="center"
+        >
+          {hint}
+        </Typography>
+      ))}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  label: { alignItems: 'center', gap: 2 },
   container: { width: '100%', gap: spacing.sm },
   columns: { flexDirection: 'row', width: '100%', gap: spacing.sm },
   fieldRow: {
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 16,

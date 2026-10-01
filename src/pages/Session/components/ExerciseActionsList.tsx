@@ -9,8 +9,8 @@ interface ExerciseActionsListProps {
   noteDraft: string;
   onOpenNote: () => void;
   onSkip: () => void;
-  /** То же меню «Тренировка», что открывает «ЗАВЕРШИТЬ» в шапке экрана —
-   * переиспользуем вместо повторной реализации. */
+  onAddExercise: () => void;
+  /** Меню «Тренировка»: завершить с итогом или выйти без сохранения. */
   onFinish: () => void;
 }
 
@@ -19,6 +19,7 @@ export function ExerciseActionsList({
   noteDraft,
   onOpenNote,
   onSkip,
+  onAddExercise,
   onFinish,
 }: ExerciseActionsListProps) {
   const [tipsOpen, setTipsOpen] = React.useState(false);
@@ -67,6 +68,11 @@ export function ExerciseActionsList({
         </>
       ) : null}
 
+      <ActionRow
+        icon="plus-circle-outline"
+        title="Добавить упражнение"
+        onPress={onAddExercise}
+      />
       <ActionRow
         icon="swap-horizontal"
         title="Заменить на похожее упражнение"

@@ -38,22 +38,27 @@ export function ExerciseInput({ exercise, onLog }: ExerciseInputProps) {
     ? active.lastLogs[exercise.catalogExerciseId]
     : undefined;
   const prefill = getPrefill(exercise, setNumber, active.logs, lastLogs);
+  const lastLog = lastLogForSet(lastLogs, setNumber);
 
   return (
     <View style={styles.container}>
-      <SetTargetLabel exercise={exercise} />
-      <PreviousResultLabel lastLog={lastLogForSet(lastLogs, setNumber)} />
-
       {timed ? (
-        <TimedInput
-          key={setNumber}
-          onDone={(seconds) => onLog(setNumber, { durationSeconds: seconds })}
-        />
+        <>
+          {/* У упражнений на время нет карточек — цель и прошлый раз
+              показываем над таймером. */}
+          <SetTargetLabel exercise={exercise} />
+          <PreviousResultLabel lastLog={lastLog} />
+          <TimedInput
+            key={setNumber}
+            onDone={(seconds) => onLog(setNumber, { durationSeconds: seconds })}
+          />
+        </>
       ) : (
         <WeightRepsInput
           key={setNumber}
           exercise={exercise}
           prefill={prefill}
+          lastLog={lastLog}
           onDone={(values) => onLog(setNumber, values)}
         />
       )}
