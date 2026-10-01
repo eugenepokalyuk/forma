@@ -2,6 +2,7 @@ import type { Exercise } from '@/modules/programs';
 
 import type { LastLog } from '../models/session';
 import { formatMMSS } from '@/shared/lib/string/number';
+import { repsWord } from '@/shared/lib/string/plural';
 
 const TIMED_TYPES = new Set(['cardio', 'stretch', 'yoga']);
 
@@ -29,11 +30,14 @@ export function formatTarget(exercise: Exercise): string {
   return String(repsMin ?? repsMax ?? '—');
 }
 
-// «8–12 повторов» / «5:00» — цель подхода с подписью единицы (для временных
-// упражнений единица уже внутри formatTarget, для остальных дописываем слово).
+// «8–12 повторов» / «2 повтора» / «5:00» — цель подхода с подписью единицы
+// (для временных упражнений единица уже внутри formatTarget, для остальных
+// дописываем слово, согласуя его с последним числом диапазона).
 export function formatTargetLabel(exercise: Exercise): string {
   const target = formatTarget(exercise);
-  return isTimedExercise(exercise) ? target : `${target} повторов`;
+  if (isTimedExercise(exercise)) return target;
+  const last = exercise.repsMax ?? exercise.repsMin;
+  return last == null ? target : `${target} ${repsWord(last)}`;
 }
 
 // Для временного упражнения с одним подходом сама длительность уже

@@ -22,3 +22,8 @@ export function pluralizeWorkouts(n: number): string {
 export function pluralizeTimes(n: number): string {
   return `${n} ${plural(n, ['раз', 'раза', 'раз'])}`;
 }
+
+// Только слово, без числа: «повтор» / «повтора» / «повторов».
+export function repsWord(n: number): string {
+  return plural(n, ['повтор', 'повтора', 'повторов']);
+}
