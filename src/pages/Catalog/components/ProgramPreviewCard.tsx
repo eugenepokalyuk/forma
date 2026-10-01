@@ -88,7 +88,7 @@ export function ProgramPreviewCard({
 
 const styles = StyleSheet.create({
   wrap: {
-    height: 330,
+    height: 350,
     justifyContent: 'flex-end',
     backgroundColor: COLORS.Surface.primary,
     borderBottomLeftRadius: radius.lg,

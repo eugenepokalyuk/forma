@@ -59,8 +59,9 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // отдельная карточка с описанием и кнопкой «Добавить»; теперь добавление
 // программы делается на её странице (см. pages/Program), а список тут
 // один в один как в forma-project Figma (node 5487-2731).
-// Насколько секция с программами заходит на обложку снизу.
-const SHEET_OVERLAP = 28;
+// Насколько секция с программами заходит на обложку снизу; это же —
+// расстояние от начала секции до первых программ.
+const SHEET_OVERLAP = 20;
 
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
@@ -109,6 +110,11 @@ export default function CatalogScreen() {
           },
           rows.length === 0 && styles.emptyContent,
         ]}
+        // gap списка действует и между шапкой и первым элементом — под
+        // обложкой его убираем: от начала секции до программ ровно SHEET_OVERLAP.
+        ListHeaderComponentStyle={
+          previewProgram ? { marginBottom: -spacing.md } : undefined
+        }
         ListHeaderComponent={
           previewProgram ? (
             <View>
