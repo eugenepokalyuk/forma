@@ -1,3 +1,4 @@
+import { useAudioPlayer } from 'expo-audio';
 import * as ExpoKeepAwake from 'expo-keep-awake';
 import { AnimatePresence, MotiView } from 'moti';
 import * as React from 'react';
@@ -27,6 +28,10 @@ import {
 
 type Phase = 'exercise' | 'rest' | 'summary';
 
+// Сигнал конца отдыха. Смешивается с музыкой пользователя (interruptionMode
+// по умолчанию — mixWithOthers), не ставя её на паузу.
+const REST_END_SOUND = require('@/assets/sounds/beep.wav');
+
 function doneCountOf(exercise: Exercise, logs: LocalLog[]): number {
   return logs.filter((l) => l.exerciseId === exercise.id && !l.skipped).length;
 }
@@ -50,6 +55,7 @@ export default function ActiveSessionScreen() {
   ExpoKeepAwake.useKeepAwake();
   const insets = SafeArea.useSafeAreaInsets();
   const active = useSessionStore((s) => s.active);
+  const restEndSound = useAudioPlayer(REST_END_SOUND);
   // После перезапуска приложения посреди отдыха возвращаемся в отдых —
   // истёкший таймер сразу завершит его и переведёт дальше (см. finishRest).
   const [view, setView] = React.useState<Phase>(() =>
@@ -131,7 +137,10 @@ export default function ActiveSessionScreen() {
   // или по «Пропустить»), решаем по текущему состоянию: все подходы этого
   // упражнения сделаны — идём дальше, иначе возвращаемся к нему же на
   // следующий подход.
-  const finishRest = () => {
+  const finishRest = (options?: { sound?: boolean }) => {
+    if (options?.sound) {
+      void restEndSound.seekTo(0).then(() => restEndSound.play());
+    }
     useSessionStore.getState().clearRest();
     const current = useSessionStore.getState().active;
     if (!current) return;

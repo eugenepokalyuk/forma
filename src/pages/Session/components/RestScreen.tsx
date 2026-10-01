@@ -19,10 +19,12 @@ const STROKE = 12;
 const R = (SIZE - STROKE) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * R;
 
+// Конец отдыха, «проспанный» с закрытым приложением, при возврате не озвучиваем.
+const SOUND_LATE_MS = 2_000;
+
 // Полноэкранная пауза между подходами — единственное, что видно во время
-// отдыха. Заканчивается вибрацией (звук — см. TODO ниже).
-// TODO(звук): нет ассета assets/sounds/beep.wav в репозитории — добавить и
-// проиграть через expo-audio, когда файл появится.
+// отдыха. Заканчивается вибрацией и звуковым сигналом (его играет родитель:
+// этот экран размонтируется сразу после конца отдыха и оборвал бы звук).
 export function RestScreen({
   nextLabel,
   nextThumbnailUrl,
@@ -30,8 +32,8 @@ export function RestScreen({
 }: {
   nextLabel: string;
   nextThumbnailUrl?: string | null;
-  // Отдых закончился сам или по «Пропустить».
-  onDone: () => void;
+  // Отдых закончился сам (sound — пора подать сигнал) или по «Пропустить».
+  onDone: (options?: { sound?: boolean }) => void;
 }) {
   const insets = SafeArea.useSafeAreaInsets();
   const restEndsAt = useSessionStore((s) => s.active?.restEndsAt ?? null);
@@ -74,7 +76,9 @@ export function RestScreen({
         void Haptics.notificationAsync(
           Haptics.NotificationFeedbackType.Success,
         );
-        onDoneRef.current();
+        onDoneRef.current({
+          sound: Date.now() - new Date(restEndsAt).getTime() < SOUND_LATE_MS,
+        });
       }
     };
     tick();
@@ -179,7 +183,11 @@ export function RestScreen({
           style={{ flex: 1 }}
         />
 
-        <Button title="Пропустить" onPress={onDone} style={{ flex: 1 }} />
+        <Button
+          title="Пропустить"
+          onPress={() => onDone()}
+          style={{ flex: 1 }}
+        />
       </View>
     </MotiView>
   );
