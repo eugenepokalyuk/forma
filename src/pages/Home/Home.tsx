@@ -1,8 +1,13 @@
 import * as ReactQuery from '@tanstack/react-query';
 import * as React from 'react';
+import { View } from 'react-native';
 
 import { AppHeader } from '@/modules/auth/ui';
-import { ScreenContainer, useTabBarClearance } from '@/shared/ui';
+import {
+  AuroraBackground,
+  ScreenContainer,
+  useTabBarClearance,
+} from '@/shared/ui';
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
 import { SyncBanner } from '@/pages/Home/components/SyncBanner';
@@ -12,12 +17,22 @@ import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
 import { programKeys } from '@/modules/programs';
 import { workoutKeys } from '@/modules/workout';
 
+// Насколько сияние за Бро выходит за рамки блока сверху и снизу.
+const AURORA_SPILL = 120;
+
 export default function HomeScreen() {
   const queryClient = ReactQuery.useQueryClient();
   const tabBarClearance = useTabBarClearance();
   const { data, isLoading } = useMyPrograms();
 
   usePrefetchActivePrograms(data);
+
+  // Сияние за Бро — первый слой контента экрана: выходит за рамки блока, но
+  // лежит под всеми блоками (а не поверх соседних) и прокручивается с ним.
+  const [broLayout, setBroLayout] = React.useState<{
+    y: number;
+    height: number;
+  } | null>(null);
 
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const onRefresh = React.useCallback(async () => {
@@ -41,10 +56,27 @@ export default function HomeScreen() {
       refreshing={isRefreshing}
       contentStyle={{ paddingBottom: tabBarClearance }}
     >
+      {broLayout ? (
+        <AuroraBackground
+          style={{
+            top: broLayout.y - AURORA_SPILL,
+            bottom: 'auto',
+            height: broLayout.height + AURORA_SPILL * 2,
+          }}
+        />
+      ) : null}
+
       <AppHeader />
       <SyncBanner />
       <WeekSection />
-      <BroSection />
+      <View
+        onLayout={(e) => {
+          const { y, height } = e.nativeEvent.layout;
+          setBroLayout({ y, height });
+        }}
+      >
+        <BroSection />
+      </View>
       <ProgramsSection />
     </ScreenContainer>
   );
