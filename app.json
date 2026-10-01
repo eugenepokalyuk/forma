@@ -17,6 +17,9 @@
       },
       "infoPlist": {
         "UIBackgroundModes": []
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -27,11 +30,17 @@
         "backgroundImage": "./assets/branding/android-icon-background.png",
         "monochromeImage": "./assets/branding/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": ["android.permission.VIBRATE"]
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store",
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ],
       [
         "expo-splash-screen",
         {
