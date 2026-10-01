@@ -10,6 +10,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
+import { GlassView } from './glass';
 import { Typography } from './Typography';
 import {
   COLORS,
@@ -20,6 +21,17 @@ import {
   shadow,
   spacing,
 } from '@/theme';
+
+// Оттенок стекла по варианту: основная — фирменный жёлтый, второстепенная —
+// нейтральное стекло, опасная — красный.
+const GLASS_TINT: Record<
+  NonNullable<ButtonProps['variant']>,
+  string | undefined
+> = {
+  primary: COLORS.Surface.accent,
+  secondary: undefined,
+  danger: COLORS.Text.negative,
+};
 
 interface ButtonProps {
   title: string;
@@ -65,7 +77,16 @@ export function Button({
         accessibilityState={{ disabled: inert, busy: !!loading }}
         style={styles.base}
       >
-        {isPrimary ? (
+        {GlassView ? (
+          // iOS 26+: нативное стекло, подсветка нажатия — тоже нативная.
+          <GlassView
+            glassEffectStyle="regular"
+            isInteractive
+            tintColor={GLASS_TINT[variant]}
+            style={[StyleSheet.absoluteFill, styles.glass]}
+          />
+        ) : null}
+        {!GlassView && isPrimary ? (
           <LinearGradient
             colors={pressed ? gradients.accentPressed : gradients.accent}
             start={{ x: 0, y: 0 }}
@@ -77,10 +98,10 @@ export function Button({
             ]}
           />
         ) : null}
-        {variant === 'secondary' ? (
+        {!GlassView && variant === 'secondary' ? (
           <MotiView style={[StyleSheet.absoluteFill, styles.secondaryFill]} />
         ) : null}
-        {isDanger ? (
+        {!GlassView && isDanger ? (
           <MotiView style={[StyleSheet.absoluteFill, styles.dangerFill]} />
         ) : null}
 
@@ -102,6 +123,7 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
+  glass: { borderRadius: radius.pill },
   base: {
     minHeight: hitTarget,
     borderRadius: radius.pill,
