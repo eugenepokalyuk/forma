@@ -16,3 +16,4 @@ export * from './FadeInItem';
 export * from './TabBar';
 export * from './UserAvatar';
 export * from './BottomSheet';
+export * from './ErrorState';

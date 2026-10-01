@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import {
   Button,
+  ErrorState,
   FadeInItem,
   ScreenContainer,
   ScreenHeader,
@@ -25,6 +26,7 @@ export default function FeedScreen() {
   const {
     data,
     isLoading,
+    isError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -63,28 +65,32 @@ export default function FeedScreen() {
         }}
         ListHeaderComponent={<ScreenHeader title="Лента" />}
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Typography variant="display" align="center">
-              {'Пока тихо'}
-            </Typography>
+          isError ? (
+            <ErrorState onRetry={refetch} />
+          ) : (
+            <View style={styles.empty}>
+              <Typography variant="display" align="center">
+                {'Пока тихо'}
+              </Typography>
 
-            <Typography
-              variant="body"
-              color={COLORS.Text.secondary}
-              align="center"
-              style={{ marginTop: spacing.xs }}
-            >
-              {
-                'В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки'
-              }
-            </Typography>
+              <Typography
+                variant="body"
+                color={COLORS.Text.secondary}
+                align="center"
+                style={{ marginTop: spacing.xs }}
+              >
+                {
+                  'В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки'
+                }
+              </Typography>
 
-            <Button
-              title="Найти друзей"
-              onPress={() => router.push(ROUTES.friends)}
-              style={{ marginTop: spacing.lg }}
-            />
-          </View>
+              <Button
+                title="Найти друзей"
+                onPress={() => router.push(ROUTES.friends)}
+                style={{ marginTop: spacing.lg }}
+              />
+            </View>
+          )
         }
         ListFooterComponent={
           isFetchingNextPage ? (

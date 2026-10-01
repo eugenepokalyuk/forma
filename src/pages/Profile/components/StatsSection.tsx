@@ -1,11 +1,21 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Section, StatTile } from '@/shared/ui';
+import { ErrorState, Section, StatTile } from '@/shared/ui';
 import { useProfileStats } from '@/pages/Profile/hooks/useProfileStats';
 import { COLORS, spacing } from '@/theme';
 
 export function StatsSection() {
-  const { streak, workoutsCount, totalTonnage } = useProfileStats();
+  const { data, isError, refetch, streak, workoutsCount, totalTonnage } =
+    useProfileStats();
+
+  // Без истории тренировок нули выглядели бы как реальные итоги.
+  if (isError && !data) {
+    return (
+      <Section title="Итоги">
+        <ErrorState onRetry={refetch} />
+      </Section>
+    );
+  }
 
   return (
     <Section title="Итоги">

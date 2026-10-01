@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import type { Program } from '@/modules/programs';
 import { AppHeader } from '@/modules/auth';
 import {
+  ErrorState,
   FadeInItem,
   ScreenContainer,
   Typography,
@@ -57,7 +58,7 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // один в один как в forma-project Figma (node 5487-2731).
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
-  const { data, isLoading, refetch } = useCatalog();
+  const { data, isLoading, isError, refetch } = useCatalog();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   // Единственная закреплённая preview-программа (см. Program.catalog_layout
@@ -103,20 +104,24 @@ export default function CatalogScreen() {
           )
         }
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Typography variant="display" align="center">
-              {'Пока пусто'}
-            </Typography>
+          isError ? (
+            <ErrorState onRetry={refetch} />
+          ) : (
+            <View style={styles.empty}>
+              <Typography variant="display" align="center">
+                {'Пока пусто'}
+              </Typography>
 
-            <Typography
-              variant="body"
-              color={COLORS.Text.secondary}
-              align="center"
-              style={{ marginTop: spacing.xs }}
-            >
-              {'Готовые программы появятся здесь'}
-            </Typography>
-          </View>
+              <Typography
+                variant="body"
+                color={COLORS.Text.secondary}
+                align="center"
+                style={{ marginTop: spacing.xs }}
+              >
+                {'Готовые программы появятся здесь'}
+              </Typography>
+            </View>
+          )
         }
         renderItem={({ item, index }) => (
           <FadeInItem index={index}>

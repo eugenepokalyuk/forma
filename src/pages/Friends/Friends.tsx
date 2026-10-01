@@ -3,7 +3,13 @@ import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import type { FollowRequestItem, PublicUser } from '@/modules/social';
-import { Button, Input, ScreenContainer, Typography } from '@/shared/ui';
+import {
+  Button,
+  ErrorState,
+  Input,
+  ScreenContainer,
+  Typography,
+} from '@/shared/ui';
 import { FollowButton } from '@/pages/Friends/components/FollowButton';
 import { UserRow } from '@/pages/Friends/components/UserRow';
 import { COLORS, spacing } from '@/theme';
@@ -41,33 +47,27 @@ export default function FriendsScreen() {
   const debouncedQuery = useDebouncedValue(query.trim(), 300);
   const isSearching = debouncedQuery.length >= 2;
 
-  const { data: searchResults, isLoading: isSearchLoading } = useSearchUsers(
-    debouncedQuery,
-    isSearching,
-  );
-  const { data: following, isLoading: isFollowingLoading } = useFollowing(
-    !isSearching && tab === 'following',
-  );
-  const { data: followers, isLoading: isFollowersLoading } = useFollowers(
-    !isSearching && tab === 'followers',
-  );
-  const { data: requests, isLoading: isRequestsLoading } = useFollowRequests(
-    !isSearching && tab === 'requests',
-  );
+  const search = useSearchUsers(debouncedQuery, isSearching);
+  const followingQuery = useFollowing(!isSearching && tab === 'following');
+  const followersQuery = useFollowers(!isSearching && tab === 'followers');
+  const requestsQuery = useFollowRequests(!isSearching && tab === 'requests');
   const respondMutation = useRespondToFollowRequest();
 
+  const searchResults = search.data;
+  const requests = requestsQuery.data;
+  const tabQuery =
+    tab === 'following'
+      ? followingQuery
+      : tab === 'followers'
+        ? followersQuery
+        : requestsQuery;
   const tabData: PublicUser[] =
     tab === 'following'
-      ? (following ?? [])
+      ? (followingQuery.data ?? [])
       : tab === 'followers'
-        ? (followers ?? [])
+        ? (followersQuery.data ?? [])
         : [];
-  const tabLoading =
-    tab === 'following'
-      ? isFollowingLoading
-      : tab === 'followers'
-        ? isFollowersLoading
-        : isRequestsLoading;
+  const tabLoading = tabQuery.isLoading;
   const emptyLabel =
     tab === 'following'
       ? 'Вы пока ни на кого не подписаны'
@@ -94,7 +94,9 @@ export default function FriendsScreen() {
           keyExtractor={(u) => u.id}
           contentContainerStyle={{ gap: spacing.sm }}
           ListEmptyComponent={
-            isSearchLoading ? null : (
+            search.isError ? (
+              <ErrorState onRetry={search.refetch} />
+            ) : search.isLoading ? null : (
               <Typography
                 variant="body"
                 color={COLORS.Text.secondary}
@@ -140,7 +142,9 @@ export default function FriendsScreen() {
               keyExtractor={(r) => r.id}
               contentContainerStyle={{ gap: spacing.sm }}
               ListEmptyComponent={
-                tabLoading ? null : (
+                tabQuery.isError ? (
+                  <ErrorState onRetry={tabQuery.refetch} />
+                ) : tabLoading ? null : (
                   <Typography
                     variant="body"
                     color={COLORS.Text.secondary}
@@ -190,7 +194,9 @@ export default function FriendsScreen() {
               keyExtractor={(u) => u.id}
               contentContainerStyle={{ gap: spacing.sm }}
               ListEmptyComponent={
-                tabLoading ? null : (
+                tabQuery.isError ? (
+                  <ErrorState onRetry={tabQuery.refetch} />
+                ) : tabLoading ? null : (
                   <Typography
                     variant="body"
                     color={COLORS.Text.secondary}

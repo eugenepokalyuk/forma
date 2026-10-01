@@ -6,7 +6,7 @@ import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import type { WorkoutWithExercises } from '@/modules/programs';
 import { WeekPill } from '@/pages/Program/components/WeekPill';
 import { WorkoutListItem } from '@/pages/Program/components/WorkoutListItem';
-import { ScreenContainer, Typography } from '@/shared/ui';
+import { ErrorState, ScreenContainer, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { useAuthStore } from '@/modules/auth';
 import { useStartWorkout } from '@/modules/workout';
@@ -19,7 +19,7 @@ import {
 export default function ProgramScreen() {
   const { id } = ExpoRouter.useLocalSearchParams<{ id: string }>();
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
-  const { data, isLoading } = useProgram(id);
+  const { data, isLoading, isError, refetch } = useProgram(id);
   const { data: userPrograms } = useUserPrograms();
   const [week, setWeek] = React.useState(1);
   const [expandedWorkoutId, setExpandedWorkoutId] = React.useState<
@@ -36,7 +36,13 @@ export default function ProgramScreen() {
     return <ScreenContainer edges={[]} loading />;
   }
 
-  if (!data) return null;
+  if (!data) {
+    return isError ? (
+      <ScreenContainer edges={[]}>
+        <ErrorState onRetry={refetch} />
+      </ScreenContainer>
+    ) : null;
+  }
 
   const isInLibrary = (userPrograms ?? []).some(
     (up) => up.programId === data.id,

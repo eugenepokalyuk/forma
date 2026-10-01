@@ -2,7 +2,13 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { BottomSheet, CustomIcon, Input, Typography } from '@/shared/ui';
+import {
+  BottomSheet,
+  CustomIcon,
+  ErrorState,
+  Input,
+  Typography,
+} from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { useAddComment, useComments } from '@/modules/social';
@@ -15,7 +21,7 @@ interface CommentsModalProps {
 export function CommentsModal({ postId, onClose }: CommentsModalProps) {
   const [text, setText] = React.useState('');
 
-  const { data: comments, isLoading } = useComments(postId);
+  const { data: comments, isLoading, isError, refetch } = useComments(postId);
   const addMutation = useAddComment(postId);
 
   return (
@@ -34,7 +40,9 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
         }}
         style={{ maxHeight: 360, flexShrink: 1 }}
         ListEmptyComponent={
-          !isLoading ? (
+          isError ? (
+            <ErrorState onRetry={refetch} />
+          ) : !isLoading ? (
             <Typography
               variant="body"
               color={COLORS.Text.secondary}
