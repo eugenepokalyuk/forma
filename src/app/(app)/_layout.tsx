@@ -29,10 +29,12 @@ export default function AppLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="program/[id]" />
-      <Stack.Screen name="workout/[id]" />
-      <Stack.Screen name="friends" />
-      <Stack.Screen name="blocked" />
+      {/* Заголовки по умолчанию: без них, пока экран грузится (или если он
+          не задал title сам), в шапке видно имя маршрута — «program/[id]». */}
+      <Stack.Screen name="program/[id]" options={{ title: '' }} />
+      <Stack.Screen name="workout/[id]" options={{ title: '' }} />
+      <Stack.Screen name="friends" options={{ title: 'Друзья' }} />
+      <Stack.Screen name="blocked" options={{ title: 'Заблокированные' }} />
     </Stack>
   );
 }
