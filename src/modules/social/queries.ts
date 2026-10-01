@@ -14,6 +14,7 @@ import { searchUsersApi } from './api/searchUsersApi';
 import { unfollowUserApi } from './api/unfollowUserApi';
 import { unlikePostApi } from './api/unlikePostApi';
 import type { FollowRequestAction, Post } from './models/social';
+import { alertActionFailed } from '@/shared/ui';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
 export const socialKeys = {
@@ -93,6 +94,8 @@ export function useAddComment(postId: string | null) {
       });
       void queryClient.invalidateQueries({ queryKey: socialKeys.feed });
     },
+    // Текст остаётся в поле — можно отправить ещё раз.
+    onError: () => alertActionFailed('отправить комментарий'),
   });
 }
 
@@ -150,6 +153,7 @@ export function useRespondToFollowRequest() {
     mutationFn: ({ id, action }: { id: string; action: FollowRequestAction }) =>
       respondToFollowRequestApi(id, action),
     onSuccess: invalidate,
+    onError: () => alertActionFailed('ответить на запрос'),
   });
 }
 
@@ -159,6 +163,7 @@ export function useFollowUser(publicId: string) {
   return ReactQuery.useMutation({
     mutationFn: () => followUserApi(publicId),
     onSuccess: invalidate,
+    onError: () => alertActionFailed('подписаться'),
   });
 }
 
@@ -168,5 +173,6 @@ export function useUnfollowUser(publicId: string) {
   return ReactQuery.useMutation({
     mutationFn: () => unfollowUserApi(publicId),
     onSuccess: invalidate,
+    onError: () => alertActionFailed('отписаться'),
   });
 }
