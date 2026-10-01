@@ -64,7 +64,6 @@ export function SetPills({
             }}
           >
             <MotiView
-              animate={{}}
               transition={motion.springy}
               style={[
                 styles.pill,
@@ -74,13 +73,13 @@ export function SetPills({
               ]}
             >
               {done ? (
-                <Typography variant="label" color={COLORS.Text.positive}>
+                <Typography variant="body" color={COLORS.Text.positive}>
                   {setNumber}
                 </Typography>
               ) : isRemovableExtra ? (
-                <Icon name="close" size={18} color={COLORS.Text.negative} />
+                <Icon name="close" size={24} color={COLORS.Text.primary} />
               ) : (
-                <Typography variant="label" color={COLORS.White}>
+                <Typography variant="body" color={COLORS.White}>
                   {setNumber}
                 </Typography>
               )}
@@ -95,7 +94,7 @@ export function SetPills({
         accessibilityRole="button"
         accessibilityLabel="Добавить подход"
       >
-        <Icon name="plus" size={18} color={COLORS.Text.accent} />
+        <Icon name="plus" size={24} color={COLORS.Text.accent} />
       </Pressable>
     </View>
   );
@@ -128,8 +127,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   pillRemovable: {
-    borderStyle: 'dashed',
-    borderColor: COLORS.Stroke.negative,
+    borderStyle: 'solid',
+    borderColor: COLORS.Stroke.secondary,
   },
   addPill: {
     width: 48,

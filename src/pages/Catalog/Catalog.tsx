@@ -172,7 +172,7 @@ export default function CatalogScreen() {
           )
         }
         renderItem={({ item, index }) => (
-          <FadeInItem index={index}>
+          <FadeInItem index={index} style={styles.itemList}>
             {item.type === 'wide' ? (
               <ProgramCard program={item.program} />
             ) : (
@@ -198,15 +198,24 @@ export default function CatalogScreen() {
 }
 
 const styles = StyleSheet.create({
-  list: { flex: 1 },
-  emptyContent: { flexGrow: 1 },
+  list: {
+    flex: 1,
+  },
+  itemList: {
+    paddingHorizontal: 8,
+  },
+  emptyContent: {
+    flexGrow: 1,
+  },
   empty: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.xl,
   },
-  previewWrap: { position: 'relative' },
+  previewWrap: {
+    position: 'relative',
+  },
   previewHeaderOverlay: {
     position: 'absolute',
     top: 0,
@@ -221,7 +230,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: SHEET_OVERLAP,
     borderTopRightRadius: SHEET_OVERLAP,
   },
-  mediumRow: { flexDirection: 'row', gap: spacing.md },
-  mediumItemPaired: { flex: 1 },
-  mediumItemAlone: { width: '48%' },
+  mediumRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
+  },
+  mediumItemPaired: {
+    flex: 1,
+  },
+  mediumItemAlone: {
+    width: '50%',
+  },
 });

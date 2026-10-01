@@ -57,12 +57,7 @@ export default function EmailScreen() {
         transition={motion.springSoft}
         style={styles.content}
       >
-        <Typography
-          variant="display"
-          color={COLORS.Text.accent}
-          align="center"
-          style={{ fontSize: 40 }}
-        >
+        <Typography variant="hero" color={COLORS.Text.accent} align="center">
           {'Форма'}
         </Typography>
 
@@ -113,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: spacing.lg,
-    gap: spacing.md,
+    gap: spacing.xs,
   },
   button: { marginTop: spacing.sm },
 });

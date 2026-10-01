@@ -37,7 +37,7 @@ interface Blob {
 
 const BLOBS: Blob[] = [
   {
-    color: PALETTE.amber50,
+    color: '#b229b9',
     size: 300,
     left: '-15%',
     top: '5%',
@@ -46,7 +46,7 @@ const BLOBS: Blob[] = [
     period: 14_000,
   },
   {
-    color: PALETTE.amber70,
+    color: '#5c27b2',
     size: 260,
     left: '45%',
     top: '20%',
@@ -55,7 +55,7 @@ const BLOBS: Blob[] = [
     period: 17_000,
   },
   {
-    color: PALETTE.teal50,
+    color: '#0b2174',
     size: 220,
     left: '15%',
     top: '45%',
@@ -72,7 +72,7 @@ interface AuroraBackgroundProps {
 }
 
 export function AuroraBackground({
-  intensity = 0.18,
+  intensity = 0.2,
   style,
 }: AuroraBackgroundProps) {
   return (

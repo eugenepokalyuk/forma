@@ -31,10 +31,12 @@ export function WeekStrip({ trainedDates }: WeekStripProps) {
             </Typography>
 
             <View
-              style={[styles.underline, day.isToday && styles.underlineActive]}
+              style={[
+                styles.underline,
+                day.isToday && styles.underlineActive,
+                trained && styles.underlinePositive,
+              ]}
             />
-
-            <View style={[styles.dot, trained && styles.dotActive]} />
           </View>
         );
       })}
@@ -44,7 +46,7 @@ export function WeekStrip({ trainedDates }: WeekStripProps) {
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  col: { alignItems: 'flex-start', gap: spacing.xs, minWidth: 46 },
+  col: { alignItems: 'flex-start', gap: spacing.xs, minWidth: 50 },
   underline: {
     width: '100%',
     height: 1,
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Text.tertiary,
   },
   underlineActive: { backgroundColor: COLORS.Text.primary },
+  underlinePositive: { backgroundColor: COLORS.Text.positive },
   dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: 'transparent' },
   dotActive: { backgroundColor: COLORS.Text.positive },
 });

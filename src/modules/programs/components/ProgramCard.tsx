@@ -110,24 +110,39 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderWidth: 0,
   },
-  cardClip: { overflow: 'hidden' },
-  coverTint: { backgroundColor: COLORS.Overlay.tint },
-  row: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm },
-  title: { flexShrink: 1 },
+  cardClip: {
+    overflow: 'hidden',
+  },
+  coverTint: {
+    backgroundColor: COLORS.Overlay.tint,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: spacing.sm,
+  },
+  title: {
+    flexShrink: 1,
+  },
   badgeRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.xs,
     marginTop: 4,
   },
-  subtitle: { marginTop: 4 },
+  subtitle: {
+    marginTop: 4,
+  },
   activeBadge: {
     backgroundColor: COLORS.Surface.positiveSubdued,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm,
     paddingVertical: 3,
   },
-  reactions: { flexDirection: 'row', gap: spacing.sm },
+  reactions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
   reactionChip: {
     flexDirection: 'row',
     alignItems: 'center',

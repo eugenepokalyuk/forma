@@ -11,11 +11,7 @@ export function PreviousResultLabel({
   if (!lastLog) return null;
 
   return (
-    <Typography
-      variant="body"
-      color={COLORS.Text.secondary}
-      style={{ fontSize: 14 }}
-    >
+    <Typography variant="body" color={COLORS.Text.secondary}>
       Прошлый раз: {formatLastLog(lastLog)}
     </Typography>
   );

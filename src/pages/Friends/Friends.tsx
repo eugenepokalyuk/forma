@@ -76,7 +76,10 @@ export default function FriendsScreen() {
         : 'Новых запросов нет';
 
   return (
-    <ScreenContainer edges={[]} contentStyle={{ gap: spacing.md }}>
+    <ScreenContainer
+      edges={[]}
+      contentStyle={{ gap: spacing.md, paddingHorizontal: spacing.sm }}
+    >
       <Stack.Screen options={{ title: 'Друзья' }} />
 
       <Input

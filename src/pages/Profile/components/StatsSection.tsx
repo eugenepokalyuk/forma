@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ErrorState, Section, StatTile } from '@/shared/ui';
 import { useProfileStats } from '@/pages/Profile/hooks/useProfileStats';
-import { COLORS, spacing } from '@/theme';
+import { COLORS, screenPadding, spacing } from '@/theme';
 
 export function StatsSection() {
   const { data, isError, refetch, streak, workoutsCount, totalTonnage } =
@@ -18,7 +18,7 @@ export function StatsSection() {
   }
 
   return (
-    <Section title="Итоги">
+    <Section title="Итоги" padding>
       <View style={styles.row}>
         <StatTile
           icon="fire"

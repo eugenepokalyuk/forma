@@ -80,6 +80,7 @@ export function WeightRepsInput({
 
       <Button
         title="Далее"
+        variant="secondary"
         onPress={() =>
           onDone({ weight: showWeight ? weight : null, repsDone: reps })
         }

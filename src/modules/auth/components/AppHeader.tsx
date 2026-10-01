@@ -9,29 +9,31 @@ import { useAuthStore } from '../store';
 export function AppHeader() {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
 
+  if (hasProAccess) {
+    return null;
+  }
+
   return (
     <View style={styles.topBar}>
       <Logo />
 
-      {hasProAccess ? null : (
-        <Pressable onPress={showProInfo} style={styles.proBadge}>
-          <Typography
-            variant="title"
-            color={COLORS.Text.accent}
-            style={styles.badgeText}
-          >
-            {'ПРО'}
-          </Typography>
+      <Pressable onPress={showProInfo} style={styles.proBadge}>
+        <Typography
+          variant="title"
+          color={COLORS.Text.accent}
+          style={styles.badgeText}
+        >
+          {'ПРО'}
+        </Typography>
 
-          <Typography
-            variant="title"
-            color={COLORS.Text.primary}
-            style={styles.badgeText}
-          >
-            {'БЕСПЛАТНО'}
-          </Typography>
-        </Pressable>
-      )}
+        <Typography
+          variant="title"
+          color={COLORS.Text.primary}
+          style={styles.badgeText}
+        >
+          {'БЕСПЛАТНО'}
+        </Typography>
+      </Pressable>
     </View>
   );
 }

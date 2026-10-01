@@ -75,7 +75,7 @@ export default function CodeScreen() {
       transition={motion.springSoft}
       style={styles.container}
     >
-      <Typography variant="title" align="center">
+      <Typography variant="hero" align="center">
         {'Код из письма'}
       </Typography>
 
@@ -114,9 +114,7 @@ export default function CodeScreen() {
               transition={motion.springy}
               style={styles.digitBox}
             >
-              <Typography variant="heading" style={{ fontSize: 24 }}>
-                {code[i] ?? ''}
-              </Typography>
+              <Typography variant="display">{code[i] ?? ''}</Typography>
             </MotiView>
           );
         })}
@@ -137,16 +135,6 @@ export default function CodeScreen() {
       {error ? (
         <Typography variant="label" color={COLORS.Text.negative} align="center">
           {error}
-        </Typography>
-      ) : null}
-
-      {loading ? (
-        <Typography
-          variant="label"
-          color={COLORS.Text.secondary}
-          align="center"
-        >
-          {'Проверяем'}
         </Typography>
       ) : null}
 
@@ -178,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Background.primary,
     padding: spacing.lg,
     justifyContent: 'center',
-    gap: spacing.md,
+    gap: spacing.xs,
   },
   digits: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm },
   digitBox: {

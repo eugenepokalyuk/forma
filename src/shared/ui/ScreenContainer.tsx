@@ -25,7 +25,6 @@ interface ScreenContainerProps extends React.PropsWithChildren {
   onRefresh?: () => void | Promise<void>;
   refreshing?: boolean;
   edges?: Edge[];
-  withPadding?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
   // Градиент цвета фона под статус-баром. Выключают экраны, у которых
   // сверху во всю высоту картинка — там свой тёмный градиент.
@@ -70,7 +69,6 @@ export function ScreenContainer({
   onRefresh,
   refreshing = false,
   edges = ['top', 'bottom'],
-  withPadding = true,
   contentStyle,
   statusBarScrim = true,
 }: ScreenContainerProps) {
@@ -83,8 +81,6 @@ export function ScreenContainer({
   const scrollInset = underStatusBar
     ? statusBarScroll
     : { scrollProps: {}, paddingTop: 0, refreshOffset: 0 };
-
-  const paddingHorizontal = withPadding ? screenPadding : 0;
 
   if (loading) {
     return (
@@ -102,7 +98,7 @@ export function ScreenContainer({
         <ScrollView
           {...scrollInset.scrollProps}
           showsVerticalScrollIndicator={false}
-          style={[styles.fill, { paddingHorizontal }]}
+          style={styles.fill}
           contentContainerStyle={[
             { paddingTop: scrollInset.paddingTop },
             contentStyle,
@@ -121,9 +117,7 @@ export function ScreenContainer({
           {children}
         </ScrollView>
       ) : (
-        <View style={[styles.fill, { paddingHorizontal }, contentStyle]}>
-          {children}
-        </View>
+        <View style={[styles.fill, contentStyle]}>{children}</View>
       )}
 
       {underStatusBar && statusBarScrim ? <StatusBarScrim /> : null}
@@ -133,7 +127,16 @@ export function ScreenContainer({
 
 const styles = StyleSheet.create({
   scrim: { position: 'absolute', top: 0, left: 0, right: 0 },
-  container: { flex: 1, backgroundColor: COLORS.Background.primary },
-  fill: { flex: 1 },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.Background.primary,
+  },
+  fill: {
+    flex: 1,
+  },
+  center: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });

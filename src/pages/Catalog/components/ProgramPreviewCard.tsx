@@ -35,7 +35,7 @@ export function ProgramPreviewCard({
   return (
     <Pressable
       onPress={() => router.push(ROUTES.program(program.id))}
-      style={[styles.wrap, { width, marginHorizontal: -screenPadding }]}
+      style={[styles.wrap, { width }]}
     >
       {program.coverImageUrl ? (
         <Image
@@ -88,16 +88,14 @@ export function ProgramPreviewCard({
 
 const styles = StyleSheet.create({
   wrap: {
-    height: 350,
+    height: 400,
     justifyContent: 'flex-end',
     backgroundColor: COLORS.Surface.primary,
-    borderBottomLeftRadius: radius.lg,
-    borderBottomRightRadius: radius.lg,
     overflow: 'hidden',
   },
   fallback: { backgroundColor: COLORS.Surface.secondary },
   content: {
-    paddingHorizontal: screenPadding + spacing.md,
+    paddingHorizontal: spacing.md,
     paddingBottom: spacing.lg,
   },
   description: { marginTop: 4 },

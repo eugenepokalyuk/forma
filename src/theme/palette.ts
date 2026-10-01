@@ -10,10 +10,10 @@
  */
 export const PALETTE = {
   white: '#FFFFFF',
-  black: '#000000',
+  black: '#111111',
 
   // Истинный чёрный фон + три слоя поверхностей поверх него.
-  neutral00: '#000000',
+  neutral00: '#111111',
   neutral10: '#1C1C1E',
   neutral15: '#242426',
   neutral20: '#2C2C2E',
@@ -28,6 +28,6 @@ export const PALETTE = {
   amber70: '#E68E00',
 
   red50: '#FF453A',
-  green50: '#30D158',
+  green50: '#00FF1B',
   teal50: '#64D2FF',
 } as const;

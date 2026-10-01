@@ -74,7 +74,6 @@ export default function FeedScreen() {
         onEndReached={() => {
           if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
         }}
-        ListHeaderComponent={<ScreenHeader title="Лента" />}
         ListEmptyComponent={
           isError ? (
             <ErrorState onRetry={refetch} />

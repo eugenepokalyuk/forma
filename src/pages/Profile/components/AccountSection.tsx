@@ -14,7 +14,7 @@ export function AccountSection() {
   const { data: socialSummary } = useSocialSummary();
 
   return (
-    <Section title="Аккаунт">
+    <Section title="Аккаунт" padding>
       <ListGroup>
         <ListRow
           icon="account-multiple-outline"
@@ -26,20 +26,6 @@ export function AccountSection() {
           }
           onPress={() => router.push(ROUTES.friends)}
           isFirst
-        />
-
-        <ListRow
-          icon="account-cancel-outline"
-          title="Заблокированные"
-          onPress={() => router.push(ROUTES.blocked)}
-        />
-
-        <ListRow
-          icon={hasProAccess ? 'crown' : 'crown-outline'}
-          tint={hasProAccess ? COLORS.Text.accent : undefined}
-          title="Тариф"
-          subtitle={hasProAccess ? 'ПРО' : 'Бесплатный'}
-          showChevron={false}
         />
 
         <ListRow
@@ -60,6 +46,20 @@ export function AccountSection() {
               thumbColor={COLORS.White}
             />
           }
+        />
+
+        <ListRow
+          icon="account-cancel-outline"
+          title="Заблокированные"
+          onPress={() => router.push(ROUTES.blocked)}
+        />
+
+        <ListRow
+          icon={hasProAccess ? 'crown' : 'crown-outline'}
+          tint={hasProAccess ? COLORS.Text.accent : undefined}
+          title="Тариф"
+          subtitle={hasProAccess ? 'ПРО' : 'Бесплатный'}
+          showChevron={false}
         />
       </ListGroup>
     </Section>

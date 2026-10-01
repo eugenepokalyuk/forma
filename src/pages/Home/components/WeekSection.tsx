@@ -8,7 +8,7 @@ export function WeekSection() {
   const trainedDates = useTrainedDates();
 
   return (
-    <Section>
+    <Section padding>
       <Typography
         variant="label"
         color={COLORS.Text.tertiary}

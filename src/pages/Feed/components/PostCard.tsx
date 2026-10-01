@@ -114,9 +114,11 @@ export function PostCard({
         />
       ) : null}
 
-      <Typography variant="body" style={styles.title}>
-        {post.title}
-      </Typography>
+      {post.title && (
+        <Typography variant="body" style={styles.title}>
+          {post.title}
+        </Typography>
+      )}
 
       <View style={styles.actionsBox}>
         <View style={styles.actionsRow}>

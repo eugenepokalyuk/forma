@@ -7,7 +7,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 export function NoProgramsView() {
   return (
-    <Section>
+    <Section padding>
       <View style={styles.card}>
         <Typography variant="title">
           {'Выберите программу для тренировки'}

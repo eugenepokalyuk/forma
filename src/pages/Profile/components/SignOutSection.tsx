@@ -6,7 +6,7 @@ export function SignOutSection() {
   const deleteAccount = useDeleteAccount();
 
   return (
-    <Section>
+    <Section padding>
       <ListGroup>
         <ListRow
           icon="logout"

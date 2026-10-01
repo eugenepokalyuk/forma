@@ -9,13 +9,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 export function ProgramsListView({ programs }: { programs: UserProgram[] }) {
   return (
-    <Section
-      title="Мои программы"
-      action={{
-        label: 'Каталог',
-        onPress: () => router.push(ROUTES.catalog),
-      }}
-    >
+    <Section padding>
       <View style={{ gap: spacing.sm }}>
         {programs.map((item, index) => (
           <FadeInItem key={item.id} index={index}>

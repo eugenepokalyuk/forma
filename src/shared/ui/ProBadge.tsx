@@ -9,10 +9,8 @@ import { Typography } from './Typography';
 export function ProBadge({ style }: { style?: StyleProp<ViewStyle> }) {
   return (
     <View style={[styles.badge, style]} accessibilityLabel="ПРО">
-      <Icon name="crown" size={12} color={COLORS.Text.inverse} />
-
       <Typography
-        variant="caption"
+        variant="body"
         color={COLORS.Text.inverse}
         style={styles.text}
       >
@@ -31,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Surface.accent,
     borderRadius: radius.pill,
     paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
+    paddingVertical: 2,
   },
-  text: { fontFamily: HEADING_ITALIC.extraBold, fontSize: 14 },
+  text: { fontFamily: HEADING_ITALIC.extraBold },
 });

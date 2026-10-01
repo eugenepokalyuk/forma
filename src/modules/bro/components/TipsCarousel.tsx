@@ -127,14 +127,9 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
   if (!messages.length) return null;
 
   return (
-    <View style={styles.bleed}>
-      <Typography
-        variant="title"
-        color={COLORS.Text.accent}
-        align="center"
-        style={styles.header}
-      >
-        {'ФИТНЕС БРО'}
+    <View>
+      <Typography variant="body" color={COLORS.Text.accent} align="center">
+        {'Фитнес Бро'}
       </Typography>
 
       <FlatList
@@ -180,26 +175,27 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
 }
 
 const styles = StyleSheet.create({
-  bleed: { marginHorizontal: -screenPadding, paddingVertical: spacing.md },
-  header: { marginBottom: spacing.sm, paddingHorizontal: screenPadding },
   card: {
-    minHeight: 120,
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.md,
   },
-  cta: { marginTop: spacing.sm, alignSelf: 'center' },
+  cta: {
+    alignSelf: 'center',
+  },
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: spacing.xs,
-    marginTop: spacing.sm,
   },
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 8,
+    width: 4,
+    height: 4,
+    borderRadius: 4,
     backgroundColor: COLORS.Surface.secondary,
   },
-  dotActive: { backgroundColor: COLORS.Surface.accent, width: 8 },
+  dotActive: {
+    backgroundColor: COLORS.White,
+    width: 4,
+  },
 });

@@ -5,7 +5,7 @@ import { ListGroup, ListRow, Section } from '@/shared/ui';
 
 export function LegalSection() {
   return (
-    <Section title="О приложении">
+    <Section title="О приложении" padding>
       <ListGroup>
         <ListRow
           icon="shield-lock-outline"

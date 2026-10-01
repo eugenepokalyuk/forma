@@ -7,7 +7,7 @@ import type { WorkoutWithExercises } from '@/modules/programs';
 import { WeekPill } from '@/pages/Program/components/WeekPill';
 import { WorkoutListItem } from '@/pages/Program/components/WorkoutListItem';
 import { ErrorState, ScreenContainer, Typography } from '@/shared/ui';
-import { COLORS, spacing } from '@/theme';
+import { COLORS, screenPadding, spacing } from '@/theme';
 import { useAuthStore } from '@/modules/auth';
 import { useStartWorkout } from '@/modules/workout';
 import {
@@ -47,6 +47,7 @@ export default function ProgramScreen() {
   const isInLibrary = (userPrograms ?? []).some(
     (up) => up.programId === data.id,
   );
+
   const isProLocked = data.tier === 'pro' && !hasProAccess;
 
   const workoutsOfWeek = data.workouts.filter((w) => w.weekNumber === week);
@@ -56,9 +57,7 @@ export default function ProgramScreen() {
 
   return (
     <ScreenContainer edges={[]}>
-      <Stack.Screen options={{ title: '' }} />
-
-      <View>
+      <View style={styles.box}>
         <Typography
           variant="display"
           color={COLORS.Text.primary}
@@ -119,11 +118,15 @@ export default function ProgramScreen() {
 }
 
 const styles = StyleSheet.create({
+  box: {
+    padding: screenPadding,
+  },
   titleLine: {
     lineHeight: 32,
   },
   weekScroll: {
     flexGrow: 0,
+    padding: screenPadding,
   },
   weekRow: {
     paddingVertical: spacing.sm,
@@ -131,6 +134,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+    padding: screenPadding,
   },
   listContent: {
     paddingTop: spacing.sm,

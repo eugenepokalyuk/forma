@@ -31,7 +31,6 @@ export default function ProfileScreen() {
       refreshing={isRefreshing}
       contentStyle={{ paddingBottom: tabBarClearance }}
     >
-      <ScreenHeader title="Профиль" />
       <IdentitySection />
       <StatsSection />
       <AccountSection />

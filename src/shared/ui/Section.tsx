@@ -1,22 +1,28 @@
-import type { ReactNode } from 'react';
+import React from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { Typography } from './Typography';
-import { spacing } from '@/theme';
+import { screenPadding, spacing } from '@/theme';
 
-interface SectionProps {
+import { Typography } from './Typography';
+
+interface SectionProps extends React.PropsWithChildren {
   title?: string;
-  action?: { label: string; onPress: () => void };
-  children: ReactNode;
+  padding?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
 // Блок контента на всю ширину контейнера — без своего горизонтального
 // паддинга (его задаёт ScreenContainer), с единым отступом снизу между
-// секциями экрана. Каждый самостоятельный блок экрана — своя Section.
-export function Section({ title, action, children, style }: SectionProps) {
+// секциями экрана. Каждый самостоятельный блок экрана — своя Section
+export function Section({ title, padding, style, children }: SectionProps) {
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[
+        styles.container,
+        padding && { paddingHorizontal: screenPadding },
+        style,
+      ]}
+    >
       {title ? (
         <View style={styles.header}>
           <Typography variant="display" style={styles.title}>

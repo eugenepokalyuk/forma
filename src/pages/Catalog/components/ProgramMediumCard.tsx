@@ -48,23 +48,25 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
           {program.tier === 'pro' ? <ProBadge style={styles.proBadge} /> : null}
         </View>
 
-        <Typography
-          variant="title"
-          align="center"
-          numberOfLines={2}
-          style={styles.title}
-        >
-          {program.title}
-        </Typography>
+        <View style={styles.textCard}>
+          <Typography
+            variant="title"
+            align="left"
+            numberOfLines={2}
+            style={styles.title}
+          >
+            {program.title}
+          </Typography>
 
-        <Typography
-          variant="body"
-          color={COLORS.Text.secondary}
-          align="center"
-          numberOfLines={2}
-        >
-          {formatProgramSubtitle(program)}
-        </Typography>
+          <Typography
+            variant="body"
+            color={COLORS.Text.secondary}
+            align="left"
+            numberOfLines={2}
+          >
+            {formatProgramSubtitle(program)}
+          </Typography>
+        </View>
 
         {reactions.length > 0 ? (
           <View style={styles.reactions}>
@@ -94,6 +96,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     elevation: 0,
   },
+  textCard: {
+    alignItems: 'flex-start',
+    gap: spacing.xs,
+  },
   // Обложка на всю ширину карточки, квадратная.
   cover: { width: '100%', aspectRatio: 1 },
   coverImage: {
@@ -104,7 +110,9 @@ const styles = StyleSheet.create({
   },
   proBadge: { position: 'absolute', right: spacing.xs, bottom: spacing.xs },
   coverPlaceholder: { alignItems: 'center', justifyContent: 'center' },
-  title: { marginTop: spacing.xs },
+  title: {
+    marginTop: spacing.xs,
+  },
   reactions: {
     flexDirection: 'row',
     gap: spacing.xs,
