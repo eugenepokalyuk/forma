@@ -46,12 +46,21 @@ export function Button({
   const isPrimary = variant === 'primary';
   const isDanger = variant === 'danger';
   const inert = disabled || loading;
+  // Со стеклом неактивность — без прозрачности: стекло внутри полупрозрачного
+  // родителя не рисуется. Вместо этого стекло без оттенка и приглушённый текст.
+  const dimmed = inert && !GlassView;
+  const labelColor =
+    inert && GlassView
+      ? COLORS.Text.tertiary
+      : isPrimary
+        ? COLORS.Text.inverse
+        : COLORS.Text.primary;
 
   return (
     <MotiView
       animate={{
         scale: pressed && !inert ? 0.96 : 1,
-        opacity: inert ? 0.45 : 1,
+        opacity: dimmed ? 0.45 : 1,
       }}
       transition={motion.springy}
       style={style}
@@ -67,18 +76,14 @@ export function Button({
         disabled={inert}
         accessibilityRole="button"
         accessibilityState={{ disabled: inert, busy: !!loading }}
-        // Под стеклом основной кнопки — сплошная заливка: внутри
-        // полупрозрачного родителя (плавное появление экрана, неактивная
-        // кнопка) стекло может не отрисоваться, и чёрный текст пропал бы
-        // на тёмном фоне.
-        style={[styles.base, GlassView && isPrimary && styles.primaryBacking]}
+        style={styles.base}
       >
         {GlassView ? (
           // iOS 26+: нативное стекло, подсветка нажатия — тоже нативная.
           <GlassView
             glassEffectStyle="regular"
             isInteractive
-            tintColor={GLASS_TINT[variant]}
+            tintColor={inert ? undefined : GLASS_TINT[variant]}
             style={[StyleSheet.absoluteFill, styles.glass]}
           />
         ) : null}
@@ -98,14 +103,9 @@ export function Button({
         ) : null}
 
         {loading ? (
-          <ActivityIndicator
-            color={isPrimary ? COLORS.Text.inverse : COLORS.Text.primary}
-          />
+          <ActivityIndicator color={labelColor} />
         ) : (
-          <Typography
-            variant="subtitle"
-            color={isPrimary ? COLORS.Text.inverse : COLORS.Text.primary}
-          >
+          <Typography variant="subtitle" color={labelColor}>
             {title}
           </Typography>
         )}
@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     overflow: 'hidden',
   },
-  primaryBacking: { backgroundColor: COLORS.Surface.accent },
   secondaryFill: {
     backgroundColor: COLORS.Surface.secondary,
     borderRadius: radius.pill,

@@ -1,6 +1,5 @@
 import * as Haptics from 'expo-haptics';
 import { Image } from 'expo-image';
-import { MotiView } from 'moti';
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
@@ -8,8 +7,8 @@ import Animated, { Easing, withTiming } from 'react-native-reanimated';
 import * as Reanimated from 'react-native-reanimated';
 import { Circle, Svg } from 'react-native-svg';
 
-import { Button, Typography } from '@/shared/ui';
-import { COLORS, motion, radius, spacing } from '@/theme';
+import { Button, FadeInCover, Typography } from '@/shared/ui';
+import { COLORS, radius, spacing } from '@/theme';
 import { formatMMSS } from '@/shared/lib/string/number';
 import { useSessionStore } from '@/modules/workout';
 
@@ -96,10 +95,7 @@ export function RestScreen({
   }));
 
   return (
-    <MotiView
-      from={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ type: 'timing', duration: motion.base }}
+    <View
       style={[
         styles.container,
         {
@@ -189,7 +185,9 @@ export function RestScreen({
           style={{ flex: 1 }}
         />
       </View>
-    </MotiView>
+
+      <FadeInCover />
+    </View>
   );
 }
 

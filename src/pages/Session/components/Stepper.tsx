@@ -3,9 +3,8 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-import { Icon } from '@/shared/ui';
-import { GlassView } from '@/shared/ui/glass';
-import { COLORS, TYPOGRAPHY, motion, radius, spacing } from '@/theme';
+import { GlassIconButton } from '@/shared/ui';
+import { COLORS, TYPOGRAPHY, motion, spacing } from '@/theme';
 
 interface StepperProps {
   value: number;
@@ -42,9 +41,9 @@ export function Stepper({
 
   return (
     <View style={[styles.row, compact && styles.rowCompact]}>
-      <RoundButton
+      <GlassIconButton
         icon="minus"
-        compact={compact}
+        accessibilityLabel="Уменьшить"
         onPress={() => bump(roundTo(value - step))}
       />
 
@@ -81,53 +80,13 @@ export function Stepper({
         </Pressable>
       )}
 
-      <RoundButton
+      <GlassIconButton
         icon="plus"
-        compact={compact}
+        variant="accent"
+        accessibilityLabel="Увеличить"
         onPress={() => bump(roundTo(value + step))}
       />
     </View>
-  );
-}
-
-function RoundButton({
-  icon,
-  compact,
-  onPress,
-}: {
-  icon: 'plus' | 'minus';
-  compact?: boolean;
-  onPress: () => void;
-}) {
-  const [pressed, setPressed] = React.useState(false);
-
-  return (
-    <MotiView
-      animate={{ scale: pressed ? 0.9 : 1 }}
-      transition={motion.springy}
-    >
-      <Pressable
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel={icon === 'plus' ? 'Увеличить' : 'Уменьшить'}
-        onPressIn={() => setPressed(true)}
-        onPressOut={() => setPressed(false)}
-        style={[
-          compact ? styles.btnCompact : styles.btn,
-          // iOS 26+: стекло вместо заливки (как у Button).
-          GlassView && styles.btnGlass,
-        ]}
-      >
-        {GlassView ? (
-          <GlassView
-            glassEffectStyle="regular"
-            isInteractive
-            style={[StyleSheet.absoluteFill, styles.glass]}
-          />
-        ) : null}
-        <Icon name={icon} size={24} color={COLORS.Icon.primary} />
-      </Pressable>
-    </MotiView>
   );
 }
 
@@ -136,32 +95,8 @@ function roundTo(n: number) {
 }
 
 const styles = StyleSheet.create({
-  glass: { borderRadius: radius.pill },
-  btnGlass: {
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    overflow: 'hidden',
-  },
   row: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   rowCompact: { gap: spacing.sm },
-  btn: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.pill,
-    backgroundColor: COLORS.Surface.secondary,
-    borderWidth: 1,
-    borderColor: COLORS.Stroke.secondary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  btnCompact: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.pill,
-    backgroundColor: COLORS.Surface.tertiary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   valueBox: { minWidth: 92, alignItems: 'center', paddingVertical: spacing.sm },
   valueBoxCompact: { minWidth: 50, alignItems: 'center' },
   value: { ...TYPOGRAPHY.title, color: COLORS.Text.primary },

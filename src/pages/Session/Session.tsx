@@ -15,7 +15,7 @@ import { NoteModal } from '@/pages/Session/components/NoteModal';
 import { RestScreen } from '@/pages/Session/components/RestScreen';
 import { SetPills } from '@/pages/Session/components/SetPills';
 import { useRestEndSound } from '@/pages/Session/hooks/useRestEndSound';
-import { Typography } from '@/shared/ui';
+import { FadeInCover, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
 import {
   discardWorkout,
@@ -242,8 +242,8 @@ export default function ActiveSessionScreen() {
       <AnimatePresence exitBeforeEnter>
         <MotiView
           key={exercise.id}
-          from={{ opacity: 0, translateX: 24 }}
-          animate={{ opacity: 1, translateX: 0 }}
+          from={{ translateX: 24 }}
+          animate={{ translateX: 0 }}
           exit={{ opacity: 0, translateX: -24 }}
           transition={motion.springSoft}
           style={styles.body}
@@ -288,6 +288,8 @@ export default function ActiveSessionScreen() {
               onFinish={onFinishMenu}
             />
           </ScrollView>
+
+          <FadeInCover />
         </MotiView>
       </AnimatePresence>
 
@@ -314,7 +316,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'flex-start',
     gap: spacing.md,
-    padding: spacing.md,
+    padding: spacing.sm,
     backgroundColor: COLORS.Background.elevated,
     borderRadius: radius.lg,
   },

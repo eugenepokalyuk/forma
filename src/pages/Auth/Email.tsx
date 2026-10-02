@@ -6,7 +6,7 @@ import * as React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 import { sendOtpApi } from '@/modules/auth';
-import { Button, Input, Typography } from '@/shared/ui';
+import { Button, FadeInCover, Input, Typography } from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -52,8 +52,8 @@ export default function EmailScreen() {
       />
 
       <MotiView
-        from={{ opacity: 0, translateY: 16 }}
-        animate={{ opacity: 1, translateY: 0 }}
+        from={{ translateY: 16 }}
+        animate={{ translateY: 0 }}
         transition={motion.springSoft}
         style={styles.content}
       >
@@ -97,6 +97,8 @@ export default function EmailScreen() {
           style={styles.button}
         />
       </MotiView>
+
+      <FadeInCover />
     </KeyboardAvoidingView>
   );
 }

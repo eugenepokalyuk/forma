@@ -1,4 +1,3 @@
-import { MotiView } from 'moti';
 import type { ReactNode } from 'react';
 import {
   KeyboardAvoidingView,
@@ -9,7 +8,7 @@ import {
 } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { Icon, Typography } from '@/shared/ui';
+import { FadeInCover, Icon, Typography } from '@/shared/ui';
 import { COLORS, hitTarget, screenPadding, spacing } from '@/theme';
 
 interface FinishStepProps {
@@ -37,9 +36,7 @@ export function FinishStep({
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <View
         style={[
           styles.content,
           {
@@ -75,7 +72,9 @@ export function FinishStep({
         <View style={styles.body}>{children}</View>
 
         <View style={styles.actions}>{actions}</View>
-      </MotiView>
+
+        <FadeInCover />
+      </View>
     </KeyboardAvoidingView>
   );
 }
