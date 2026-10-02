@@ -1,11 +1,16 @@
 import { isAxiosError } from 'axios';
 
+import { createPostApi, socialKeys } from '@/modules/social';
+import { queryClient } from '@/shared/lib/queryClient';
+
 import { completeSessionApi } from '../api/completeSessionApi';
 import { discardSessionApi } from '../api/discardSessionApi';
 import { logSetApi } from '../api/logSetApi';
 import { startSessionApi } from '../api/startSessionApi';
+import { submitReactionApi } from '../api/submitReactionApi';
 import { undoSetApi } from '../api/undoSetApi';
 import { useOutboxStore, type Operation } from './outbox';
+import { existingPhotos } from './postPhotos';
 
 // Сессия так и не была создана на сервере (startSession ушёл в «мёртвые») —
 // операции этой сессии отправить некуда. Очередь строго по порядку, поэтому
@@ -60,6 +65,17 @@ export async function sendOp(op: Operation): Promise<void> {
       await ignoreNotFound(
         undoSetApi(serverIdOf(op.localId), op.exerciseId, op.setNumber),
       );
+      return;
+    case 'react':
+      await submitReactionApi(serverIdOf(op.localId), op.reaction);
+      return;
+    case 'createPost':
+      await createPostApi({
+        sessionId: serverIdOf(op.localId),
+        title: op.title,
+        photoUris: existingPhotos(op.photoUris),
+      });
+      void queryClient.invalidateQueries({ queryKey: socialKeys.feed });
       return;
     case 'complete':
       await completeSessionApi(serverIdOf(op.localId), op.notes);

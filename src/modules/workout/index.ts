@@ -7,6 +7,7 @@ export * from './api/getSessionApi';
 export * from './api/getSessionsApi';
 export * from './api/logSetApi';
 export * from './api/startSessionApi';
+export * from './api/submitReactionApi';
 export * from './api/undoSetApi';
 export { useSessionStore, type ActiveSession, type LocalLog } from './store';
 export { useOutboxStore } from './sync/outbox';

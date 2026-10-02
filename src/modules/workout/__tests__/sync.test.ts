@@ -19,6 +19,7 @@ const API = [
   'startSessionApi',
   'logSetApi',
   'undoSetApi',
+  'submitReactionApi',
   'completeSessionApi',
   'discardSessionApi',
 ] as const;
@@ -27,6 +28,23 @@ type ApiName = (typeof API)[number];
 jest.mock('../api/startSessionApi', () => ({ startSessionApi: jest.fn() }));
 jest.mock('../api/logSetApi', () => ({ logSetApi: jest.fn() }));
 jest.mock('../api/undoSetApi', () => ({ undoSetApi: jest.fn() }));
+jest.mock('../api/submitReactionApi', () => ({
+  submitReactionApi: jest.fn(),
+}));
+// Пост уходит через API модуля social — подменяем модуль целиком.
+jest.mock('@/modules/social', () => ({
+  createPostApi: jest.fn(),
+  socialKeys: { feed: ['feed'] },
+}));
+// Файловой системы в jest нет: копии фото — те же uri.
+jest.mock('../sync/postPhotos', () => ({
+  keepPhotos: (uris: string[]) => uris,
+  existingPhotos: (uris: string[]) => uris,
+  sweepPhotos: jest.fn(),
+}));
+jest.mock('@/shared/lib/queryClient', () => ({
+  queryClient: { invalidateQueries: jest.fn() },
+}));
 jest.mock('../api/completeSessionApi', () => ({
   completeSessionApi: jest.fn(),
 }));
@@ -50,6 +68,8 @@ function load() {
     processOutbox: typeof import('../sync/processOutbox').processOutbox;
     session: typeof import('../store');
     api: Record<ApiName, jest.Mock>;
+    createPostApi: jest.Mock;
+    sweepPhotos: jest.Mock;
     reportWarning: jest.Mock;
   };
   jest.isolateModules(() => {
@@ -69,6 +89,8 @@ function load() {
       processOutbox: require('../sync/processOutbox').processOutbox,
       session: require('../store'),
       api,
+      createPostApi: require('@/modules/social').createPostApi,
+      sweepPhotos: require('../sync/postPhotos').sweepPhotos,
       reportWarning: require('@/shared/lib/monitoring').reportWarning,
     };
   });
@@ -255,12 +277,62 @@ describe('очередь синхронизации тренировки', () =>
     expect(ops()).toEqual(['startSession', 'logSet']);
   });
 
+  it('оценка и пост уходят до завершения и привязаны к серверной сессии', async () => {
+    m.createPostApi.mockResolvedValue({});
+    m.W.startWorkout({ programId: 'p1', workout });
+    logSet(1);
+    m.W.completeWorkout({
+      notes: 'ок',
+      reaction: 'fire',
+      post: { title: 'Ноги', photoUris: ['file:///1.jpg'] },
+    });
+    await settle();
+
+    expect(ops()).toEqual([]);
+    expect(m.api.submitReactionApi).toHaveBeenCalledWith('S1', 'fire');
+    expect(m.createPostApi).toHaveBeenCalledWith({
+      sessionId: 'S1',
+      title: 'Ноги',
+      photoUris: ['file:///1.jpg'],
+    });
+    const order = (fn: jest.Mock) => fn.mock.invocationCallOrder[0];
+    expect(order(m.api.submitReactionApi)).toBeLessThan(order(m.createPostApi));
+    expect(order(m.createPostApi)).toBeLessThan(
+      order(m.api.completeSessionApi),
+    );
+    // Пост ушёл — его фото больше не держим.
+    expect(m.sweepPhotos).toHaveBeenLastCalledWith([]);
+  });
+
+  it('без сети оценка и пост ждут в очереди вместе с тренировкой', async () => {
+    m.api.startSessionApi.mockRejectedValueOnce(httpError());
+    m.W.startWorkout({ programId: 'p1', workout });
+    logSet(1);
+    m.W.completeWorkout({
+      reaction: 'meh',
+      post: { title: '', photoUris: ['file:///2.jpg'] },
+    });
+    await settle();
+
+    expect(ops()).toEqual([
+      'startSession',
+      'logSet',
+      'react',
+      'createPost',
+      'complete',
+    ]);
+    // Фото поста в очереди не трогаем, пока он не отправлен.
+    expect(m.sweepPhotos).toHaveBeenLastCalledWith(['file:///2.jpg']);
+    expect(m.session.useSessionStore.getState().active).toBeNull();
+  });
+
   it('завершение без подходов равносильно отмене', async () => {
     m.W.startWorkout({ programId: 'p1', workout });
     await settle();
-    m.W.completeWorkout();
+    m.W.completeWorkout({ reaction: 'fire' });
     await settle();
 
+    expect(m.api.submitReactionApi).not.toHaveBeenCalled();
     expect(m.api.completeSessionApi).not.toHaveBeenCalled();
     expect(m.api.discardSessionApi).toHaveBeenCalledTimes(1);
   });

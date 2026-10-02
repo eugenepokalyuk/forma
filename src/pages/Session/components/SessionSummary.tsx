@@ -8,16 +8,24 @@ import { COLORS, spacing } from '@/theme';
 import { formatMMSS } from '@/shared/lib/string/number';
 import { completeWorkout, tonnage, useSessionStore } from '@/modules/workout';
 
+interface SessionSummaryProps {
+  elapsed: number;
+  notes: string;
+  onNotesChange: (notes: string) => void;
+  onBack: () => void;
+  /** Итог принят — дальше оценка и пост. */
+  onDone: () => void;
+}
+
 export function SessionSummary({
   elapsed,
+  notes,
+  onNotesChange,
   onBack,
-}: {
-  elapsed: number;
-  onBack: () => void;
-}) {
+  onDone,
+}: SessionSummaryProps) {
   const insets = SafeArea.useSafeAreaInsets();
   const active = useSessionStore((s) => s.active);
-  const [notes, setNotes] = React.useState('');
 
   const stats = React.useMemo(() => {
     if (!active) return { sets: 0, tonnage: 0 };
@@ -60,7 +68,7 @@ export function SessionSummary({
 
           <Button
             title="Завершить"
-            onPress={() => completeWorkout(notes)}
+            onPress={() => completeWorkout()}
             style={{ flex: 1 }}
           />
         </View>
@@ -103,7 +111,7 @@ export function SessionSummary({
         style={styles.notesInput}
         placeholder="Заметка о тренировке"
         value={notes}
-        onChangeText={setNotes}
+        onChangeText={onNotesChange}
         multiline
       />
 
@@ -116,11 +124,7 @@ export function SessionSummary({
           onPress={onBack}
           style={{ flex: 1 }}
         />
-        <Button
-          title="Готово"
-          onPress={() => completeWorkout(notes)}
-          style={{ flex: 1 }}
-        />
+        <Button title="Готово" onPress={onDone} style={{ flex: 1 }} />
       </View>
     </MotiView>
   );

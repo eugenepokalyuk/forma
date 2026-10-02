@@ -32,5 +32,5 @@ ui.ts        компоненты модуля (`@/modules/<домен>/ui`)
 - Снаружи — только `@/modules/<домен>` (логика) и `@/modules/<домен>/ui` (компоненты); внутри модуля — относительные пути.
   Так импорт логики не тянет за собой UI — например, в тестах чистых функций.
 - Модули импортируют друг друга только через `index.ts`; циклов нет:
-  `bro → auth, programs, workout`, `auth → workout`, `workout → programs`.
+  `bro → auth, programs, workout`, `auth → workout`, `workout → programs, social`.
 - Серверные данные — через `queries.ts`, клиентское состояние — в `store.ts`.

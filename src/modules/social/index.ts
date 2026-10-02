@@ -6,6 +6,7 @@ export * from './api/getBlockedUsersApi';
 export * from './api/unblockUserApi';
 export * from './api/blockUserApi';
 export * from './api/addCommentApi';
+export * from './api/createPostApi';
 export * from './api/deleteCommentApi';
 export * from './api/followUserApi';
 export * from './api/getCommentsApi';

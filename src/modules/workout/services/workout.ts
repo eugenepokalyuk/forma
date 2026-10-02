@@ -1,8 +1,9 @@
-import type { WorkoutWithExercises } from '@/modules/programs';
+import type { ReactionValue, WorkoutWithExercises } from '@/modules/programs';
 import { uuid } from '@/shared/lib/uuid';
 
 import { useSessionStore, type LocalLog } from '../store';
 import { useOutboxStore, type LogSetOp, type Operation } from '../sync/outbox';
+import { keepPhotos, sweepPhotos } from '../sync/postPhotos';
 import { processOutbox } from '../sync/processOutbox';
 import { loadLastLogs } from './lastLogs';
 
@@ -144,16 +145,35 @@ export function undoSet(exerciseId: string, setNumber: number) {
   });
 }
 
+export interface WorkoutFinish {
+  notes?: string;
+  reaction?: ReactionValue | null;
+  post?: { title: string; photoUris: string[] } | null;
+}
+
 // Тренировка без единого подхода не сохраняется — равносильна отмене.
-export function completeWorkout(notes?: string) {
+// Оценка и пост встают в очередь до завершения: после него очередь
+// забывает серверный id сессии, и привязать их было бы не к чему.
+export function completeWorkout({ notes, reaction, post }: WorkoutFinish = {}) {
   const { active, end } = useSessionStore.getState();
   if (!active) return;
   if (active.logs.length === 0) {
     discardWorkout();
     return;
   }
+
+  const { localId } = active;
   end();
-  enqueue({ type: 'complete', localId: active.localId, notes: notes ?? null });
+  if (reaction) enqueue({ type: 'react', localId, reaction });
+  if (post) {
+    enqueue({
+      type: 'createPost',
+      localId,
+      title: post.title,
+      photoUris: keepPhotos(post.photoUris),
+    });
+  }
+  enqueue({ type: 'complete', localId, notes: notes ?? null });
 }
 
 export function discardWorkout() {
@@ -186,4 +206,5 @@ export function adoptWorkoutData(userId: string) {
 export function resetWorkoutData() {
   useSessionStore.getState().end();
   useOutboxStore.getState().reset();
+  sweepPhotos([]);
 }

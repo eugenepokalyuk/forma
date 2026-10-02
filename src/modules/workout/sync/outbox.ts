@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import type { ReactionValue } from '@/modules/programs';
 import { mmkvStorageAdapter } from '@/shared/lib/storage/mmkv';
 
 // Очередь синхронизации: во время тренировки источник правды — устройство,
@@ -42,6 +43,23 @@ export interface UndoSetOp {
   targetClientId: string;
 }
 
+export interface ReactOp {
+  type: 'react';
+  opId: string;
+  localId: string;
+  reaction: ReactionValue;
+}
+
+// Пост в ленту по тренировке. Фото — локальные файлы (uri), уходят вместе
+// с постом, когда появится сеть.
+export interface CreatePostOp {
+  type: 'createPost';
+  opId: string;
+  localId: string;
+  title: string;
+  photoUris: string[];
+}
+
 export interface CompleteOp {
   type: 'complete';
   opId: string;
@@ -56,7 +74,13 @@ export interface DiscardOp {
 }
 
 export type Operation =
-  StartSessionOp | LogSetOp | UndoSetOp | CompleteOp | DiscardOp;
+  | StartSessionOp
+  | LogSetOp
+  | UndoSetOp
+  | ReactOp
+  | CreatePostOp
+  | CompleteOp
+  | DiscardOp;
 
 export interface DeadOp {
   op: Operation;

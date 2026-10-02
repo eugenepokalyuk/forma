@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios';
 import { reportWarning } from '@/shared/lib/monitoring';
 
 import { useOutboxStore } from './outbox';
+import { sweepPhotos } from './postPhotos';
 import { ParentLostError, sendOp } from './sendOp';
 
 const RETRY_BASE_MS = 2_000;
@@ -86,7 +87,15 @@ export async function processOutbox({ force = false } = {}) {
         });
       }
     }
+    sweepPhotos(pendingPhotos());
   } finally {
     processing = false;
   }
+}
+
+// Фото постов, которые ещё ждут отправки.
+function pendingPhotos() {
+  return useOutboxStore
+    .getState()
+    .ops.flatMap((op) => (op.type === 'createPost' ? op.photoUris : []));
 }

@@ -10,9 +10,9 @@ import { ExerciseHeaderCard } from '@/pages/Session/components/ExerciseHeaderCar
 import { ExerciseInput } from '@/pages/Session/components/ExerciseInput';
 import { ExerciseMediaCard } from '@/pages/Session/components/ExerciseMediaCard';
 import { ExerciseProgressBar } from '@/pages/Session/components/ExerciseProgressBar';
+import { FinishFlow } from '@/pages/Session/components/FinishFlow';
 import { NoteModal } from '@/pages/Session/components/NoteModal';
 import { RestScreen } from '@/pages/Session/components/RestScreen';
-import { SessionSummary } from '@/pages/Session/components/SessionSummary';
 import { SetPills } from '@/pages/Session/components/SetPills';
 import { useRestEndSound } from '@/pages/Session/hooks/useRestEndSound';
 import { Typography } from '@/shared/ui';
@@ -180,9 +180,7 @@ export default function ActiveSessionScreen() {
   };
 
   if (view === 'summary') {
-    return (
-      <SessionSummary elapsed={elapsed} onBack={() => setView('exercise')} />
-    );
+    return <FinishFlow elapsed={elapsed} onBack={() => setView('exercise')} />;
   }
 
   if (view === 'rest') {

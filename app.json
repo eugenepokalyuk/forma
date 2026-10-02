@@ -57,6 +57,14 @@
           "recordAudioAndroid": false,
           "enableBackgroundPlayback": false
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Фото нужны, чтобы прикрепить их к посту о тренировке",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
       ]
     ],
     "experiments": {

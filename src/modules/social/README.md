@@ -2,6 +2,7 @@
 
 - `queries.ts` — лента (`useFeed`, бесконечная прокрутка), оптимистичный лайк (`useToggleLike`),
   комментарии, поиск людей, подписки и запросы; ключи — `socialKeys`
+- `api/createPostApi` — пост по тренировке (фото + подпись); отправляет очередь `modules/workout`
 - `models/social.ts` — пост, комментарий, публичный пользователь, запросы в друзья
 
 - блокировка (`useBlockUser`, `useUnblockUser`, `useBlockedUsers`) и жалобы на пост/комментарий

@@ -4,10 +4,11 @@
 локальное состояние и ставит операцию в очередь, сеть ничего не блокирует.
 
 - `services/workout.ts` — сценарии: `startWorkout`, `logSet`, `skipExercise`, `undoSet`,
-  `completeWorkout`, `discardWorkout`; привязка/сброс данных при входе-выходе
+  `completeWorkout` (вместе с оценкой и постом в ленту), `discardWorkout`; привязка/сброс данных при входе-выходе
 - `hooks/useStartWorkout` — запуск с экрана (диалог «завершить текущую?» + переход)
 - `store.ts` — активная тренировка (persist в MMKV)
-- `sync/` — очередь операций (`outbox.ts`), отправка (`sendOp.ts`), обработчик с backoff
+- `sync/` — очередь операций (оценка и пост встают в неё до `complete` — после него
+  серверный id сессии забывается) (`outbox.ts`), отправка (`sendOp.ts`), обработчик с backoff
   (`processOutbox.ts`), триггеры: сеть, фон, таймер (`useOutboxSync`)
 - `helpers/` — номер следующего подхода, подстановка веса/повторов, тоннаж, формат подходов
 - `queries.ts` — история сессий (`useSessions`)
