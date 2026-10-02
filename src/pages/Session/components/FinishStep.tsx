@@ -3,6 +3,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -69,7 +70,15 @@ export function FinishStep({
           </Typography>
         </View>
 
-        <View style={styles.body}>{children}</View>
+        {/* Прокрутка — когда не влезает (фото на всю ширину + клавиатура). */}
+        <ScrollView
+          style={styles.body}
+          contentContainerStyle={styles.bodyContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
 
         <View style={styles.actions}>{actions}</View>
 
@@ -89,6 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   header: { gap: spacing.xs },
-  body: { flex: 1, justifyContent: 'center' },
+  body: { flex: 1 },
+  bodyContent: { flexGrow: 1, justifyContent: 'center' },
   actions: { gap: spacing.sm },
 });
