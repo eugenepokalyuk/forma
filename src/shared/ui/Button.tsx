@@ -12,14 +12,7 @@ import {
 
 import { GlassView } from './glass';
 import { Typography } from './Typography';
-import {
-  COLORS,
-  gradients,
-  hitTarget,
-  motion,
-  radius,
-  spacing,
-} from '@/theme';
+import { COLORS, gradients, hitTarget, motion, radius, spacing } from '@/theme';
 
 // Оттенок стекла по варианту: основная — фирменный жёлтый, второстепенная —
 // нейтральное стекло, опасная — красный.
@@ -74,7 +67,11 @@ export function Button({
         disabled={inert}
         accessibilityRole="button"
         accessibilityState={{ disabled: inert, busy: !!loading }}
-        style={styles.base}
+        // Под стеклом основной кнопки — сплошная заливка: внутри
+        // полупрозрачного родителя (плавное появление экрана, неактивная
+        // кнопка) стекло может не отрисоваться, и чёрный текст пропал бы
+        // на тёмном фоне.
+        style={[styles.base, GlassView && isPrimary && styles.primaryBacking]}
       >
         {GlassView ? (
           // iOS 26+: нативное стекло, подсветка нажатия — тоже нативная.
@@ -127,6 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     overflow: 'hidden',
   },
+  primaryBacking: { backgroundColor: COLORS.Surface.accent },
   secondaryFill: {
     backgroundColor: COLORS.Surface.secondary,
     borderRadius: radius.pill,
