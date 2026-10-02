@@ -23,7 +23,9 @@ export function WeekPill({ week, active, onPress }: WeekPillProps) {
         style={styles.pill}
       >
         <Typography variant="subtitle" color={COLORS.Text.primary}>
-          {`Неделя ${week.weekNumber}. ${week.intensityLabel ? week.intensityLabel : null}`}
+          {week.intensityLabel
+            ? `Неделя ${week.weekNumber}. ${week.intensityLabel}`
+            : `Неделя ${week.weekNumber}`}
         </Typography>
       </MotiView>
     </Pressable>

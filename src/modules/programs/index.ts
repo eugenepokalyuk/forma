@@ -6,5 +6,6 @@ export * from './api/getCatalogApi';
 export * from './api/getProgramApi';
 export * from './api/getReactionsApi';
 export * from './api/getUserProgramsApi';
+export * from './api/removeUserProgramApi';
 export * from './queries';
 export * from './helpers/formatProgramSubtitle';

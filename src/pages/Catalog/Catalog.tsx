@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -13,10 +14,10 @@ import {
   useUnderStatusBarScroll,
 } from '@/shared/ui';
 import { useCatalog } from '@/modules/programs';
-import { ProgramCard } from '@/modules/programs/ui';
+import { ProgramCard, ProgramPreviewCard } from '@/modules/programs/ui';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
-import { ProgramPreviewCard } from '@/pages/Catalog/components/ProgramPreviewCard';
 import { COLORS, spacing } from '@/theme';
+import { ROUTES } from '@/shared/constants/routes';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program }
@@ -121,6 +122,7 @@ export default function CatalogScreen() {
               <View style={styles.previewWrap}>
                 <ProgramPreviewCard
                   program={previewProgram}
+                  onPress={() => router.push(ROUTES.program(previewProgram.id))}
                   bottomOverlap={SHEET_OVERLAP}
                 />
 

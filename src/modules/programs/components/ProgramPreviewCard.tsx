@@ -1,40 +1,43 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
-import type { Program } from '@/modules/programs';
 import { Typography } from '@/shared/ui';
-import { COLORS, gradients, radius, screenPadding, spacing } from '@/theme';
-import { formatProgramSubtitle, useReactions } from '@/modules/programs';
-import { ROUTES } from '@/shared/constants/routes';
+import { COLORS, gradients, spacing } from '@/theme';
+
+import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
+import type { Program } from '../models/program';
+import { ProgramReactions } from './ProgramReactions';
 
 interface ProgramPreviewCardProps {
   program: Program;
   // Насколько снизу на карточку заходит следующий за ней контент — текст
   // поднимаем на столько же, чтобы его не закрыло.
   bottomOverlap?: number;
+  // Без onPress карточка не нажимается — так она стоит шапкой на странице
+  // самой программы.
+  onPress?: () => void;
+  // Что показать под подзаголовком вместо реакций (например, кнопку).
+  footer?: ReactNode;
 }
 
-// Единственная закреплённая карточка каталога — во всю ширину устройства,
-// а не контейнера (см. отрицательный marginHorizontal), поэтому ширину
-// берём из окна, а не из процентов родителя. Верхние углы остаются острыми
-// (карточка примыкает к краям экрана), скруглены только нижние.
+// Обложка программы во всю ширину устройства, а не контейнера (в каталоге
+// стоит с отрицательным marginHorizontal), поэтому ширину берём из окна, а не
+// из процентов родителя. Каталог — закреплённая программа, страница
+// программы — шапка.
 export function ProgramPreviewCard({
   program,
   bottomOverlap = 0,
+  onPress,
+  footer,
 }: ProgramPreviewCardProps) {
   const { width } = useWindowDimensions();
 
-  const { data: reactionTypes } = useReactions();
-
-  const reactions = (reactionTypes ?? [])
-    .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
-    .sort((a, b) => a.order - b.order);
-
   return (
     <Pressable
-      onPress={() => router.push(ROUTES.program(program.id))}
+      onPress={onPress}
+      disabled={!onPress}
       style={[styles.wrap, { width }]}
     >
       {program.coverImageUrl ? (
@@ -63,24 +66,15 @@ export function ProgramPreviewCard({
           variant="body"
           color={COLORS.Text.secondary}
           numberOfLines={2}
-          style={styles.description}
         >
           {formatProgramSubtitle(program)}
         </Typography>
 
-        {reactions.length > 0 ? (
-          <View style={styles.reactions}>
-            {reactions.map((r) => (
-              <View key={r.value} style={styles.reactionChip}>
-                <Typography variant="subtitle">{r.emoji}</Typography>
-
-                <Typography variant="subtitle" color={COLORS.Text.secondary}>
-                  {program.reactionCounts[r.value]}
-                </Typography>
-              </View>
-            ))}
-          </View>
-        ) : null}
+        {footer !== undefined ? (
+          <View style={styles.footer}>{footer}</View>
+        ) : (
+          <ProgramReactions program={program} style={styles.footer} />
+        )}
       </View>
     </Pressable>
   );
@@ -88,7 +82,7 @@ export function ProgramPreviewCard({
 
 const styles = StyleSheet.create({
   wrap: {
-    height: 400,
+    height: 450,
     justifyContent: 'flex-end',
     backgroundColor: COLORS.Surface.primary,
     overflow: 'hidden',
@@ -98,15 +92,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.lg,
   },
-  description: { marginTop: 4 },
-  reactions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
-  reactionChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.Surface.secondary,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-  },
+  footer: { marginTop: spacing.sm, alignItems: 'flex-start' },
 });

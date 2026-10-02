@@ -7,7 +7,9 @@ import { getCatalogApi } from './api/getCatalogApi';
 import { getProgramApi } from './api/getProgramApi';
 import { getReactionsApi } from './api/getReactionsApi';
 import { getUserProgramsApi } from './api/getUserProgramsApi';
-import type { ProgramWithWorkouts } from './models/program';
+import { removeUserProgramApi } from './api/removeUserProgramApi';
+import type { ProgramWithWorkouts, UserProgram } from './models/program';
+import { alertActionFailed } from '@/shared/ui/alertActionFailed';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
 export const programKeys = {
@@ -69,6 +71,30 @@ export function useAddUserProgram(programId: string) {
       }
       Alert.alert('Не получилось добавить программу');
     },
+  });
+}
+
+// Убирает программу из «Моих программ». Из списка убираем сразу, при ошибке
+// возвращаем как было.
+export function useRemoveUserProgram() {
+  const queryClient = ReactQuery.useQueryClient();
+  const key = programKeys.userPrograms;
+
+  return ReactQuery.useMutation({
+    mutationFn: removeUserProgramApi,
+    onMutate: async (userProgramId: string) => {
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<UserProgram[]>(key);
+      queryClient.setQueryData<UserProgram[]>(key, (list) =>
+        list?.filter((up) => up.id !== userProgramId),
+      );
+      return { previous };
+    },
+    onError: (_e, _id, context) => {
+      queryClient.setQueryData(key, context?.previous);
+      alertActionFailed('отписаться от программы');
+    },
+    onSettled: () => void queryClient.invalidateQueries({ queryKey: key }),
   });
 }
 

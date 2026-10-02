@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { MotiView } from 'moti';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -16,6 +16,10 @@ interface WorkoutListItemProps {
   workout: WorkoutWithExercises;
   index: number;
   expanded: boolean;
+  // Следующая по плану тренировка — та же, что «Сегодня» на главной.
+  isCurrent?: boolean;
+  // Пройдена в текущем круге программы — подпись дня приглушена.
+  isDone?: boolean;
   onToggle: () => void;
   onStartWorkout: (workout: WorkoutWithExercises) => void;
 }
@@ -24,13 +28,18 @@ export function WorkoutListItem({
   workout,
   index,
   expanded,
+  isCurrent = false,
+  isDone = false,
   onToggle,
   onStartWorkout,
 }: WorkoutListItemProps) {
   return (
     <FadeInItem index={index}>
       <Animated.View layout={LinearTransition.duration(motion.fast)}>
-        <Card style={{ padding: 0, overflow: 'hidden' }} onPress={onToggle}>
+        <Card
+          style={[styles.card, isCurrent && styles.cardCurrent]}
+          onPress={onToggle}
+        >
           <View style={styles.workoutRow}>
             {/*<View style={styles.dayBadge}>*/}
             {/*  <Typography variant="title" color={COLORS.Text.accent}>*/}
@@ -41,12 +50,35 @@ export function WorkoutListItem({
             <View style={styles.exerciseHeader}>
               <Typography
                 variant="subtitle"
-                color={COLORS.Text.primary}
-                style={{ marginBottom: 2 }}
+                color={isDone ? COLORS.Text.secondary : COLORS.Text.primary}
+                accessibilityLabel={
+                  isDone ? `День ${workout.dayNumber}, пройдена` : undefined
+                }
               >
                 День {workout.dayNumber}
               </Typography>
 
+              {isCurrent ? (
+                <View style={styles.todayBadge}>
+                  <Typography variant="caption" color={COLORS.Text.accent}>
+                    {'Сегодня'}
+                  </Typography>
+                </View>
+              ) : null}
+            </View>
+
+            {isCurrent ? (
+              <Pressable
+                onPress={() => onStartWorkout(workout)}
+                accessibilityRole="button"
+                hitSlop={spacing.sm}
+                style={styles.startButton}
+              >
+                <Typography variant="subtitle" color={COLORS.Text.inverse}>
+                  {'Начать'}
+                </Typography>
+              </Pressable>
+            ) : (
               <Typography
                 variant="body"
                 color={COLORS.Text.accent}
@@ -54,7 +86,7 @@ export function WorkoutListItem({
               >
                 {'Выбрать'}
               </Typography>
-            </View>
+            )}
 
             <MotiView
               animate={{ rotate: expanded ? '180deg' : '0deg' }}
@@ -115,11 +147,19 @@ export function WorkoutListItem({
 }
 
 const styles = StyleSheet.create({
+  card: { padding: 0, overflow: 'hidden' },
+  cardCurrent: { borderColor: COLORS.Stroke.accent },
   exerciseHeader: {
-    display: 'flex',
     flexDirection: 'row',
-    gap: spacing.md,
+    alignItems: 'center',
+    gap: spacing.sm,
     flex: 1,
+  },
+  todayBadge: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: radius.pill,
+    backgroundColor: COLORS.Surface.accentSubdued,
   },
   workoutRow: {
     flexDirection: 'row',
@@ -160,6 +200,9 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   startButton: {
-    marginTop: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.pill,
+    backgroundColor: COLORS.Surface.accent,
   },
 });
