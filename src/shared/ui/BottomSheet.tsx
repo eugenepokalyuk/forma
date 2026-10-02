@@ -151,7 +151,7 @@ export function BottomSheet({
             ]}
           >
             <View style={styles.header}>
-              <Typography variant="heading">{title}</Typography>
+              <Typography variant="display">{title}</Typography>
 
               <Pressable
                 onPress={onClose}
