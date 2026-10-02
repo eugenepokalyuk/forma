@@ -10,6 +10,13 @@ yarn-error.log*
 /apk/
 /aab/
 
+# Ключи подписи и выгрузки PEPK для магазинов
+*.jks
+*.keystore
+!android/app/debug.keystore
+*.pem
+pepk_out.zip
+
 # Expo
 .expo/
 dist/
