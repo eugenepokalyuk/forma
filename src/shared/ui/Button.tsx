@@ -9,6 +9,14 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import {
+  Easing,
+  interpolateColor,
+  useAnimatedReaction,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { GlassView } from './glass';
 import { Typography } from './Typography';
@@ -24,6 +32,46 @@ const GLASS_TINT: Record<
   secondary: undefined,
   danger: COLORS.Text.negative,
 };
+
+// Неактивная ↔ активная. Нативное стекло меняет tintColor мгновенно, поэтому
+// оттенок и цвет подписи ведём сами — покадрово, только пока идёт переход.
+const STATE_TIMING = { duration: motion.base, easing: Easing.out(Easing.quad) };
+
+// Цвета стеклянной кнопки на долю перехода p: 0 — неактивная, 1 — активная.
+// Оттенок проявляется из того же цвета с нулевой альфой (#RRGGBB00), а не из
+// прозрачного чёрного — иначе на середине перехода кнопка темнеет. В крайнем
+// неактивном положении — undefined: стекло без оттенка, как и раньше.
+function glassColorsAt(p: number, tint: string | undefined, label: string) {
+  return {
+    tint:
+      tint && p > 0
+        ? interpolateColor(p, [0, 1], [`${tint}00`, tint])
+        : undefined,
+    label: interpolateColor(p, [0, 1], [COLORS.Text.tertiary, label]),
+  };
+}
+
+function useGlassColors(
+  active: boolean,
+  tint: string | undefined,
+  label: string,
+) {
+  const progress = useSharedValue(active ? 1 : 0);
+  const [p, setP] = React.useState(active ? 1 : 0);
+
+  React.useEffect(() => {
+    progress.set(withTiming(active ? 1 : 0, STATE_TIMING));
+  }, [active, progress]);
+
+  useAnimatedReaction(
+    () => progress.get(),
+    (value, prev) => {
+      if (prev !== null && value !== prev) scheduleOnRN(setP, value);
+    },
+  );
+
+  return glassColorsAt(p, tint, label);
+}
 
 interface ButtonProps {
   title: string;
@@ -49,12 +97,9 @@ export function Button({
   // Со стеклом неактивность — без прозрачности: стекло внутри полупрозрачного
   // родителя не рисуется. Вместо этого стекло без оттенка и приглушённый текст.
   const dimmed = inert && !GlassView;
-  const labelColor =
-    inert && GlassView
-      ? COLORS.Text.tertiary
-      : isPrimary
-        ? COLORS.Text.inverse
-        : COLORS.Text.primary;
+  const activeLabel = isPrimary ? COLORS.Text.inverse : COLORS.Text.primary;
+  const glassColors = useGlassColors(!inert, GLASS_TINT[variant], activeLabel);
+  const labelColor = GlassView ? glassColors.label : activeLabel;
 
   return (
     <MotiView
@@ -83,7 +128,7 @@ export function Button({
           <GlassView
             glassEffectStyle="regular"
             isInteractive
-            tintColor={inert ? undefined : GLASS_TINT[variant]}
+            tintColor={glassColors.tint}
             style={[StyleSheet.absoluteFill, styles.glass]}
           />
         ) : null}
