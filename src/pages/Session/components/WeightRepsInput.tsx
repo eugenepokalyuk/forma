@@ -37,7 +37,7 @@ export function WeightRepsInput({
     ? `в прошлый раз ${lastLog.weight} кг`
     : undefined;
   const repsHints = [
-    target !== '—' ? `цель ${target}` : undefined,
+    target !== '—' ? `${target}` : undefined,
     // Без карточки «Вес» прошлый результат показываем здесь.
     !showWeight && lastLog
       ? `в прошлый раз ${formatLastLog(lastLog)}`
@@ -107,7 +107,7 @@ function FieldLabel({
       {hints.filter(Boolean).map((hint) => (
         <Typography
           key={hint}
-          variant="caption"
+          variant="body"
           color={COLORS.Text.secondary}
           align="center"
         >
@@ -119,9 +119,19 @@ function FieldLabel({
 }
 
 const styles = StyleSheet.create({
-  label: { alignItems: 'center', gap: 2 },
-  container: { width: '100%', gap: spacing.sm },
-  columns: { flexDirection: 'row', width: '100%', gap: spacing.sm },
+  label: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  container: {
+    width: '100%',
+    gap: spacing.sm,
+  },
+  columns: {
+    flexDirection: 'row',
+    width: '100%',
+    gap: spacing.sm,
+  },
   fieldRow: {
     flexDirection: 'column',
     alignItems: 'center',
@@ -131,7 +141,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Surface.secondary,
     borderRadius: radius.lg,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.lg,
     minHeight: 48,
   },
   fieldHalf: { flex: 1, width: undefined },

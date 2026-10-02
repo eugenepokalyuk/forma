@@ -35,8 +35,11 @@ export function formatTarget(exercise: Exercise): string {
 // дописываем слово, согласуя его с последним числом диапазона).
 export function formatTargetLabel(exercise: Exercise): string {
   const target = formatTarget(exercise);
+
   if (isTimedExercise(exercise)) return target;
+
   const last = exercise.repsMax ?? exercise.repsMin;
+
   return last == null ? target : `${target} ${repsWord(last)}`;
 }
 
