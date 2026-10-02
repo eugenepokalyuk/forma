@@ -24,3 +24,5 @@ OUT="$ROOT/apk/forma-$VERSION-$SHA.apk"
 mkdir -p "$ROOT/apk"
 cp "$ROOT/android/app/build/outputs/apk/release/app-release.apk" "$OUT"
 echo "APK: $OUT"
+
+"$ROOT/scripts/check-16kb.sh" "$OUT"

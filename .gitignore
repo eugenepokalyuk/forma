@@ -6,8 +6,9 @@ yarn-error.log*
 /.pnp
 .pnp.js
 
-# Локальные сборки APK (scripts/build-apk.sh)
+# Локальные сборки APK и AAB (scripts/build-apk.sh, scripts/build-aab.sh)
 /apk/
+/aab/
 
 # Expo
 .expo/

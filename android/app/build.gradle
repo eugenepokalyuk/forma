@@ -92,7 +92,9 @@ android {
         applicationId 'ru.formaone.app'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        // Play требует растущий versionCode — scripts/build-aab.sh передаёт его
+        // через -PformaVersionCode. Без него (APK, dev) — 1.
+        versionCode((findProperty('formaVersionCode') ?: '1').toInteger())
         versionName "1.0.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
@@ -104,15 +106,24 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // Upload-ключ Google Play. Свойства FORMA_UPLOAD_* — в
+        // ~/.gradle/gradle.properties (не в репозитории). Без них release
+        // подписывается debug-ключом: для APK на устройство этого хватает.
+        if (findProperty('FORMA_UPLOAD_STORE_FILE')) {
+            release {
+                storeFile file(findProperty('FORMA_UPLOAD_STORE_FILE'))
+                storePassword findProperty('FORMA_UPLOAD_STORE_PASSWORD')
+                keyAlias findProperty('FORMA_UPLOAD_KEY_ALIAS')
+                keyPassword findProperty('FORMA_UPLOAD_KEY_PASSWORD')
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.findByName('release') ?: signingConfigs.debug
             def enableShrinkResources = findProperty('android.enableShrinkResourcesInReleaseBuilds') ?: 'false'
             shrinkResources enableShrinkResources.toBoolean()
             minifyEnabled enableMinifyInReleaseBuilds

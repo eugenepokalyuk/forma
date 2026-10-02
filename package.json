@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest",
-    "build:apk": "scripts/build-apk.sh"
+    "build:apk": "scripts/build-apk.sh",
+    "build:aab": "scripts/build-aab.sh",
+    "check:16kb": "scripts/check-16kb.sh"
   },
   "dependencies": {
     "@expo-google-fonts/sofia-sans-extra-condensed": "0.4.2",
