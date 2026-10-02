@@ -8,6 +8,7 @@ export * from './api/blockUserApi';
 export * from './api/addCommentApi';
 export * from './api/createPostApi';
 export * from './api/deleteCommentApi';
+export * from './api/deletePostApi';
 export * from './api/followUserApi';
 export * from './api/getCommentsApi';
 export * from './api/getFeedApi';

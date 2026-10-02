@@ -4,18 +4,20 @@ import { Alert } from 'react-native';
 import { useAuthStore } from '@/modules/auth';
 import {
   useBlockUser,
+  useDeletePost,
   useReport,
   type PostAuthor,
   type ReportReason,
   type ReportTarget,
 } from '@/modules/social';
 
-// Действия над чужим контентом: жалоба и блокировка автора (требование
-// сторов к пользовательскому контенту). Возвращает состояние шторки жалобы
-// для ReportSheet.
+// Меню поста: свой можно удалить, на чужой — пожаловаться или заблокировать
+// автора (требование сторов к пользовательскому контенту). Возвращает
+// состояние шторки жалобы для ReportSheet.
 export function useContentActions() {
   const myPublicId = useAuthStore((s) => s.user?.publicId);
   const block = useBlockUser();
+  const deletePost = useDeletePost();
   const report = useReport();
   const [reportTarget, setReportTarget] = React.useState<ReportTarget | null>(
     null,
@@ -50,6 +52,25 @@ export function useContentActions() {
     ]);
   };
 
+  const openMyPostActions = (postId: string) => {
+    Alert.alert('Ваш пост', undefined, [
+      {
+        text: 'Удалить пост',
+        style: 'destructive',
+        onPress: () =>
+          Alert.alert('Удалить пост?', 'Пост пропадёт из ленты насовсем.', [
+            { text: 'Отмена', style: 'cancel' },
+            {
+              text: 'Удалить',
+              style: 'destructive',
+              onPress: () => deletePost.mutate(postId),
+            },
+          ]),
+      },
+      { text: 'Отмена', style: 'cancel' },
+    ]);
+  };
+
   const submitReport = (reason: ReportReason) => {
     if (!reportTarget) return;
     report.mutate(
@@ -69,6 +90,7 @@ export function useContentActions() {
   return {
     isMine,
     openActions,
+    openMyPostActions,
     reportSheet: {
       visible: reportTarget !== null,
       onSelect: submitReport,

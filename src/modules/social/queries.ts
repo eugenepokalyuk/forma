@@ -1,6 +1,7 @@
 import * as ReactQuery from '@tanstack/react-query';
 
 import { addCommentApi } from './api/addCommentApi';
+import { deletePostApi } from './api/deletePostApi';
 import { followUserApi } from './api/followUserApi';
 import { getCommentsApi } from './api/getCommentsApi';
 import { getFeedApi } from './api/getFeedApi';
@@ -77,6 +78,35 @@ export function useToggleLike() {
     },
     onError: () => {
       void queryClient.invalidateQueries({ queryKey: socialKeys.feed });
+    },
+  });
+}
+
+// Свой пост пропадает из ленты сразу; при ошибке лента перезапрашивается
+// и пост возвращается.
+export function useDeletePost() {
+  const queryClient = ReactQuery.useQueryClient();
+
+  return ReactQuery.useMutation({
+    mutationFn: deletePostApi,
+    onMutate: (postId) => {
+      queryClient.setQueryData<ReactQuery.InfiniteData<Post[]>>(
+        socialKeys.feed,
+        (current) =>
+          current && {
+            ...current,
+            pages: current.pages.map((page) =>
+              page.filter((p) => p.id !== postId),
+            ),
+          },
+      );
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: socialKeys.summary });
+    },
+    onError: () => {
+      void queryClient.invalidateQueries({ queryKey: socialKeys.feed });
+      alertActionFailed('удалить пост');
     },
   });
 }

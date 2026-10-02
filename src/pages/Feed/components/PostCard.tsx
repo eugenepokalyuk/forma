@@ -24,7 +24,7 @@ interface PostCardProps {
   post: Post;
   onToggleLike: () => void;
   onOpenComments: () => void;
-  // Жалоба/блокировка; не передаётся для своих постов.
+  // Меню поста: удаление своего, жалоба/блокировка чужого.
   onMore?: () => void;
 }
 

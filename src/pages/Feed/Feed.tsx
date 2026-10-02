@@ -123,7 +123,7 @@ export default function FeedScreen() {
               onOpenComments={() => setOpenCommentsFor(item.id)}
               onMore={
                 actions.isMine(item.author)
-                  ? undefined
+                  ? () => actions.openMyPostActions(item.id)
                   : () =>
                       actions.openActions(
                         { kind: 'post', postId: item.id },
