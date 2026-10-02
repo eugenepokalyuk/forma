@@ -1,10 +1,6 @@
 import { apiRequest } from '@/shared/api/apiRequest';
+import { imageFileOf } from '@/shared/lib/media/imageMime';
 import type { Post } from '../models/social';
-
-// Фото с устройства — WebP после сжатия; JPEG, если сжать не вышло.
-function mimeOf(uri: string) {
-  return uri.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/jpeg';
-}
 
 export interface NewPost {
   sessionId: string;
@@ -19,14 +15,15 @@ export function createPostApi({ sessionId, title, photoUris }: NewPost) {
   const data = new FormData();
   data.append('session_id', sessionId);
   data.append('title', title);
-  photoUris.forEach((uri, i) =>
+  photoUris.forEach((uri, i) => {
+    const { type, ext } = imageFileOf(uri);
     // Файл в React Native — объект { uri, name, type }, а не Blob.
     data.append('photos', {
       uri,
-      name: `photo-${i}.${mimeOf(uri).split('/')[1]}`,
-      type: mimeOf(uri),
-    } as unknown as Blob),
-  );
+      name: `photo-${i}.${ext}`,
+      type,
+    } as unknown as Blob);
+  });
 
   return apiRequest<Post>({
     method: 'post',
