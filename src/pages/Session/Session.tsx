@@ -250,7 +250,12 @@ export default function ActiveSessionScreen() {
         >
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
+            // «Завершить тренировку» — последним, не должен прилипать
+            // к home indicator.
+            contentContainerStyle={[
+              styles.scrollContent,
+              { paddingBottom: insets.bottom + spacing.xl },
+            ]}
           >
             <View style={styles.section}>
               <ExerciseMediaCard exercise={exercise} />
@@ -324,7 +329,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.xl,
     gap: spacing.lg,
   },
   divider: {
