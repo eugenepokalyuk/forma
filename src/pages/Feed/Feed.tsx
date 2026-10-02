@@ -19,6 +19,7 @@ import { useContentActions } from '@/pages/Feed/hooks/useContentActions';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFeed, useToggleLike } from '@/modules/social';
+import { AppHeader } from '@/modules/auth/components/AppHeader';
 
 export default function FeedScreen() {
   const tabBarClearance = useTabBarClearance();
@@ -70,6 +71,10 @@ export default function FeedScreen() {
           },
           posts.length === 0 && styles.emptyContent,
         ]}
+        // gap списка действует и между шапкой и первым постом — убираем его,
+        // под шапкой остаётся только её собственный нижний отступ.
+        ListHeaderComponent={<AppHeader />}
+        ListHeaderComponentStyle={{ marginBottom: -spacing.md }}
         onEndReachedThreshold={0.4}
         onEndReached={() => {
           if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
