@@ -20,14 +20,12 @@ export function totalReactions(program: Program): number {
 
 interface ProgramCardProps {
   program: Program;
-  /** «Активна» — только для списка «Мои программы» на главном. */
-  active?: boolean;
 }
 
 // Единая карточка программы — раньше в каталоге и в «Мои программы» на
 // главном были два разных вида карточек, теперь один компонент везде
 // (см. forma-project Figma, node 5487-2731).
-export function ProgramCard({ program, active }: ProgramCardProps) {
+export function ProgramCard({ program }: ProgramCardProps) {
   const { data: reactionTypes } = useReactions();
 
   const reactions = (reactionTypes ?? [])
@@ -59,16 +57,9 @@ export function ProgramCard({ program, active }: ProgramCardProps) {
             {program.title}
           </Typography>
 
-          {isPro || active ? (
+          {isPro ? (
             <View style={styles.badgeRow}>
-              {isPro ? <ProBadge /> : null}
-              {active ? (
-                <View style={styles.activeBadge}>
-                  <Typography variant="caption" color={COLORS.Text.positive}>
-                    {'Активна'}
-                  </Typography>
-                </View>
-              ) : null}
+              <ProBadge />
             </View>
           ) : null}
 
@@ -132,12 +123,6 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 4,
-  },
-  activeBadge: {
-    backgroundColor: COLORS.Surface.positiveSubdued,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
   },
   reactions: {
     flexDirection: 'row',

@@ -13,7 +13,7 @@ export function ProgramsListView({ programs }: { programs: UserProgram[] }) {
       <View style={{ gap: spacing.sm }}>
         {programs.map((item, index) => (
           <FadeInItem key={item.id} index={index}>
-            <ProgramCard program={item.program} active={item.isActive} />
+            <ProgramCard program={item.program} />
           </FadeInItem>
         ))}
       </View>
