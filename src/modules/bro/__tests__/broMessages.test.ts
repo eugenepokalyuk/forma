@@ -1,5 +1,4 @@
 import type { User } from '@/modules/auth';
-import type { WorkoutWithExercises } from '@/modules/programs';
 import type { SessionWithWorkout } from '@/modules/workout';
 
 import {
@@ -8,7 +7,6 @@ import {
   daysSinceLastWorkout,
   FALLBACK_PHRASES,
   findRecentAchievement,
-  getNextWorkout,
   getWeeklyGoal,
   isRecordVolume,
   sessionVolumeKg,
@@ -45,8 +43,6 @@ const setLog = (
   skipped = false,
 ) =>
   ({ weight, repsDone, skipped }) as SessionWithWorkout['exerciseLogs'][number];
-
-const workout = (id: string) => ({ id }) as WorkoutWithExercises;
 
 const phrase = (
   id: number,
@@ -226,46 +222,6 @@ describe('daysSinceLastWorkout', () => {
         session({ completedAt: daysAgo(3.5) }),
       ]),
     ).toBe(3);
-  });
-});
-
-describe('getNextWorkout', () => {
-  const workouts = [workout('w1'), workout('w2'), workout('w3')];
-
-  it('программа без тренировок', () => {
-    expect(getNextWorkout([], [], 'p1')).toBeNull();
-  });
-
-  it('ещё не тренировался — первая', () => {
-    expect(getNextWorkout(workouts, [], 'p1')?.id).toBe('w1');
-  });
-
-  it('следующая после последней завершённой', () => {
-    const history = [
-      session({ workoutId: 'w1', startedAt: daysAgo(3) }),
-      session({ workoutId: 'w2', startedAt: daysAgo(1) }),
-    ];
-    expect(getNextWorkout(workouts, history, 'p1')?.id).toBe('w3');
-  });
-
-  it('после последней — по кругу на первую', () => {
-    expect(
-      getNextWorkout(workouts, [session({ workoutId: 'w3' })], 'p1')?.id,
-    ).toBe('w1');
-  });
-
-  it('другие программы и незавершённые сессии не учитываются', () => {
-    const history = [
-      session({ workoutId: 'w2', programId: 'p2' }),
-      session({ workoutId: 'w2', status: 'in_progress' }),
-    ];
-    expect(getNextWorkout(workouts, history, 'p1')?.id).toBe('w1');
-  });
-
-  it('тренировка удалена из программы — с начала', () => {
-    expect(
-      getNextWorkout(workouts, [session({ workoutId: 'gone' })], 'p1')?.id,
-    ).toBe('w1');
   });
 });
 

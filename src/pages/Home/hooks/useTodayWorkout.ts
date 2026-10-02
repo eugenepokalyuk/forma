@@ -4,16 +4,13 @@ import * as React from 'react';
 import type { UserProgram } from '@/modules/programs';
 import { useProgram } from '@/modules/programs';
 import {
+  getNextWorkout,
   useSessions,
   useSessionStore,
   useStartWorkout,
 } from '@/modules/workout';
 import { ROUTES } from '@/shared/constants/routes';
-import {
-  getNextWorkout,
-  sessionVolumeKg,
-  type BroTodayContext,
-} from '@/modules/bro';
+import { sessionVolumeKg, type BroTodayContext } from '@/modules/bro';
 import { isSameDay } from '@/shared/lib/date/calendar';
 
 // Контекст «сегодня» для карточек Бро: следующая по плану тренировка

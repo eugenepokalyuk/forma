@@ -4,7 +4,6 @@ import type { SessionWithWorkout } from '@/modules/workout';
 import type { User } from '@/modules/auth';
 import type { UserStats } from '../models/stats';
 import type { WaterToday } from '../models/water';
-import type { WorkoutWithExercises } from '@/modules/programs';
 import { formatTonnage } from '@/shared/lib/string/number';
 import { pluralizeWeeks, pluralizeWorkouts } from '@/shared/lib/string/plural';
 import { isOnboardingComplete } from '@/modules/auth';
@@ -158,7 +157,7 @@ export interface BroMessage {
   cta?: { label: string; onPress: () => void };
 }
 
-/** Контекст сегодняшнего дня — считается в home.tsx (см. getNextWorkout). */
+/** Контекст сегодняшнего дня — считается в home.tsx (см. getNextWorkout в workout). */
 export interface BroTodayContext {
   isToday: boolean;
   hasWorkout: boolean;
@@ -238,32 +237,6 @@ export function daysSinceLastWorkout(
 
   if (!times.length) return null;
   return Math.floor((Date.now() - Math.max(...times)) / 86_400_000);
-}
-
-/** Следующая по плану тренировка активной программы: по кругу после
- * последней завершённой (как в forma-next TodayView.todayWorkout). */
-export function getNextWorkout(
-  programWorkouts: WorkoutWithExercises[],
-  history: SessionWithWorkout[],
-  programId: string,
-): WorkoutWithExercises | null {
-  if (programWorkouts.length === 0) return null;
-
-  const programSessions = history
-    .filter((s) => s.programId === programId && s.status === 'completed')
-    .sort(
-      (a, b) =>
-        new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
-    );
-
-  if (programSessions.length === 0) return programWorkouts[0];
-
-  const lastIdx = programWorkouts.findIndex(
-    (w) => w.id === programSessions[0].workoutId,
-  );
-  if (lastIdx === -1) return programWorkouts[0];
-
-  return programWorkouts[(lastIdx + 1) % programWorkouts.length];
 }
 
 const STREAK_MILESTONES = new Set([3, 5, 8, 10, 15, 20, 26, 39, 52]);
