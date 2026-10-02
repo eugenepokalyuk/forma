@@ -48,6 +48,10 @@ PODS:
     - ExpoModulesCore
   - ExpoImage (57.0.5):
     - ExpoModulesCore
+  - ExpoImageManipulator (57.0.20):
+    - ExpoModulesCore
+  - ExpoImagePicker (57.0.20):
+    - ExpoModulesCore
   - ExpoKeepAwake (57.0.2):
     - ExpoModulesCore
   - ExpoLinearGradient (57.0.2):
@@ -2415,11 +2419,13 @@ DEPENDENCIES:
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoAudio (from `../node_modules/expo-audio/ios`)
   - "ExpoDomWebView (from `../node_modules/@expo/dom-webview/ios`)"
-  - ExpoFileSystem (from `../node_modules/expo/node_modules/expo-file-system/ios/ExpoFileSystem.podspec`)
+  - ExpoFileSystem (from `../node_modules/expo-file-system/ios/ExpoFileSystem.podspec`)
   - ExpoFont (from `../node_modules/expo-font/ios/ExpoFont.podspec`)
   - ExpoGlassEffect (from `../node_modules/expo-glass-effect/ios`)
   - ExpoHaptics (from `../node_modules/expo-haptics/ios`)
   - ExpoImage (from `../node_modules/expo-image/ios/ExpoImage.podspec`)
+  - ExpoImageManipulator (from `../node_modules/expo-image-manipulator/ios/ExpoImageManipulator.podspec`)
+  - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
@@ -2546,7 +2552,7 @@ EXTERNAL SOURCES:
   ExpoDomWebView:
     :path: "../node_modules/@expo/dom-webview/ios"
   ExpoFileSystem:
-    :podspec: "../node_modules/expo/node_modules/expo-file-system/ios/ExpoFileSystem.podspec"
+    :podspec: "../node_modules/expo-file-system/ios/ExpoFileSystem.podspec"
   ExpoFont:
     :podspec: "../node_modules/expo-font/ios/ExpoFont.podspec"
   ExpoGlassEffect:
@@ -2555,6 +2561,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-haptics/ios"
   ExpoImage:
     :podspec: "../node_modules/expo-image/ios/ExpoImage.podspec"
+  ExpoImageManipulator:
+    :podspec: "../node_modules/expo-image-manipulator/ios/ExpoImageManipulator.podspec"
+  ExpoImagePicker:
+    :path: "../node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinearGradient:
@@ -2773,6 +2783,8 @@ SPEC CHECKSUMS:
   ExpoGlassEffect: 452d3b8408009c545b43319fb048f7f8e1f0e1ab
   ExpoHaptics: 4f26ec5ebb4cc9c5907987672ef63de77ae9df60
   ExpoImage: b53ed6e35a59401a81352b66b79662c7c2b6c23b
+  ExpoImageManipulator: 75d3b204e6bfe4fc24d1e631b9ec371c2b8f82c8
+  ExpoImagePicker: 68f102f772bbd2a84c621bb482dd63c7008cd8cb
   ExpoKeepAwake: b9ebf2ba14c42a2b5782adab42a2168a689bfd07
   ExpoLinearGradient: e27e8781d3ab33e5b48df94d02d072d2a49f611e
   ExpoLinking: 5d7a60a42b1838add75a96760123d25a2ac63524

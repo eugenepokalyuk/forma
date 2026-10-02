@@ -12,9 +12,9 @@
 		2B69CDBBF346AAD6839A1A36 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A48DA3BDAA92CF1EECFB9A /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		5FAA8F4904676E70792E4ACC /* libPods-Forma.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0DECA0F4864F19B04D45BB36 /* libPods-Forma.a */; };
+		658F57C2FFE245ADBE203360 /* Forma.icon in Resources */ = {isa = PBXBuildFile; fileRef = CFB0F451959A4609A846E86E /* Forma.icon */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		658F57C2FFE245ADBE203360 /* Forma.icon in Resources */ = {isa = PBXBuildFile; fileRef = CFB0F451959A4609A846E86E /* Forma.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		8356CED7013168854B22881C /* Pods-Forma.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Forma.debug.xcconfig"; path = "Target Support Files/Pods-Forma/Pods-Forma.debug.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Forma/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		CFB0F451959A4609A846E86E /* Forma.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = Forma.icon; path = Forma/Forma.icon; sourceTree = "<group>"; };
 		DEFEE7CCD1DCAF5D750828C7 /* Pods-Forma.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Forma.release.xcconfig"; path = "Target Support Files/Pods-Forma/Pods-Forma.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Forma/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Forma-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Forma-Bridging-Header.h"; path = "Forma/Forma-Bridging-Header.h"; sourceTree = "<group>"; };
-		CFB0F451959A4609A846E86E /* Forma.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = Forma.icon; path = Forma/Forma.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -296,6 +296,7 @@
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoImage/SDWebImageSVGCoder.framework/SDWebImageSVGCoder",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoImage/SDWebImageWebPCoder.framework/SDWebImageWebPCoder",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoImage/libavif.framework/libavif",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoImageManipulator/ExpoImageManipulator.framework/ExpoImageManipulator",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoModulesCore/ExpoModulesCore.framework/ExpoModulesCore",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoModulesJSI/ExpoModulesJSI.framework/ExpoModulesJSI",
 				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ExpoModulesWorklets/ExpoModulesWorklets.framework/ExpoModulesWorklets",
@@ -313,6 +314,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImageSVGCoder.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImageWebPCoder.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libavif.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ExpoImageManipulator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ExpoModulesCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ExpoModulesJSI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ExpoModulesWorklets.framework",
