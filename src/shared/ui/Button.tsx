@@ -18,7 +18,6 @@ import {
   hitTarget,
   motion,
   radius,
-  shadow,
   spacing,
 } from '@/theme';
 
@@ -91,11 +90,7 @@ export function Button({
             colors={pressed ? gradients.accentPressed : gradients.accent}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={[
-              StyleSheet.absoluteFill,
-              { borderRadius: radius.lg },
-              shadow.glow,
-            ]}
+            style={[StyleSheet.absoluteFill, styles.glass]}
           />
         ) : null}
         {!GlassView && variant === 'secondary' ? (
@@ -134,13 +129,13 @@ const styles = StyleSheet.create({
   },
   secondaryFill: {
     backgroundColor: COLORS.Surface.secondary,
-    borderRadius: radius.lg,
+    borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: COLORS.Stroke.secondary,
   },
   dangerFill: {
     backgroundColor: COLORS.Surface.negativeSubdued,
-    borderRadius: radius.lg,
+    borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: COLORS.Text.negative,
   },
