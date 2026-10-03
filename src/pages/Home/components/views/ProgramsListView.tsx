@@ -1,20 +1,20 @@
-import { router } from 'expo-router';
 import { View } from 'react-native';
 
 import type { UserProgram } from '@/modules/programs';
-import { FadeInItem, Section } from '@/shared/ui';
-import { ProgramCard } from '@/modules/programs/ui';
+import { Section } from '@/shared/ui';
 import { spacing } from '@/theme';
-import { ROUTES } from '@/shared/constants/routes';
 
+import { HomeProgramCard } from '@/pages/Home/components/HomeProgramCard';
+
+// Свои карточки программ на главной — со стартом следующей тренировки,
+// а не карточки каталога.
 export function ProgramsListView({ programs }: { programs: UserProgram[] }) {
   return (
     <Section padding>
-      <View style={{ gap: spacing.sm }}>
-        {programs.map((item, index) => (
-          <FadeInItem key={item.id} index={index}>
-            <ProgramCard program={item.program} />
-          </FadeInItem>
+      <View style={{ gap: spacing.md }}>
+        {/* Без FadeInItem: стекло не рисуется в полупрозрачном родителе. */}
+        {programs.map((item) => (
+          <HomeProgramCard key={item.id} userProgram={item} />
         ))}
       </View>
     </Section>

@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { MotiView } from 'moti';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
@@ -10,7 +9,7 @@ import Animated, {
 import type { WorkoutWithExercises } from '@/modules/programs';
 import { Card, FadeInItem, Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
-import { formatSetsLine } from '@/modules/workout';
+import { WorkoutExercises } from '@/modules/workout/ui';
 
 interface WorkoutListItemProps {
   workout: WorkoutWithExercises;
@@ -106,38 +105,7 @@ export function WorkoutListItem({
               entering={FadeIn.duration(motion.fast)}
               exiting={FadeOut.duration(motion.fast)}
             >
-              {workout.exercises.map((exercise) => (
-                <View key={exercise.id} style={styles.exerciseRow}>
-                  {exercise.thumbnailUrl ? (
-                    <Image
-                      source={{ uri: exercise.thumbnailUrl }}
-                      style={styles.exerciseThumb}
-                    />
-                  ) : (
-                    <View
-                      style={[
-                        styles.exerciseThumb,
-                        styles.exerciseThumbPlaceholder,
-                      ]}
-                    >
-                      <Typography
-                        variant="heading"
-                        color={COLORS.Text.tertiary}
-                      >
-                        {exercise.name.charAt(0).toUpperCase()}
-                      </Typography>
-                    </View>
-                  )}
-
-                  <View style={styles.exerciseText}>
-                    <Typography variant="subtitle">{exercise.name}</Typography>
-
-                    <Typography variant="body" color={COLORS.Text.secondary}>
-                      {formatSetsLine(exercise)}
-                    </Typography>
-                  </View>
-                </View>
-              ))}
+              <WorkoutExercises exercises={workout.exercises} />
             </Animated.View>
           ) : null}
         </Card>
@@ -168,36 +136,9 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   exercisesList: {
-    gap: spacing.sm,
     padding: spacing.md,
     borderTopWidth: 1,
     borderTopColor: COLORS.Stroke.hairline,
-  },
-  exerciseRow: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    alignItems: 'center',
-  },
-  exerciseThumb: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.xs,
-    backgroundColor: COLORS.Surface.secondary,
-    borderWidth: 1,
-    borderColor: COLORS.Stroke.hairline,
-    overflow: 'hidden',
-  },
-  exerciseThumbPlaceholder: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  exerciseText: {
-    flex: 1,
-    gap: 2,
-  },
-  exerciseNotes: {
-    fontSize: 13,
-    fontStyle: 'italic',
   },
   startButton: {
     paddingHorizontal: spacing.md,
