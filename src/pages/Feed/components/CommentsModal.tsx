@@ -2,13 +2,7 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import {
-  BottomSheet,
-  CustomIcon,
-  ErrorState,
-  Input,
-  Typography,
-} from '@/shared/ui';
+import { BottomSheet, Composer, ErrorState, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { useAddComment, useComments } from '@/modules/social';
@@ -42,6 +36,8 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
           paddingBottom: spacing.md,
         }}
         style={{ maxHeight: 360, flexShrink: 1 }}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         ListEmptyComponent={
           isError ? (
             <ErrorState onRetry={refetch} />
@@ -108,33 +104,18 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
       />
 
       <View style={styles.inputRow}>
-        <Input
-          style={styles.input}
+        <Composer
           placeholder="Написать комментарий…"
           value={text}
           onChangeText={setText}
-          multiline
-        />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Отправить комментарий"
-          accessibilityState={{
-            disabled: !text.trim() || addMutation.isPending,
-          }}
-          disabled={!text.trim() || addMutation.isPending}
-          onPress={() =>
+          sending={addMutation.isPending}
+          sendLabel="Отправить комментарий"
+          onSend={() =>
             addMutation.mutate(text.trim(), {
               onSuccess: () => setText(''),
             })
           }
-          style={styles.sendBtn}
-        >
-          <CustomIcon
-            name="tg"
-            size={26}
-            color={text.trim() ? COLORS.Icon.accent : COLORS.Icon.tertiary}
-          />
-        </Pressable>
+        />
       </View>
       <ReportSheet {...actions.reportSheet} />
     </BottomSheet>
@@ -155,13 +136,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.Surface.accent,
   },
   inputRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    alignItems: 'flex-end',
     paddingTop: spacing.sm,
     borderTopWidth: 1,
     borderColor: COLORS.Stroke.primary,
   },
-  input: { flex: 1, minHeight: 40, maxHeight: 100 },
-  sendBtn: { paddingBottom: 2 },
 });
