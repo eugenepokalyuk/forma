@@ -61,6 +61,7 @@ export function Composer({
   ...inputProps
 }: ComposerProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const inputRef = React.useRef<TextInput>(null);
   const sendEnabled = canSend && !sending;
 
   const pick = (option: ComposerAttachOption) => {
@@ -131,7 +132,12 @@ export function Composer({
           ) : null}
         </AnimatePresence>
 
-        <View style={styles.bar}>
+        {/* Тап по любому месту поля (не по кнопкам) ставит фокус в текст. */}
+        <Pressable
+          style={styles.bar}
+          onPress={() => inputRef.current?.focus()}
+          accessible={false}
+        >
           {attachOptions?.length ? (
             <Pressable
               onPress={() => setMenuOpen((open) => !open)}
@@ -151,6 +157,7 @@ export function Composer({
           ) : null}
 
           <TextInput
+            ref={inputRef}
             value={value}
             onChangeText={onChangeText}
             placeholderTextColor={COLORS.Text.tertiary}
@@ -185,7 +192,7 @@ export function Composer({
               />
             )}
           </Pressable>
-        </View>
+        </Pressable>
       </View>
     </View>
   );

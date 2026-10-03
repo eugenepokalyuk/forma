@@ -10,8 +10,6 @@ interface UserAvatarProps {
   url: string | null;
   name: string;
   size?: number;
-  /** ПРО — золотое кольцо + корона сверху. Единственное место в приложении,
-   * где статус ПРО виден прямо на аватарке (не только в профиле списком). */
   pro?: boolean;
 }
 
@@ -79,14 +77,19 @@ export function UserAvatar({ url, name, size = 44, pro }: UserAvatarProps) {
 }
 
 const styles = StyleSheet.create({
-  ring: { alignItems: 'center', justifyContent: 'center' },
+  ring: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   plainRing: {
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: COLORS.Stroke.hairline,
   },
-  image: { backgroundColor: COLORS.Surface.secondary },
+  image: {
+    backgroundColor: COLORS.Surface.secondary,
+  },
   placeholder: {
     alignItems: 'center',
     justifyContent: 'center',
