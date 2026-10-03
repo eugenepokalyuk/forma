@@ -3,7 +3,7 @@
 ```
 app/        маршруты expo-router — только реэкспорт экранов из pages/
 pages/      экраны: композиция из модулей + локальные components/ и hooks/
-modules/    домены (auth, programs, workout, social, bro) — вся логика здесь
+modules/    домены (auth, programs, workout, social, bro, support) — вся логика здесь
 shared/     то, что не знает о доменах: api-клиент, ui, lib, constants
 theme/      токены дизайна
 ```
@@ -19,6 +19,7 @@ modules/<домен>/
   queries.ts  react-query: ключи кэша (<домен>Keys) и хуки
   store.ts    zustand — только клиентское состояние, без сети
   services/   сценарии: меняют стор, ставят операции в очередь, ходят в api
+  hooks/      React-обёртки сценариев (диалоги, навигация)
   helpers/    чистые функции домена
   components/ компоненты домена, которые нужны нескольким экранам
   index.ts    публичный API модуля — логика, без компонентов

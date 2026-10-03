@@ -6,6 +6,7 @@
 - `components/` — карточки упражнения, ввод (вес и повторы или время), подходы (`SetPills`),
   экран отдыха с таймером, заметка к подходу
 - `components/FinishFlow` — завершение, как на сайте: итог (`SessionSummary`) → оценка
-  (`WorkoutFeedback`) → пост (`WorkoutShare`); всё уходит одним `completeWorkout` в конце
+  (`WorkoutFeedback`) → пост (`WorkoutShare`: фото на всю ширину, подпись в `Composer` с «+»,
+  стрелка публикует, «Пропустить» в шапке); всё уходит одним `completeWorkout` в конце
 
 Все действия — через сервисы `modules/workout`, сеть ничего не блокирует.
