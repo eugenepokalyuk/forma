@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Icon, type IconName } from './Icon';
-import { Typography } from './Typography';
+import { Icon, type IconName } from '../text/Icon';
+import { Typography } from '../text/Typography';
 import { COLORS, radius, spacing } from '@/theme';
 
 interface ListRowProps {

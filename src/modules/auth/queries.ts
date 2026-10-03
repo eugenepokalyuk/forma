@@ -1,7 +1,7 @@
 import * as ReactQuery from '@tanstack/react-query';
 
 import { updateProfileApi } from './api/updateProfileApi';
-import { alertActionFailed } from '@/shared/ui/alertActionFailed';
+import { alertActionFailed } from '@/shared/lib/alerts/alertActionFailed';
 
 import { useAuthStore } from './store';
 

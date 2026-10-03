@@ -3,7 +3,7 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { COLORS, radius, shadow, spacing } from '@/theme';
 
-import { GlassView } from './glass';
+import { GlassView } from '../glass/glass';
 
 interface GlassCardProps {
   children: ReactNode;

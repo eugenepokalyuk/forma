@@ -10,8 +10,8 @@ import { create } from 'zustand';
 
 import { COLORS, radius, shadow, spacing } from '@/theme';
 
-import { Icon, type IconName } from './Icon';
-import { Typography } from './Typography';
+import { Icon, type IconName } from '../text/Icon';
+import { Typography } from '../text/Typography';
 
 export type ToastType = 'info' | 'success' | 'error' | 'pending';
 

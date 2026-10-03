@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Alert } from 'react-native';
 
-import { alertActionFailed } from '@/shared/ui/alertActionFailed';
+import { alertActionFailed } from '@/shared/lib/alerts/alertActionFailed';
 
 import { deleteAccount } from '../services/session';
 

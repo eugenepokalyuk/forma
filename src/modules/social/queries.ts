@@ -20,7 +20,7 @@ import { reportCommentApi } from './api/reportCommentApi';
 import { reportPostApi } from './api/reportPostApi';
 import { unblockUserApi } from './api/unblockUserApi';
 import type { FollowRequestAction, Post, ReportReason } from './models/social';
-import { alertActionFailed } from '@/shared/ui/alertActionFailed';
+import { alertActionFailed } from '@/shared/lib/alerts/alertActionFailed';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
 export const socialKeys = {

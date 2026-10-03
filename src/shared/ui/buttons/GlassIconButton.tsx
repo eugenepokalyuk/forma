@@ -2,8 +2,8 @@ import { MotiView } from 'moti';
 import * as React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import { GlassView } from './glass';
-import { Icon, type IconName } from './Icon';
+import { GlassView } from '../glass/glass';
+import { Icon, type IconName } from '../text/Icon';
 import { COLORS, motion, radius } from '@/theme';
 
 type Variant = 'neutral' | 'accent';

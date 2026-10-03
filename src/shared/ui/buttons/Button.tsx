@@ -18,8 +18,8 @@ import {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { GlassView } from './glass';
-import { Typography } from './Typography';
+import { GlassView } from '../glass/glass';
+import { Typography } from '../text/Typography';
 import { COLORS, gradients, hitTarget, motion, radius, spacing } from '@/theme';
 
 // Оттенок стекла по варианту: основная — фирменный жёлтый, второстепенная —

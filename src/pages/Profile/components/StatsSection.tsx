@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { ErrorState, Section, StatTile } from '@/shared/ui';
 import { useProfileStats } from '@/pages/Profile/hooks/useProfileStats';
-import { COLORS, screenPadding, spacing } from '@/theme';
+import { COLORS, spacing } from '@/theme';
 
 export function StatsSection() {
   const { data, isError, refetch, streak, workoutsCount, totalTonnage } =

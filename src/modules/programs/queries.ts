@@ -9,7 +9,7 @@ import { getReactionsApi } from './api/getReactionsApi';
 import { getUserProgramsApi } from './api/getUserProgramsApi';
 import { removeUserProgramApi } from './api/removeUserProgramApi';
 import type { ProgramWithWorkouts, UserProgram } from './models/program';
-import { alertActionFailed } from '@/shared/ui/alertActionFailed';
+import { alertActionFailed } from '@/shared/lib/alerts/alertActionFailed';
 
 // Значения ключей не менять без нужды — кэш персистится в MMKV между запусками.
 export const programKeys = {

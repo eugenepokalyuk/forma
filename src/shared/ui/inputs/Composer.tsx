@@ -13,8 +13,8 @@ import {
 
 import { COLORS, motion, radius, shadow, spacing } from '@/theme';
 
-import { Icon, type IconName } from './Icon';
-import { Typography } from './Typography';
+import { Icon, type IconName } from '../text/Icon';
+import { Typography } from '../text/Typography';
 
 // Кнопки поля — 40pt, с hitSlop зона касания 56pt: по ним попадают с
 // первого раза, а поле при этом остаётся компактным.

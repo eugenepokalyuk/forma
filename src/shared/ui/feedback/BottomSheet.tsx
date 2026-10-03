@@ -23,9 +23,9 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { COLORS, radius, spacing } from '@/theme';
 
-import { DismissKeyboard } from './DismissKeyboard';
-import { Icon } from './Icon';
-import { Typography } from './Typography';
+import { DismissKeyboard } from '../inputs/DismissKeyboard';
+import { Icon } from '../text/Icon';
+import { Typography } from '../text/Typography';
 
 // Открытие: фон затемняется, следом шторка мягко выезжает снизу.
 // Закрытие — в обратном порядке: шторка уезжает, затем гаснет фон.

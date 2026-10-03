@@ -1,7 +1,7 @@
 import * as ReactQuery from '@tanstack/react-query';
 
 import { sendIdeaApi } from './api/sendIdeaApi';
-import { alertActionFailed } from '@/shared/ui/alertActionFailed';
+import { alertActionFailed } from '@/shared/lib/alerts/alertActionFailed';
 
 export function useSendIdea() {
   return ReactQuery.useMutation({

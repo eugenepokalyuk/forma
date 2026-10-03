@@ -17,7 +17,7 @@ import {
 } from '../queries';
 import { useSessions } from '@/modules/workout';
 import { Typography } from '@/shared/ui';
-import { COLORS, screenPadding, spacing } from '@/theme';
+import { COLORS, spacing } from '@/theme';
 import {
   type BroMessage,
   type BroTodayContext,

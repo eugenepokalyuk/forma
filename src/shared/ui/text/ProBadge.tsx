@@ -2,7 +2,6 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { COLORS, HEADING_ITALIC, radius, spacing } from '@/theme';
 
-import { Icon } from './Icon';
 import { Typography } from './Typography';
 
 // Бейдж ПРО-программы: жёлтая плашка, корона и «ПРО» курсивом.

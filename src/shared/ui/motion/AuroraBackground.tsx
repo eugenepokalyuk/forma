@@ -16,8 +16,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
-import { PALETTE } from '@/theme';
-
 // Фоновая «аврора»: несколько мягких цветовых пятен медленно плывут и дышат.
 // Должна быть почти незаметной — оживляет блок, не отвлекая от текста.
 // Анимируются только transform на UI-потоке; при «Уменьшении движения»

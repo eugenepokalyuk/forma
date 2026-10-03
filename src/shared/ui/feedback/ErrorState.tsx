@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 
 import { COLORS, spacing } from '@/theme';
 
-import { Button } from './Button';
-import { Icon } from './Icon';
-import { Typography } from './Typography';
+import { Button } from '../buttons/Button';
+import { Icon } from '../text/Icon';
+import { Typography } from '../text/Typography';
 
 interface ErrorStateProps {
   onRetry: () => unknown;

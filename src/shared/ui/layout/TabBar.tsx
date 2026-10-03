@@ -4,8 +4,8 @@ import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { CustomIcon, type CustomIconName } from './CustomIcon';
-import { Icon, TAB_ICONS } from './Icon';
+import { CustomIcon, type CustomIconName } from '../text/CustomIcon';
+import { Icon, TAB_ICONS } from '../text/Icon';
 import {
   COLORS,
   motion,

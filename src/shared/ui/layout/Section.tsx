@@ -3,7 +3,7 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { screenPadding, spacing } from '@/theme';
 
-import { Typography } from './Typography';
+import { Typography } from '../text/Typography';
 
 interface SectionProps extends React.PropsWithChildren {
   title?: string;

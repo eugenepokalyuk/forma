@@ -2,8 +2,8 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 
-import { Icon } from './Icon';
-import { Typography } from './Typography';
+import { Icon } from '../text/Icon';
+import { Typography } from '../text/Typography';
 import { COLORS, gradients } from '@/theme';
 
 interface UserAvatarProps {
