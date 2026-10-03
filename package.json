@@ -14,6 +14,7 @@
     "test": "jest",
     "build:apk": "scripts/build-apk.sh",
     "build:aab": "scripts/build-aab.sh",
+    "build:ios": "scripts/build-ios.sh",
     "check:16kb": "scripts/check-16kb.sh"
   },
   "dependencies": {
