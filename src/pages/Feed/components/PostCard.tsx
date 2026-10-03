@@ -8,6 +8,9 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
   type ViewToken,
 } from 'react-native';
 
@@ -26,6 +29,8 @@ interface PostCardProps {
   onOpenComments: () => void;
   // Меню поста: удаление своего, жалоба/блокировка чужого.
   onMore?: () => void;
+  // Лента задаёт карточке высоту страницы — медиа забирает всё свободное.
+  style?: StyleProp<ViewStyle>;
 }
 
 export function PostCard({
@@ -33,6 +38,7 @@ export function PostCard({
   onToggleLike,
   onOpenComments,
   onMore,
+  style,
 }: PostCardProps) {
   const lastTapRef = React.useRef(0);
   const [showBurst, setShowBurst] = React.useState(false);
@@ -71,7 +77,7 @@ export function PostCard({
   };
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       <View style={styles.header}>
         <UserAvatar
           url={post.author.avatarUrl}
@@ -112,13 +118,15 @@ export function PostCard({
           showBurst={showBurst}
           onPhotoPress={onPhotoPress}
         />
-      ) : null}
+      ) : (
+        <View style={styles.media} />
+      )}
 
-      {post.title && (
-        <Typography variant="body" style={styles.title}>
+      {post.title ? (
+        <Typography variant="body" numberOfLines={3} style={styles.title}>
           {post.title}
         </Typography>
-      )}
+      ) : null}
 
       <View style={styles.actionsBox}>
         <View style={styles.actionsRow}>
@@ -187,8 +195,13 @@ function MediaPager({
   showBurst: boolean;
   onPhotoPress: () => void;
 }) {
-  const [width, setWidth] = React.useState(0);
+  const [size, setSize] = React.useState({ width: 0, height: 0 });
   const [page, setPage] = React.useState(0);
+  const { width, height } = size;
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width: w, height: h } = e.nativeEvent.layout;
+    setSize({ width: w, height: h });
+  };
 
   // FlatList не поддерживает смену onViewableItemsChanged на лету —
   // обработчик стабилен (зависит только от сеттера стейта).
@@ -204,24 +217,25 @@ function MediaPager({
     slide === 'photo' ? (
       <PhotoSlide
         width={width}
+        height={height}
         photo={photo as string}
         showBurst={showBurst}
         onPress={onPhotoPress}
       />
     ) : (
-      <WorkoutSlide width={width} post={post} />
+      <WorkoutSlide width={width} height={height} post={post} />
     );
 
   if (slides.length === 1) {
     return (
-      <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+      <View style={styles.media} onLayout={onLayout}>
         {width > 0 ? renderSlide(slides[0]) : null}
       </View>
     );
   }
 
   return (
-    <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
+    <View style={styles.media} onLayout={onLayout}>
       {width > 0 ? (
         <FlatList
           data={slides}
@@ -234,7 +248,7 @@ function MediaPager({
           renderItem={({ item }) => renderSlide(item)}
         />
       ) : null}
-      <View style={styles.pagerDots}>
+      <View style={styles.pagerDots} pointerEvents="none">
         {slides.map((slide, i) => (
           <View
             key={slide}
@@ -248,11 +262,13 @@ function MediaPager({
 
 function PhotoSlide({
   width,
+  height,
   photo,
   showBurst,
   onPress,
 }: {
   width: number;
+  height: number;
   photo: string;
   showBurst: boolean;
   onPress: () => void;
@@ -265,7 +281,7 @@ function PhotoSlide({
       accessibilityRole="image"
       accessibilityLabel="Фото с тренировки"
     >
-      <View style={[styles.photoWrap, { width }]}>
+      <View style={[styles.photoWrap, { width, height }]}>
         <Image
           source={{ uri: photo }}
           style={styles.photo}
@@ -291,9 +307,17 @@ function PhotoSlide({
   );
 }
 
-function WorkoutSlide({ width, post }: { width: number; post: Post }) {
+function WorkoutSlide({
+  width,
+  height,
+  post,
+}: {
+  width: number;
+  height: number;
+  post: Post;
+}) {
   return (
-    // Высота задаётся числом (height: width), а не только aspectRatio —
+    // Высота задаётся числом (размер медиа-области), а не только flex —
     // вложенному скроллу нужен реально зафиксированный размер родителя,
     // иначе список растягивает слайд и наезжает на контент под пейджером.
     // ScrollView, а не FlatList: этот слайд уже сидит внутри renderItem
@@ -302,7 +326,7 @@ function WorkoutSlide({ width, post }: { width: number; post: Post }) {
     // VirtualizedLists) и на практике переставал сам скроллиться.
     // nestedScrollEnabled — на Android вертикальный жест иначе забирает
     // внешняя лента, и список упражнений выглядит статичным.
-    <View style={[styles.workoutSlide, { width, height: width }]}>
+    <View style={[styles.workoutSlide, { width, height }]}>
       <ScrollView
         nestedScrollEnabled
         style={styles.workoutList}
@@ -377,8 +401,10 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     paddingBottom: spacing.sm,
   },
-  title: { paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
-  photoWrap: { aspectRatio: 1, backgroundColor: COLORS.Surface.secondary },
+  title: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
+  // Медиа занимает всё, что осталось от высоты карточки.
+  media: { flex: 1 },
+  photoWrap: { backgroundColor: COLORS.Surface.secondary },
   photo: { width: '100%', height: '100%' },
   heartBurst: {
     position: 'absolute',
@@ -389,21 +415,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Точки — поверх медиа, а не отдельной строкой: высота карточки фиксирована.
   pagerDots: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: spacing.sm,
     flexDirection: 'row',
     justifyContent: 'center',
     gap: spacing.xs,
-    paddingVertical: spacing.sm,
   },
   pagerDot: {
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: COLORS.Surface.secondary,
+    backgroundColor: COLORS.Text.tertiary,
   },
   pagerDotActive: { backgroundColor: COLORS.Surface.accent, width: 14 },
   workoutSlide: {
-    aspectRatio: 1,
     backgroundColor: COLORS.Surface.secondary,
     padding: spacing.md,
   },
