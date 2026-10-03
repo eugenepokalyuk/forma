@@ -11,6 +11,8 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # JDK 17 и Android SDK из Homebrew, если не заданы в окружении.
 export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}"
 export ANDROID_HOME="${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}"
+# Без NODE_ENV expo-constants предупреждает и читает только .env/.env.local.
+export NODE_ENV="${NODE_ENV:-production}"
 
 ARCH_ARGS=(-PreactNativeArchitectures=arm64-v8a)
 [[ "${1:-}" == "--all" ]] && ARCH_ARGS=()

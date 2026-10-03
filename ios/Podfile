@@ -65,5 +65,22 @@ target 'Forma' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+
+    installer.pods_project.targets.each do |target|
+      # Предупреждения компилятора в коде библиотек (node_modules) — не наши:
+      # чинить их нечем, а в логе сборки они прячут то, что важно.
+      target.build_configurations.each do |config|
+        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+        config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+        # libtool: «has no symbols» у пустых объектников библиотек.
+        config.build_settings['OTHER_LIBTOOLFLAGS'] = '$(inherited) -no_warning_for_no_symbols'
+      end
+
+      # Скрипт-фазы без outputs Xcode гоняет на каждой сборке и предупреждает
+      # об этом — помечаем их явно как «всегда запускать», как и задумано.
+      target.shell_script_build_phases.each do |phase|
+        phase.always_out_of_date = '1' if Array(phase.output_paths).empty? && Array(phase.output_file_list_paths).empty?
+      end
+    end
   end
 end

@@ -391,9 +391,8 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG -Xcc -w";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.formaone.app;
 				PRODUCT_NAME = Forma;
 				SWIFT_OBJC_BRIDGING_HEADER = "Forma/Forma-Bridging-Header.h";
@@ -424,9 +423,8 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE -Xcc -w";
 				PRODUCT_BUNDLE_IDENTIFIER = ru.formaone.app;
 				PRODUCT_NAME = Forma;
 				SWIFT_OBJC_BRIDGING_HEADER = "Forma/Forma-Bridging-Header.h";
