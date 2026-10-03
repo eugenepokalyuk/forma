@@ -26,9 +26,9 @@ export function ProgramReactions({ program, style }: ProgramReactionsProps) {
     <View style={[styles.row, style]}>
       {reactions.map((r) => (
         <View key={r.value} style={styles.chip}>
-          <Typography variant="subtitle">{r.emoji}</Typography>
+          <Typography variant="label">{r.emoji}</Typography>
 
-          <Typography variant="subtitle" color={COLORS.Text.secondary}>
+          <Typography variant="label" color={COLORS.Text.secondary}>
             {program.reactionCounts[r.value]}
           </Typography>
         </View>
