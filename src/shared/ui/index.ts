@@ -22,3 +22,4 @@ export * from './ErrorState';
 export * from './alertActionFailed';
 export * from './AuroraBackground';
 export * from './ProBadge';
+export * from './DismissKeyboard';

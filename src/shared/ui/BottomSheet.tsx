@@ -23,6 +23,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { COLORS, radius, spacing } from '@/theme';
 
+import { DismissKeyboard } from './DismissKeyboard';
 import { Icon } from './Icon';
 import { Typography } from './Typography';
 
@@ -150,20 +151,22 @@ export function BottomSheet({
               sheetStyle,
             ]}
           >
-            <View style={styles.header}>
-              <Typography variant="display">{title}</Typography>
+            <DismissKeyboard style={styles.body}>
+              <View style={styles.header}>
+                <Typography variant="display">{title}</Typography>
 
-              <Pressable
-                onPress={onClose}
-                hitSlop={12}
-                accessibilityRole="button"
-                accessibilityLabel="Закрыть"
-              >
-                <Icon name="close" size={20} color={COLORS.Icon.secondary} />
-              </Pressable>
-            </View>
+                <Pressable
+                  onPress={onClose}
+                  hitSlop={12}
+                  accessibilityRole="button"
+                  accessibilityLabel="Закрыть"
+                >
+                  <Icon name="close" size={20} color={COLORS.Icon.secondary} />
+                </Pressable>
+              </View>
 
-            {children}
+              {children}
+            </DismissKeyboard>
           </Animated.View>
         </KeyboardAvoidingView>
       </View>
@@ -186,8 +189,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
     padding: spacing.md,
-    gap: spacing.md,
   },
+  body: { flexShrink: 1, gap: spacing.md },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

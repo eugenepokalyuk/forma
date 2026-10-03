@@ -6,7 +6,13 @@ import * as React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 
 import { sendOtpApi } from '@/modules/auth';
-import { Button, FadeInCover, Input, Typography } from '@/shared/ui';
+import {
+  Button,
+  DismissKeyboard,
+  FadeInCover,
+  Input,
+  Typography,
+} from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -51,52 +57,54 @@ export default function EmailScreen() {
         end={{ x: 0.5, y: 1 }}
       />
 
-      <MotiView
-        from={{ translateY: 16 }}
-        animate={{ translateY: 0 }}
-        transition={motion.springSoft}
-        style={styles.content}
-      >
-        <Typography variant="hero" color={COLORS.Text.accent} align="center">
-          {'Форма'}
-        </Typography>
-
-        <Typography
-          variant="body"
-          color={COLORS.Text.secondary}
-          align="center"
-          style={{ marginBottom: spacing.lg }}
+      <DismissKeyboard style={styles.fill}>
+        <MotiView
+          from={{ translateY: 16 }}
+          animate={{ translateY: 0 }}
+          transition={motion.springSoft}
+          style={styles.content}
         >
-          {'Войдите по коду из письма'}
-        </Typography>
-
-        <Input
-          placeholder="you@example.com"
-          keyboardType="email-address"
-          autoComplete="email"
-          textContentType="emailAddress"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={email}
-          onChangeText={setEmail}
-          returnKeyType="send"
-          onSubmitEditing={onSubmit}
-        />
-
-        {error ? (
-          <Typography variant="label" color={COLORS.Text.negative}>
-            {error}
+          <Typography variant="hero" color={COLORS.Text.accent} align="center">
+            {'Форма'}
           </Typography>
-        ) : null}
 
-        <Button
-          title="Получить код"
-          onPress={onSubmit}
-          disabled={!valid}
-          loading={loading}
-          style={styles.button}
-        />
-      </MotiView>
+          <Typography
+            variant="body"
+            color={COLORS.Text.secondary}
+            align="center"
+            style={{ marginBottom: spacing.lg }}
+          >
+            {'Войдите по коду из письма'}
+          </Typography>
+
+          <Input
+            placeholder="you@example.com"
+            keyboardType="email-address"
+            autoComplete="email"
+            textContentType="emailAddress"
+            autoCapitalize="none"
+            autoCorrect={false}
+            value={email}
+            onChangeText={setEmail}
+            returnKeyType="send"
+            onSubmitEditing={onSubmit}
+          />
+
+          {error ? (
+            <Typography variant="label" color={COLORS.Text.negative}>
+              {error}
+            </Typography>
+          ) : null}
+
+          <Button
+            title="Получить код"
+            onPress={onSubmit}
+            disabled={!valid}
+            loading={loading}
+            style={styles.button}
+          />
+        </MotiView>
+      </DismissKeyboard>
 
       <FadeInCover />
     </KeyboardAvoidingView>
@@ -105,6 +113,7 @@ export default function EmailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.Background.primary },
+  fill: { flex: 1 },
   glow: { position: 'absolute', top: 0, left: 0, right: 0, height: 320 },
   content: {
     flex: 1,

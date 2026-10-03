@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { FadeInCover, Icon, Typography } from '@/shared/ui';
+import { DismissKeyboard, FadeInCover, Icon, Typography } from '@/shared/ui';
 import { COLORS, hitTarget, screenPadding, spacing } from '@/theme';
 
 interface FinishStepProps {
@@ -37,7 +37,7 @@ export function FinishStep({
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View
+      <DismissKeyboard
         style={[
           styles.content,
           {
@@ -83,7 +83,7 @@ export function FinishStep({
         <View style={styles.actions}>{actions}</View>
 
         <FadeInCover />
-      </View>
+      </DismissKeyboard>
     </KeyboardAvoidingView>
   );
 }

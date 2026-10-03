@@ -2,7 +2,14 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
-import { Button, FadeInCover, Input, StatTile, Typography } from '@/shared/ui';
+import {
+  Button,
+  DismissKeyboard,
+  FadeInCover,
+  Input,
+  StatTile,
+  Typography,
+} from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { formatMMSS } from '@/shared/lib/string/number';
 import { completeWorkout, tonnage, useSessionStore } from '@/modules/workout';
@@ -74,7 +81,9 @@ export function SessionSummary({
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.lg }]}>
+    <DismissKeyboard
+      style={[styles.container, { paddingTop: insets.top + spacing.lg }]}
+    >
       <Typography variant="display" style={{ marginBottom: spacing.md }}>
         {'Итог тренировки'}
       </Typography>
@@ -121,7 +130,7 @@ export function SessionSummary({
       </View>
 
       <FadeInCover />
-    </View>
+    </DismissKeyboard>
   );
 }
 

@@ -6,7 +6,7 @@ import * as React from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { sendOtpApi, signIn, verifyOtpApi } from '@/modules/auth';
-import { Typography } from '@/shared/ui';
+import { DismissKeyboard, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -69,98 +69,105 @@ export default function CodeScreen() {
   };
 
   return (
-    <MotiView
-      from={{ opacity: 0, translateY: 16 }}
-      animate={{ opacity: 1, translateY: 0 }}
-      transition={motion.springSoft}
-      style={styles.container}
-    >
-      <Typography variant="hero" align="center">
-        {'Код из письма'}
-      </Typography>
-
-      <Typography
-        variant="body"
-        color={COLORS.Text.secondary}
-        align="center"
-        style={{ marginBottom: spacing.md }}
+    <DismissKeyboard style={styles.fill}>
+      <MotiView
+        from={{ opacity: 0, translateY: 16 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={motion.springSoft}
+        style={styles.container}
       >
-        {`Отправили на ${email}`}
-      </Typography>
-
-      <Pressable
-        onPress={() => inputRef.current?.focus()}
-        style={styles.digits}
-      >
-        {Array.from({ length: 6 }).map((_, i) => {
-          const filled = i < code.length;
-          const active = i === code.length;
-
-          return (
-            <MotiView
-              key={i}
-              from={filled ? { scale: 1.15 } : undefined}
-              animate={{
-                scale: 1,
-                borderColor: active
-                  ? COLORS.Stroke.accent
-                  : filled
-                    ? COLORS.Stroke.secondary
-                    : COLORS.Stroke.primary,
-                backgroundColor: filled
-                  ? COLORS.Surface.secondary
-                  : COLORS.Surface.primary,
-              }}
-              transition={motion.springy}
-              style={styles.digitBox}
-            >
-              <Typography variant="display">{code[i] ?? ''}</Typography>
-            </MotiView>
-          );
-        })}
-      </Pressable>
-
-      <TextInput
-        ref={inputRef}
-        style={styles.hiddenInput}
-        value={code}
-        onChangeText={onChangeCode}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        autoComplete="sms-otp"
-        maxLength={6}
-        autoFocus
-      />
-
-      {error ? (
-        <Typography variant="label" color={COLORS.Text.negative} align="center">
-          {error}
+        <Typography variant="hero" align="center">
+          {'Код из письма'}
         </Typography>
-      ) : null}
 
-      <View style={styles.footer}>
-        <Pressable onPress={resend} disabled={resendIn > 0}>
+        <Typography
+          variant="body"
+          color={COLORS.Text.secondary}
+          align="center"
+          style={{ marginBottom: spacing.md }}
+        >
+          {`Отправили на ${email}`}
+        </Typography>
+
+        <Pressable
+          onPress={() => inputRef.current?.focus()}
+          style={styles.digits}
+        >
+          {Array.from({ length: 6 }).map((_, i) => {
+            const filled = i < code.length;
+            const active = i === code.length;
+
+            return (
+              <MotiView
+                key={i}
+                from={filled ? { scale: 1.15 } : undefined}
+                animate={{
+                  scale: 1,
+                  borderColor: active
+                    ? COLORS.Stroke.accent
+                    : filled
+                      ? COLORS.Stroke.secondary
+                      : COLORS.Stroke.primary,
+                  backgroundColor: filled
+                    ? COLORS.Surface.secondary
+                    : COLORS.Surface.primary,
+                }}
+                transition={motion.springy}
+                style={styles.digitBox}
+              >
+                <Typography variant="display">{code[i] ?? ''}</Typography>
+              </MotiView>
+            );
+          })}
+        </Pressable>
+
+        <TextInput
+          ref={inputRef}
+          style={styles.hiddenInput}
+          value={code}
+          onChangeText={onChangeCode}
+          keyboardType="number-pad"
+          textContentType="oneTimeCode"
+          autoComplete="sms-otp"
+          maxLength={6}
+          autoFocus
+        />
+
+        {error ? (
           <Typography
             variant="label"
-            color={resendIn > 0 ? COLORS.Text.tertiary : COLORS.Text.accent}
+            color={COLORS.Text.negative}
+            align="center"
           >
-            {resendIn > 0
-              ? `Отправить ещё раз (${resendIn}с)`
-              : 'Отправить ещё раз'}
+            {error}
           </Typography>
-        </Pressable>
+        ) : null}
 
-        <Pressable onPress={() => router.back()}>
-          <Typography variant="label" color={COLORS.Text.accent}>
-            {'Изменить email'}
-          </Typography>
-        </Pressable>
-      </View>
-    </MotiView>
+        <View style={styles.footer}>
+          <Pressable onPress={resend} disabled={resendIn > 0}>
+            <Typography
+              variant="label"
+              color={resendIn > 0 ? COLORS.Text.tertiary : COLORS.Text.accent}
+            >
+              {resendIn > 0
+                ? `Отправить ещё раз (${resendIn}с)`
+                : 'Отправить ещё раз'}
+            </Typography>
+          </Pressable>
+
+          <Pressable onPress={() => router.back()}>
+            <Typography variant="label" color={COLORS.Text.accent}>
+              {'Изменить email'}
+            </Typography>
+          </Pressable>
+        </View>
+      </MotiView>
+    </DismissKeyboard>
   );
 }
 
 const styles = StyleSheet.create({
+  fill: { flex: 1, backgroundColor: COLORS.Background.primary },
   container: {
     flex: 1,
     backgroundColor: COLORS.Background.primary,
