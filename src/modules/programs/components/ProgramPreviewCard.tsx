@@ -2,6 +2,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedStyle,
+  type SharedValue,
+} from 'react-native-reanimated';
 
 import { Typography } from '@/shared/ui';
 import { COLORS, gradients, spacing } from '@/theme';
@@ -20,7 +26,16 @@ interface ProgramPreviewCardProps {
   onPress?: () => void;
   // Что показать под подзаголовком вместо реакций (например, кнопку).
   footer?: ReactNode;
+  // Прокрутка списка, в шапке которого стоит обложка, — для параллакса.
+  scrollY?: SharedValue<number>;
+  // Высота затемнения сверху под статус-бар и шапку. Живёт в слое фото и
+  // едет вместе с ним — отдельный градиент поверх обложки при параллаксе
+  // «проезжал» бы по фото тёмной полосой.
+  topShadeHeight?: number;
 }
+
+export const PREVIEW_HEIGHT = 450;
+const HEIGHT = PREVIEW_HEIGHT;
 
 // Обложка программы во всю ширину устройства, а не контейнера (в каталоге
 // стоит с отрицательным marginHorizontal), поэтому ширину берём из окна, а не
@@ -31,8 +46,28 @@ export function ProgramPreviewCard({
   bottomOverlap = 0,
   onPress,
   footer,
+  scrollY,
+  topShadeHeight,
 }: ProgramPreviewCardProps) {
   const { width } = useWindowDimensions();
+
+  // Параллакс: при прокрутке фото уезжает вдвое медленнее контента, при
+  // оттягивании вниз рамка фото растёт вверх и фото растягивается вместе с
+  // ней, а текст на обложке гаснет, пока уходит под статус-бар.
+  const frameStyle = useAnimatedStyle(() => {
+    const y = scrollY?.get() ?? 0;
+    return { top: Math.min(y, 0) };
+  });
+  const imageStyle = useAnimatedStyle(() => {
+    const y = scrollY?.get() ?? 0;
+    return { transform: [{ translateY: Math.max(y, 0) * 0.5 }] };
+  });
+  const contentStyle = useAnimatedStyle(() => {
+    const y = scrollY?.get() ?? 0;
+    return {
+      opacity: interpolate(y, [0, HEIGHT * 0.6], [1, 0], Extrapolation.CLAMP),
+    };
+  });
 
   return (
     <Pressable
@@ -40,23 +75,39 @@ export function ProgramPreviewCard({
       disabled={!onPress}
       style={[styles.wrap, { width }]}
     >
-      {program.coverImageUrl ? (
-        <Image
-          source={{ uri: program.coverImageUrl }}
-          style={StyleSheet.absoluteFill}
-          contentFit="cover"
-        />
-      ) : (
-        <View style={[StyleSheet.absoluteFill, styles.fallback]} />
-      )}
+      <Animated.View style={[styles.frame, frameStyle]}>
+        <Animated.View style={[StyleSheet.absoluteFill, imageStyle]}>
+          {program.coverImageUrl ? (
+            <Image
+              source={{ uri: program.coverImageUrl }}
+              style={StyleSheet.absoluteFill}
+              contentFit="cover"
+            />
+          ) : (
+            <View style={[StyleSheet.absoluteFill, styles.fallback]} />
+          )}
 
-      <LinearGradient
-        colors={gradients.scrim}
-        style={StyleSheet.absoluteFill}
-      />
+          <LinearGradient
+            colors={gradients.scrim}
+            style={StyleSheet.absoluteFill}
+          />
 
-      <View
-        style={[styles.content, { paddingBottom: spacing.lg + bottomOverlap }]}
+          {topShadeHeight ? (
+            <LinearGradient
+              pointerEvents="none"
+              colors={['rgba(0, 0, 0, 0.45)', 'rgba(0, 0, 0, 0)']}
+              style={[styles.topShade, { height: topShadeHeight }]}
+            />
+          ) : null}
+        </Animated.View>
+      </Animated.View>
+
+      <Animated.View
+        style={[
+          styles.content,
+          { paddingBottom: spacing.lg + bottomOverlap },
+          contentStyle,
+        ]}
       >
         <Typography variant="display" numberOfLines={2}>
           {program.title}
@@ -75,19 +126,28 @@ export function ProgramPreviewCard({
         ) : (
           <ProgramReactions program={program} style={styles.footer} />
         )}
-      </View>
+      </Animated.View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  // Без overflow: hidden — растянутое фото выходит за верх карточки;
+  // обрезает его рамка frame.
   wrap: {
-    height: 450,
+    height: HEIGHT,
     justifyContent: 'flex-end',
     backgroundColor: COLORS.Surface.primary,
+  },
+  frame: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     overflow: 'hidden',
   },
   fallback: { backgroundColor: COLORS.Surface.secondary },
+  topShade: { position: 'absolute', top: 0, left: 0, right: 0 },
   content: {
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.lg,

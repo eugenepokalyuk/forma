@@ -25,6 +25,7 @@ export default function ProfileScreen() {
 
   return (
     <ScreenContainer
+      header={<AppHeader />}
       edges={['top']}
       loading={isLoading}
       scroll
@@ -32,7 +33,6 @@ export default function ProfileScreen() {
       refreshing={isRefreshing}
       contentStyle={{ paddingBottom: tabBarClearance }}
     >
-      <AppHeader />
       <IdentitySection />
       <StatsSection />
       <AccountSection />

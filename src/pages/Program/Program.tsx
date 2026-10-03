@@ -1,8 +1,11 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { Stack } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import * as React from 'react';
-import { Alert, FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import * as SafeArea from 'react-native-safe-area-context';
 
 import type { WorkoutWithExercises } from '@/modules/programs';
@@ -49,6 +52,11 @@ export default function ProgramScreen() {
   >(undefined);
   const weekScrollRef = React.useRef<ScrollView>(null);
   const didScrollToWeek = React.useRef(false);
+  // Прокрутка списка — для параллакса обложки.
+  const scrollY = useSharedValue(0);
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.set(e.contentOffset.y);
+  });
 
   const userProgram = (userPrograms ?? []).find(
     (up) => up.programId === data?.id,
@@ -163,14 +171,10 @@ export default function ProgramScreen() {
         <ProgramPreviewCard
           program={data}
           bottomOverlap={SHEET_OVERLAP}
+          scrollY={scrollY}
+          // «Назад», время и батарея читаются на фото.
+          topShadeHeight={insets.top + 64}
           footer={action}
-        />
-
-        {/* «Назад», время и батарея читаются на фото. */}
-        <LinearGradient
-          pointerEvents="none"
-          colors={['rgba(0, 0, 0, 0.45)', 'rgba(0, 0, 0, 0)']}
-          style={[styles.topShade, { height: insets.top + 64 }]}
         />
       </View>
 
@@ -213,9 +217,11 @@ export default function ProgramScreen() {
     <View style={styles.container}>
       <Stack.Screen options={SCREEN_OPTIONS} />
 
-      <FlatList
+      <Animated.FlatList
         data={workoutsOfWeek}
         keyExtractor={(item) => item.id}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         // Обложка — от самого верха экрана, под статус-баром и шапкой.
         contentInsetAdjustmentBehavior="never"
@@ -246,7 +252,6 @@ export default function ProgramScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.Background.primary },
-  topShade: { position: 'absolute', top: 0, left: 0, right: 0 },
   sheetTop: {
     height: SHEET_OVERLAP,
     marginTop: -SHEET_OVERLAP,

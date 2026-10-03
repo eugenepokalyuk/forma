@@ -24,3 +24,4 @@ export * from './AuroraBackground';
 export * from './ProBadge';
 export * from './DismissKeyboard';
 export * from './Composer';
+export * from './FloatingHeader';

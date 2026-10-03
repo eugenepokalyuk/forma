@@ -17,7 +17,7 @@ import {
   type Edge,
 } from 'react-native-safe-area-context';
 
-import { COLORS, screenPadding } from '@/theme';
+import { COLORS } from '@/theme';
 
 interface ScreenContainerProps extends React.PropsWithChildren {
   scroll?: boolean;
@@ -29,6 +29,9 @@ interface ScreenContainerProps extends React.PropsWithChildren {
   // Градиент цвета фона под статус-баром. Выключают экраны, у которых
   // сверху во всю высоту картинка — там свой тёмный градиент.
   statusBarScrim?: boolean;
+  // Шапка над прокруткой — закреплена, как в ленте: не уезжает ни при
+  // прокрутке, ни при оттягивании; контент прокручивается под ней.
+  header?: React.ReactNode;
 }
 
 // Прокрутка «под статус-бар», как в нативных iOS-приложениях: в исходном
@@ -71,6 +74,7 @@ export function ScreenContainer({
   edges = ['top', 'bottom'],
   contentStyle,
   statusBarScrim = true,
+  header,
 }: ScreenContainerProps) {
   // Верхний край — не отступ контейнера, а место под статус-баром, куда
   // уезжает контент (см. useUnderStatusBarScroll). Экраны со своими списками
@@ -81,6 +85,13 @@ export function ScreenContainer({
   const scrollInset = underStatusBar
     ? statusBarScroll
     : { scrollProps: {}, paddingTop: 0, refreshOffset: 0 };
+
+  // С закреплённой шапкой отступ под статус-бар — у неё, а не у контента.
+  const pinnedHeader = header !== undefined;
+  const contentInset =
+    pinnedHeader && underStatusBar
+      ? { scrollProps: {}, paddingTop: 0, refreshOffset: 0 }
+      : scrollInset;
 
   if (loading) {
     return (
@@ -94,13 +105,17 @@ export function ScreenContainer({
 
   return (
     <SafeAreaView style={styles.container} edges={safeEdges}>
+      {pinnedHeader ? (
+        <View style={{ paddingTop: scrollInset.paddingTop }}>{header}</View>
+      ) : null}
+
       {scroll ? (
         <ScrollView
-          {...scrollInset.scrollProps}
+          {...contentInset.scrollProps}
           showsVerticalScrollIndicator={false}
           style={styles.fill}
           contentContainerStyle={[
-            { paddingTop: scrollInset.paddingTop },
+            { paddingTop: contentInset.paddingTop },
             contentStyle,
           ]}
           refreshControl={
@@ -109,7 +124,7 @@ export function ScreenContainer({
                 refreshing={refreshing}
                 onRefresh={onRefresh}
                 tintColor={COLORS.Text.secondary}
-                progressViewOffset={scrollInset.refreshOffset}
+                progressViewOffset={contentInset.refreshOffset}
               />
             ) : undefined
           }

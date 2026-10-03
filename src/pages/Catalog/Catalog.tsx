@@ -1,20 +1,28 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from 'react-native-reanimated';
+import { StyleSheet, View } from 'react-native';
 
 import type { Program } from '@/modules/programs';
 import { AppHeader } from '@/modules/auth/ui';
 import {
   ErrorState,
   FadeInItem,
+  FloatingHeader,
   ScreenContainer,
   Typography,
   useTabBarClearance,
   useUnderStatusBarScroll,
 } from '@/shared/ui';
 import { useCatalog } from '@/modules/programs';
-import { ProgramCard, ProgramPreviewCard } from '@/modules/programs/ui';
+import {
+  PREVIEW_HEIGHT,
+  ProgramCard,
+  ProgramPreviewCard,
+} from '@/modules/programs/ui';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
@@ -69,6 +77,13 @@ export default function CatalogScreen() {
   const statusBarScroll = useUnderStatusBarScroll();
   const { data, isLoading, isError, refetch } = useCatalog();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  // Прокрутка списка — для параллакса обложки.
+  const scrollY = useSharedValue(0);
+  // Высота шапки поверх обложки (вместе с отступом под статус-бар).
+  const [headerHeight, setHeaderHeight] = React.useState(0);
+  const onScroll = useAnimatedScrollHandler((e) => {
+    scrollY.set(e.contentOffset.y);
+  });
 
   // Единственная закреплённая preview-программа (см. Program.catalog_layout
   // на бэке) — если есть, идёт баннером над остальным списком.
@@ -87,25 +102,30 @@ export default function CatalogScreen() {
     }
   }, [refetch]);
 
+  // Шапка закреплена, как в ленте. С обложкой — лежит поверх неё и
+  // проявляет фон, когда обложка уезжает; без обложки — стоит над списком.
   return (
     <ScreenContainer
       edges={['top']}
       loading={isLoading}
+      header={previewProgram ? undefined : <AppHeader />}
       // Обложка сверху во всю высоту — со своим тёмным градиентом.
-      statusBarScrim={!previewProgram}
+      statusBarScrim={false}
     >
-      <FlatList
-        {...statusBarScroll.scrollProps}
-        progressViewOffset={statusBarScroll.refreshOffset}
+      <Animated.FlatList
+        // Индикатор обновления — под шапкой.
+        progressViewOffset={previewProgram ? headerHeight : 0}
         style={styles.list}
         data={rows}
         keyExtractor={(row) => row.key}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
         refreshing={isRefreshing}
         onRefresh={onRefresh}
         contentContainerStyle={[
           {
-            // Обложка начинается от самого верха экрана, под статус-баром.
-            paddingTop: previewProgram ? 0 : statusBarScroll.paddingTop,
+            // Обложка — от самого верха экрана, под статус-баром и шапкой.
+            paddingTop: 0,
             paddingBottom: tabBarClearance,
             gap: spacing.md,
           },
@@ -124,34 +144,16 @@ export default function CatalogScreen() {
                   program={previewProgram}
                   onPress={() => router.push(ROUTES.program(previewProgram.id))}
                   bottomOverlap={SHEET_OVERLAP}
+                  scrollY={scrollY}
+                  // Время и батарея читаются на фото.
+                  topShadeHeight={statusBarScroll.paddingTop + 64}
                 />
-
-                {/* Время и батарея читаются на фото. */}
-                <LinearGradient
-                  pointerEvents="none"
-                  colors={['rgba(0, 0, 0, 0.45)', 'rgba(0, 0, 0, 0)']}
-                  style={[
-                    styles.previewTopShade,
-                    { height: statusBarScroll.paddingTop + 64 },
-                  ]}
-                />
-
-                <View
-                  style={[
-                    styles.previewHeaderOverlay,
-                    { paddingTop: statusBarScroll.paddingTop },
-                  ]}
-                >
-                  <AppHeader />
-                </View>
               </View>
 
               {/* Всё ниже обложки — секция, которая заходит на неё снизу. */}
               <View style={styles.sheetTop} />
             </View>
-          ) : (
-            <AppHeader />
-          )
+          ) : null
         }
         ListEmptyComponent={
           isError ? (
@@ -195,6 +197,21 @@ export default function CatalogScreen() {
           </FadeInItem>
         )}
       />
+
+      {previewProgram ? (
+        <FloatingHeader
+          scrollY={scrollY}
+          // Фон проявляется, когда до конца обложки остаётся высота шапки.
+          revealRange={[
+            PREVIEW_HEIGHT - headerHeight * 2,
+            PREVIEW_HEIGHT - headerHeight,
+          ]}
+          onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
+          style={{ paddingTop: statusBarScroll.paddingTop }}
+        >
+          <AppHeader />
+        </FloatingHeader>
+      ) : null}
     </ScreenContainer>
   );
 }
@@ -218,13 +235,6 @@ const styles = StyleSheet.create({
   previewWrap: {
     position: 'relative',
   },
-  previewHeaderOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  previewTopShade: { position: 'absolute', top: 0, left: 0, right: 0 },
   sheetTop: {
     height: SHEET_OVERLAP,
     marginTop: -SHEET_OVERLAP,
