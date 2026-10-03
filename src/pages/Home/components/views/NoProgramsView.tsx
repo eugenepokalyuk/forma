@@ -9,7 +9,7 @@ export function NoProgramsView() {
   return (
     <Section padding>
       <View style={styles.card}>
-        <Typography variant="title">
+        <Typography variant="display">
           {'Выберите программу для тренировки'}
         </Typography>
 

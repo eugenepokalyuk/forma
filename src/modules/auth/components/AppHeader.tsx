@@ -19,7 +19,7 @@ export function AppHeader() {
 
       <Pressable onPress={showProInfo} style={styles.proBadge}>
         <Typography
-          variant="title"
+          variant="heading"
           color={COLORS.Text.accent}
           style={styles.badgeText}
         >
@@ -27,7 +27,7 @@ export function AppHeader() {
         </Typography>
 
         <Typography
-          variant="title"
+          variant="heading"
           color={COLORS.Text.primary}
           style={styles.badgeText}
         >
@@ -48,7 +48,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   // «ПРО БЕСПЛАТНО» — курсивом, как бейджи ПРО на карточках.
-  badgeText: { fontFamily: HEADING_ITALIC.bold },
+  badgeText: {
+    fontFamily: HEADING_ITALIC.bold,
+  },
   proBadge: {
     flexDirection: 'row',
     gap: 4,
