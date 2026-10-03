@@ -13,6 +13,7 @@ import * as React from 'react';
 import { View } from 'react-native';
 
 import { COLORS } from '@/theme';
+import { Toaster } from '@/shared/ui';
 import { queryClient, queryPersister } from '@/shared/lib/queryClient';
 import { useOutboxSync, useSessionStore } from '@/modules/workout';
 import { initMonitoring } from '@/shared/lib/monitoring';
@@ -67,6 +68,7 @@ export default function RootLayout() {
     >
       <StatusBar style="light" />
       <Slot />
+      <Toaster />
     </PersistQueryClientProvider>
   );
 }

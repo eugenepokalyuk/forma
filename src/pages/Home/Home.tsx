@@ -10,10 +10,10 @@ import {
 } from '@/shared/ui';
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
-import { SyncBanner } from '@/pages/Home/components/SyncBanner';
 import { WeekSection } from '@/pages/Home/components/WeekSection';
 import { usePrefetchActivePrograms } from '@/pages/Home/hooks/usePrefetchActivePrograms';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
+import { useSyncToast } from '@/pages/Home/hooks/useSyncToast';
 import { programKeys } from '@/modules/programs';
 import { workoutKeys } from '@/modules/workout';
 
@@ -26,6 +26,7 @@ export default function HomeScreen() {
   const { data, isLoading } = useMyPrograms();
 
   usePrefetchActivePrograms(data);
+  useSyncToast();
 
   // Сияние за Бро — первый слой контента экрана: выходит за рамки блока, но
   // лежит под всеми блоками (а не поверх соседних) и прокручивается с ним.
@@ -49,6 +50,7 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer
+      header={<AppHeader />}
       edges={['top']}
       loading={isLoading}
       scroll
@@ -66,8 +68,6 @@ export default function HomeScreen() {
         />
       ) : null}
 
-      <AppHeader />
-      <SyncBanner />
       <WeekSection />
       <View
         onLayout={(e) => {
