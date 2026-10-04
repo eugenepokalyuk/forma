@@ -14,6 +14,12 @@ export ANDROID_HOME="${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetool
 # Без NODE_ENV expo-constants предупреждает и читает только .env/.env.local.
 export NODE_ENV="${NODE_ENV:-production}"
 
+# Манифест ассетов expo-updates (app.manifest) Gradle не пересобирает: у задачи
+# createReleaseUpdatesResources нет файловых входов, и после первой сборки она
+# всегда «up-to-date». Без пересборки новые картинки из assets/ на Android
+# получают пустой uri и не показываются. Удаляем выход — задача перегенерирует.
+rm -rf "$ROOT/android/app/build/generated/assets/createReleaseUpdatesResources"
+
 ARCH_ARGS=(-PreactNativeArchitectures=arm64-v8a)
 [[ "${1:-}" == "--all" ]] && ARCH_ARGS=()
 

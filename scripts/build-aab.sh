@@ -35,6 +35,12 @@ if [[ "${1:-}" == "--version-code" ]]; then
   VERSION_CODE="${2:?укажите versionCode}"
 fi
 
+# Манифест ассетов expo-updates (app.manifest) Gradle не пересобирает: у задачи
+# createReleaseUpdatesResources нет файловых входов, и после первой сборки она
+# всегда «up-to-date». Без пересборки новые картинки из assets/ на Android
+# получают пустой uri и не показываются. Удаляем выход — задача перегенерирует.
+rm -rf "$ROOT/android/app/build/generated/assets/createReleaseUpdatesResources"
+
 (cd "$ROOT/android" && ./gradlew bundleRelease -PformaVersionCode="$VERSION_CODE")
 
 VERSION="$(node -p "require('$ROOT/app.json').expo.version")"
