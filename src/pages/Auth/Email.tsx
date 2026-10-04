@@ -82,6 +82,9 @@ export default function EmailScreen() {
   const [email, setEmail] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  // Неверная почта — красная рамка и тряска поля (shakeKey — номер попытки).
+  const [invalid, setInvalid] = React.useState(false);
+  const [shakeKey, setShakeKey] = React.useState(0);
   const [guestOpen, setGuestOpen] = React.useState(false);
 
   // Параллакс картинки, как у обложки программы: при оттягивании вниз рамка
@@ -101,9 +104,12 @@ export default function EmailScreen() {
   const onSubmit = async () => {
     if (loading) return;
     // Кнопка всегда активна и жёлтая — иначе до ввода почты главной
-    // казалась «Войти без сохранения». Неверная почта — подсказка, а не тишина.
+    // казалась «Войти без сохранения». Неверная почта — красная рамка и
+    // тряска поля, без текста.
     if (!isValidEmail(email)) {
-      setError('Введите почту, например name@mail.ru');
+      setError(null);
+      setInvalid(true);
+      setShakeKey((n) => n + 1);
       return;
     }
 
@@ -171,14 +177,21 @@ export default function EmailScreen() {
             onChangeText={(text) => {
               setEmail(text);
               setError(null);
+              setInvalid(false);
             }}
             returnKeyType="send"
             onSubmitEditing={onSubmit}
             textAlign="center"
+            error={invalid}
+            shakeKey={shakeKey}
           />
 
           {error ? (
-            <Typography variant="label" color={COLORS.Text.negative}>
+            <Typography
+              variant="label"
+              align="center"
+              color={COLORS.Text.negative}
+            >
               {error}
             </Typography>
           ) : null}

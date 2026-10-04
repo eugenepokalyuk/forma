@@ -50,6 +50,8 @@ export const COLORS = {
     accent: PALETTE.amber50,
     positive: PALETTE.green50,
     negative: PALETTE.red50,
+    // Рамка поля с неверным значением.
+    error: 'rgba(255, 0, 0, 0.5)',
   },
   Overlay: {
     scrim: 'rgba(0, 0, 0, 0.92)',
