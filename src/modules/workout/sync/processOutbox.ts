@@ -5,6 +5,7 @@ import { reportWarning } from '@/shared/lib/monitoring';
 import { useOutboxStore } from './outbox';
 import { sweepPhotos } from './postPhotos';
 import { ParentLostError, sendOp } from './sendOp';
+import { useSyncProgress } from './syncProgress';
 
 const RETRY_BASE_MS = 2_000;
 const RETRY_MAX_MS = 5 * 60_000;
@@ -39,17 +40,25 @@ export async function processOutbox({ force = false } = {}) {
   if (!force && Date.now() < retryAt) return;
 
   processing = true;
+  let sent = 0;
   try {
     for (;;) {
       const store = useOutboxStore.getState();
       const op = store.ops[0];
       if (!op) break;
+      // Новые операции во время отправки растягивают total, а не сбрасывают.
+      useSyncProgress.setState({
+        active: true,
+        sent,
+        total: sent + store.ops.length,
+      });
 
       try {
         await sendOp(op);
         attempt = 0;
         retryAt = 0;
         store.removeOp(op.opId);
+        sent += 1;
         if (op.type === 'complete' || op.type === 'discard') {
           store.forgetServerId(op.localId);
         }
@@ -60,6 +69,7 @@ export async function processOutbox({ force = false } = {}) {
           break;
         }
         if (e instanceof ParentLostError) {
+          sent += 1;
           store.markSessionDead(
             op.localId,
             'session was not created on server',
@@ -73,6 +83,7 @@ export async function processOutbox({ force = false } = {}) {
           attempt += 1;
           break;
         }
+        sent += 1;
         // Прочие 4xx — в «мёртвые», чтобы не блокировать очередь. Если не
         // создалась сама сессия, вместе с ней умирают все её операции.
         if (op.type === 'startSession') {
@@ -90,6 +101,7 @@ export async function processOutbox({ force = false } = {}) {
     sweepPhotos(pendingPhotos());
   } finally {
     processing = false;
+    useSyncProgress.setState({ active: false });
   }
 }
 

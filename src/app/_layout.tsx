@@ -17,6 +17,7 @@ import { COLORS } from '@/theme';
 import { Toaster } from '@/shared/ui';
 import { queryClient, queryPersister } from '@/shared/lib/queryClient';
 import { useOutboxSync, useSessionStore } from '@/modules/workout';
+import { SyncProgressBar } from '@/modules/workout/ui';
 import { initMonitoring } from '@/shared/lib/monitoring';
 import { bootstrap, useAuthStore } from '@/modules/auth';
 
@@ -73,6 +74,7 @@ export default function RootLayout() {
       >
         <StatusBar style="light" />
         <Slot />
+        <SyncProgressBar />
         <Toaster />
       </PersistQueryClientProvider>
     </KeyboardProvider>

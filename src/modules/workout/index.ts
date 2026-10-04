@@ -12,6 +12,7 @@ export * from './api/undoSetApi';
 export { useSessionStore, type ActiveSession, type LocalLog } from './store';
 export { useOutboxStore } from './sync/outbox';
 export { useOutboxSync } from './sync/useOutboxSync';
+export { useSyncProgress } from './sync/syncProgress';
 export * from './services/workout';
 export * from './hooks/useStartWorkout';
 export * from './queries';
