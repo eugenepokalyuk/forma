@@ -28,7 +28,7 @@
 
 ## Liquid Glass
 
-`Button`, `GlassIconButton` и `GlassCard` на iOS 26+ — нативное стекло (`glass/glass.ts`,
+`Button`, `GlassIconButton`, `GlassCard` и `Input` на iOS 26+ — нативное стекло (`glass/glass.ts`,
 `expo-glass-effect`) без заливки под ним — иначе стекло выглядит плоским; на Android, старых iOS
 и в сборке без модуля — обычная заливка.
 Стекло не рисуется внутри полупрозрачного родителя: экраны с ним появляются через `FadeInCover`

@@ -4,6 +4,8 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { COLORS, motion, radius, spacing } from '@/theme';
 
+import { GlassFill } from '../glass/GlassFill';
+import { GlassView } from '../glass/glass';
 import { Typography } from '../text/Typography';
 
 interface CodeInputProps {
@@ -54,13 +56,17 @@ export function CodeInput({
                   : filled
                     ? COLORS.Stroke.secondary
                     : COLORS.Stroke.primary,
-                backgroundColor: filled
-                  ? COLORS.Surface.secondary
-                  : COLORS.Surface.primary,
+                // Со стеклом заливки нет — заполненную ячейку выделяет рамка.
+                backgroundColor: GlassView
+                  ? 'transparent'
+                  : filled
+                    ? COLORS.Surface.secondary
+                    : COLORS.Surface.primary,
               }}
               transition={motion.springy}
               style={styles.digitBox}
             >
+              <GlassFill borderRadius={radius.md} interactive={false} />
               <Typography variant="display">{value[i] ?? ''}</Typography>
             </MotiView>
           );
@@ -89,6 +95,7 @@ const styles = StyleSheet.create({
     height: 58,
     borderRadius: radius.md,
     borderWidth: 1.5,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },

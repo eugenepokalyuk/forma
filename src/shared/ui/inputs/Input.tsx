@@ -10,6 +10,9 @@ import {
 
 import { COLORS, motion, radius, spacing } from '@/theme';
 
+import { GlassFill } from '../glass/GlassFill';
+import { GlassView } from '../glass/glass';
+
 interface InputProps extends Omit<TextInputProps, 'style'> {
   /** Стиль применяется к обёртке (View), а не к самому TextInput. */
   style?: StyleProp<ViewStyle>;
@@ -21,7 +24,8 @@ const HEIGHT = 48;
 const HEIGHT_MULTILINE = 88;
 
 // Единый стиль поля ввода — та же скала радиусов/цветов, что у Button, с
-// мягкой подсветкой границы в фокусе. Используем везде, где нужен TextInput.
+// мягкой подсветкой границы в фокусе. На iOS 26+ — Liquid Glass без заливки
+// под ним (как у Button и GlassCard), иначе — обычная заливка. Используем везде, где нужен TextInput.
 // Нажимается вся рамка: поле растянуто на неё, а тап по бордеру тоже
 // ставит фокус — не нужно целиться в текст или плейсхолдер.
 export function Input({
@@ -45,12 +49,15 @@ export function Input({
           {
             minHeight: multiline ? HEIGHT_MULTILINE : HEIGHT,
             borderRadius: radius.pill,
-            backgroundColor: COLORS.Surface.primary,
+            backgroundColor: GlassView ? 'transparent' : COLORS.Surface.primary,
             borderWidth: BORDER,
+            overflow: 'hidden',
           },
           style,
         ]}
       >
+        <GlassFill borderRadius={radius.pill} />
+
         <TextInput
           ref={inputRef}
           placeholderTextColor={COLORS.Text.tertiary}

@@ -13,6 +13,8 @@ import {
 
 import { COLORS, motion, radius, shadow, spacing } from '@/theme';
 
+import { GlassFill } from '../glass/GlassFill';
+import { GlassView } from '../glass/glass';
 import { Icon, type IconName } from '../text/Icon';
 import { Typography } from '../text/Typography';
 
@@ -134,10 +136,12 @@ export function Composer({
 
         {/* Тап по любому месту поля (не по кнопкам) ставит фокус в текст. */}
         <Pressable
-          style={styles.bar}
+          style={[styles.bar, GlassView && styles.barGlass]}
           onPress={() => inputRef.current?.focus()}
           accessible={false}
         >
+          <GlassFill borderRadius={radius.xl} />
+
           {attachOptions?.length ? (
             <Pressable
               onPress={() => setMenuOpen((open) => !open)}
@@ -250,6 +254,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.Stroke.primary,
     backgroundColor: COLORS.Surface.primary,
   },
+  // Со стеклом заливку даёт GlassFill.
+  barGlass: { backgroundColor: 'transparent', overflow: 'hidden' },
   plus: {
     width: BUTTON,
     height: BUTTON,
