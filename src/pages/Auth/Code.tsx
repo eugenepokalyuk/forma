@@ -10,6 +10,7 @@ import { ResendCodeButton } from '@/modules/auth/ui';
 import {
   CodeInput,
   DismissKeyboard,
+  FadeInCover,
   TextButton,
   Typography,
 } from '@/shared/ui';
@@ -55,9 +56,11 @@ export default function CodeScreen() {
 
   return (
     <DismissKeyboard style={styles.fill}>
+      {/* Появление — сдвигом и FadeInCover, без opacity у содержимого:
+          внутри полупрозрачного родителя iOS не рисует стекло ячеек кода. */}
       <MotiView
-        from={{ opacity: 0, translateY: 16 }}
-        animate={{ opacity: 1, translateY: 0 }}
+        from={{ translateY: 16 }}
+        animate={{ translateY: 0 }}
         transition={motion.springSoft}
         style={styles.container}
       >
@@ -97,6 +100,8 @@ export default function CodeScreen() {
           <TextButton title="Изменить почту" onPress={() => router.back()} />
         </View>
       </MotiView>
+
+      <FadeInCover />
     </DismissKeyboard>
   );
 }
