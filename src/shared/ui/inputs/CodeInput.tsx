@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 import { COLORS, motion, radius, spacing } from '@/theme';
 
 import { GlassFill } from '../glass/GlassFill';
-import { GlassView } from '../glass/glass';
+import { GLASS_IDLE_BORDER, GlassView } from '../glass/glass';
 import { Typography } from '../text/Typography';
 
 interface CodeInputProps {
@@ -51,12 +51,7 @@ export function CodeInput({
               from={filled ? { scale: 1.15 } : undefined}
               animate={{
                 scale: 1,
-                borderColor: active
-                  ? COLORS.Stroke.accent
-                  : filled
-                    ? COLORS.Stroke.secondary
-                    : COLORS.Stroke.primary,
-                // Со стеклом заливки нет — заполненную ячейку выделяет рамка.
+                // Со стеклом заливку даёт GlassFill.
                 backgroundColor: GlassView
                   ? 'transparent'
                   : filled
@@ -68,6 +63,24 @@ export function CodeInput({
             >
               <GlassFill borderRadius={radius.md} interactive={false} />
               <Typography variant="display">{value[i] ?? ''}</Typography>
+
+              {/* Рамка — слоем поверх: border ячейки на iOS рисуется под
+                  стеклом. Со стеклом она только у текущей ячейки — остальные,
+                  как кнопки, без своей рамки. */}
+              <MotiView
+                pointerEvents="none"
+                animate={{
+                  borderColor: active
+                    ? COLORS.Stroke.accent
+                    : GlassView
+                      ? GLASS_IDLE_BORDER
+                      : filled
+                        ? COLORS.Stroke.secondary
+                        : COLORS.Stroke.primary,
+                }}
+                transition={motion.springy}
+                style={styles.digitBorder}
+              />
             </MotiView>
           );
         })}
@@ -94,10 +107,18 @@ const styles = StyleSheet.create({
     width: 46,
     height: 58,
     borderRadius: radius.md,
-    borderWidth: 1.5,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  digitBorder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
   },
   hiddenInput: { position: 'absolute', opacity: 0, height: 1, width: 1 },
 });

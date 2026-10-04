@@ -254,8 +254,15 @@ const styles = StyleSheet.create({
     borderColor: COLORS.Stroke.primary,
     backgroundColor: COLORS.Surface.primary,
   },
-  // Со стеклом заливку даёт GlassFill.
-  barGlass: { backgroundColor: 'transparent', overflow: 'hidden' },
+  // Со стеклом заливку даёт GlassFill, рамку — блик стекла (как у кнопок).
+  // Рамки нет совсем — иначе стекло лежало бы внутри неё и было уже кнопок;
+  // её толщину возвращаем отступом, чтобы размер не менялся.
+  barGlass: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    padding: spacing.xs + 1.5,
+    overflow: 'hidden',
+  },
   plus: {
     width: BUTTON,
     height: BUTTON,
