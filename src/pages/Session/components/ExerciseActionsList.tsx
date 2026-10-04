@@ -10,6 +10,9 @@ interface ExerciseActionsListProps {
   onOpenNote: () => void;
   onSkip: () => void;
   onAddExercise: () => void;
+  onReplaceExercise: () => void;
+  /** Только для своего упражнения, добавленного поверх программы. */
+  onHideExercise?: () => void;
   /** Меню «Тренировка»: завершить с итогом или выйти без сохранения. */
   onFinish: () => void;
 }
@@ -20,6 +23,8 @@ export function ExerciseActionsList({
   onOpenNote,
   onSkip,
   onAddExercise,
+  onReplaceExercise,
+  onHideExercise,
   onFinish,
 }: ExerciseActionsListProps) {
   const [tipsOpen, setTipsOpen] = React.useState(false);
@@ -29,13 +34,6 @@ export function ExerciseActionsList({
       { text: 'Отмена', style: 'cancel' },
       { text: 'Пропустить', style: 'destructive', onPress: onSkip },
     ]);
-  };
-
-  const onReplacePress = () => {
-    Alert.alert(
-      'Скоро',
-      'Подбор похожего упражнения появится в одном из следующих обновлений',
-    );
   };
 
   return (
@@ -76,8 +74,15 @@ export function ExerciseActionsList({
       <ActionRow
         icon="swap-horizontal"
         title="Заменить на похожее упражнение"
-        onPress={onReplacePress}
+        onPress={onReplaceExercise}
       />
+      {onHideExercise ? (
+        <ActionRow
+          icon="eye-off-outline"
+          title="Скрыть упражнение"
+          onPress={onHideExercise}
+        />
+      ) : null}
       <ActionRow
         icon="skip-next-outline"
         title="Пропустить упражнение"

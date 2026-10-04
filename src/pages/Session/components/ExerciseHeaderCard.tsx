@@ -11,6 +11,15 @@ export function ExerciseHeaderCard({ exercise }: { exercise: Exercise }) {
 
   return (
     <View style={styles.container}>
+      {/* Своё упражнение, добавленное поверх программы, — его можно скрыть. */}
+      {exercise.isCustom ? (
+        <View style={styles.customBadge}>
+          <Typography variant="label" color={COLORS.Text.accent}>
+            {'Добавлено вами'}
+          </Typography>
+        </View>
+      ) : null}
+
       <Typography variant="display" align="center">
         {exercise.name}
       </Typography>
@@ -50,6 +59,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.xs,
     marginTop: spacing.xs,
+  },
+  customBadge: {
+    backgroundColor: COLORS.Surface.accentSubdued,
+    borderRadius: radius.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 4,
+    marginBottom: spacing.xs,
   },
   muscleChip: {
     borderWidth: 1,

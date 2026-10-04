@@ -1,6 +1,9 @@
 import type { AxiosError } from 'axios';
 
-import type { WorkoutWithExercises } from '@/modules/programs';
+import type {
+  ExerciseCatalogItem,
+  WorkoutWithExercises,
+} from '@/modules/programs';
 
 // Сценарии очереди синхронизации: сеть, ошибки сервера, смена пользователя.
 // API замокан, MMKV — тоже (нативный модуль в jest недоступен).
@@ -12,11 +15,16 @@ jest.mock('@/shared/lib/storage/mmkv', () => ({
     removeItem: () => {},
   },
 }));
-jest.mock('../services/lastLogs', () => ({ loadLastLogs: jest.fn() }));
+jest.mock('../services/lastLogs', () => ({
+  loadLastLogs: jest.fn(),
+  loadLastLogsFor: jest.fn(),
+}));
 jest.mock('@/shared/lib/monitoring', () => ({ reportWarning: jest.fn() }));
 
 const API = [
   'startSessionApi',
+  'addSessionExerciseApi',
+  'removeSessionExerciseApi',
   'logSetApi',
   'undoSetApi',
   'submitReactionApi',
@@ -27,6 +35,12 @@ type ApiName = (typeof API)[number];
 
 jest.mock('../api/startSessionApi', () => ({ startSessionApi: jest.fn() }));
 jest.mock('../api/logSetApi', () => ({ logSetApi: jest.fn() }));
+jest.mock('../api/addSessionExerciseApi', () => ({
+  addSessionExerciseApi: jest.fn(),
+}));
+jest.mock('../api/removeSessionExerciseApi', () => ({
+  removeSessionExerciseApi: jest.fn(),
+}));
 jest.mock('../api/undoSetApi', () => ({ undoSetApi: jest.fn() }));
 jest.mock('../api/submitReactionApi', () => ({
   submitReactionApi: jest.fn(),
@@ -99,8 +113,29 @@ function load() {
 
 const workout = {
   id: 'w1',
-  exercises: [{ id: 'e1' }],
+  exercises: [
+    {
+      id: 'e1',
+      catalogExerciseId: 'c1',
+      exerciseType: 'strength',
+      muscles: [],
+    },
+  ],
 } as unknown as WorkoutWithExercises;
+
+const catalogItem = (id: string) =>
+  ({
+    id,
+    name: id,
+    description: null,
+    additionalInfo: null,
+    muscles: [],
+    equipmentType: null,
+    exerciseType: 'strength',
+    videoUrl: null,
+    imageUrl: null,
+    recommendedReplacementIds: [],
+  }) as ExerciseCatalogItem;
 
 const flush = () => new Promise((r) => setTimeout(r, 0));
 
@@ -347,5 +382,118 @@ describe('очередь синхронизации тренировки', () =>
 
     expect(m.W.getPendingSyncCount()).toBe(0);
     expect(m.session.useSessionStore.getState().active).toBeNull();
+  });
+
+  it('добавленное офлайн упражнение получает серверный id до своих подходов', async () => {
+    m.api.startSessionApi.mockRejectedValueOnce(httpError());
+    m.api.addSessionExerciseApi.mockResolvedValue({ id: 'srv-ex' });
+    m.W.startWorkout({ programId: 'p1', workout });
+    m.W.addExercise(catalogItem('c2'), false);
+
+    const active = m.session.useSessionStore.getState().active!;
+    const added = active.workout.exercises[1];
+    expect(active.workout.exercises.map((e) => e.catalogExerciseId)).toEqual([
+      'c1',
+      'c2',
+    ]);
+    m.W.logSet({ id: added.id, restSeconds: 60 }, 1, { weight: 10 });
+    m.W.undoSet(added.id, 1);
+    m.W.logSet({ id: added.id, restSeconds: 60 }, 1, { weight: 20 });
+    await settle();
+    await m.processOutbox({ force: true });
+
+    expect(ops()).toEqual([]);
+    expect(m.api.addSessionExerciseApi).toHaveBeenCalledWith(
+      'S1',
+      expect.objectContaining({
+        catalogExerciseId: 'c2',
+        persist: false,
+        afterExerciseId: 'e1',
+        sets: 3,
+      }),
+    );
+    expect(m.api.logSetApi).toHaveBeenCalledWith(
+      'S1',
+      expect.objectContaining({ exerciseId: 'srv-ex', weight: 20 }),
+    );
+  });
+
+  it('подходы заменённого упражнения уходят с фактическим упражнением', async () => {
+    m.W.startWorkout({ programId: 'p1', workout });
+    logSet(1);
+    await settle();
+    m.W.replaceExercise('e1', catalogItem('c9'));
+    logSet(1);
+    await settle();
+
+    const active = m.session.useSessionStore.getState().active!;
+    expect(active.workout.exercises[0]).toMatchObject({
+      id: 'e1',
+      catalogExerciseId: 'c9',
+    });
+    // Подход прежнего упражнения отменён.
+    expect(calls()).toEqual([
+      'startSessionApi',
+      'logSetApi',
+      'undoSetApi',
+      'logSetApi',
+    ]);
+    expect(m.api.logSetApi).toHaveBeenLastCalledWith(
+      'S1',
+      expect.objectContaining({
+        exerciseId: 'e1',
+        actualCatalogExerciseId: 'c9',
+      }),
+    );
+  });
+
+  it('скрытое до отправки своё упражнение не ходит в сеть', async () => {
+    m.api.startSessionApi.mockRejectedValueOnce(httpError());
+    m.W.startWorkout({ programId: 'p1', workout });
+    m.W.addExercise(catalogItem('c2'), true);
+    const added =
+      m.session.useSessionStore.getState().active!.workout.exercises[1];
+    m.W.logSet({ id: added.id, restSeconds: 60 }, 1, { weight: 10 });
+    m.W.hideExercise(added.id);
+    await settle();
+    await m.processOutbox({ force: true });
+
+    const active = m.session.useSessionStore.getState().active!;
+    expect(active.workout.exercises.map((e) => e.id)).toEqual(['e1']);
+    expect(active.logs).toEqual([]);
+    expect(ops()).toEqual([]);
+    expect(m.api.addSessionExerciseApi).not.toHaveBeenCalled();
+    expect(m.api.logSetApi).not.toHaveBeenCalled();
+    expect(m.api.removeSessionExerciseApi).not.toHaveBeenCalled();
+  });
+
+  it('скрытое своё упражнение отменяет подходы и убирается на сервере', async () => {
+    m.api.addSessionExerciseApi.mockResolvedValue({ id: 'srv-ex' });
+    m.W.startWorkout({ programId: 'p1', workout });
+    m.W.addExercise(catalogItem('c2'), false);
+    const added =
+      m.session.useSessionStore.getState().active!.workout.exercises[1];
+    m.W.logSet({ id: added.id, restSeconds: 60 }, 1, { weight: 10 });
+    await settle();
+    m.W.hideExercise(added.id);
+    await settle();
+
+    expect(calls()).toEqual([
+      'startSessionApi',
+      'addSessionExerciseApi',
+      'logSetApi',
+      'undoSetApi',
+      'removeSessionExerciseApi',
+    ]);
+    expect(m.api.removeSessionExerciseApi).toHaveBeenCalledWith('S1', 'srv-ex');
+  });
+
+  it('упражнение программы скрыть нельзя', () => {
+    m.W.startWorkout({ programId: 'p1', workout });
+    m.W.addExercise(catalogItem('c2'), false);
+    m.W.hideExercise('e1');
+    expect(
+      m.session.useSessionStore.getState().active!.workout.exercises,
+    ).toHaveLength(2);
   });
 });

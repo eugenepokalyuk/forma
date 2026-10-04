@@ -1,11 +1,19 @@
-import type { ReactionValue, WorkoutWithExercises } from '@/modules/programs';
+import type {
+  ExerciseCatalogItem,
+  ReactionValue,
+  WorkoutWithExercises,
+} from '@/modules/programs';
 import { uuid } from '@/shared/lib/uuid';
 
-import { useSessionStore, type LocalLog } from '../store';
+import {
+  exerciseFromCatalog,
+  replaceWithCatalog,
+} from '../helpers/exercisePicker';
+import { useSessionStore, type ActiveSession, type LocalLog } from '../store';
 import { useOutboxStore, type LogSetOp, type Operation } from '../sync/outbox';
 import { keepPhotos, sweepPhotos } from '../sync/postPhotos';
 import { processOutbox } from '../sync/processOutbox';
-import { loadLastLogs } from './lastLogs';
+import { loadLastLogs, loadLastLogsFor } from './lastLogs';
 
 // Сценарии тренировки: меняют локальное состояние сразу и ставят операцию
 // в очередь синхронизации — ни один не ждёт сети.
@@ -17,10 +25,15 @@ function enqueue(op: WithoutOpId<Operation>) {
   void processOutbox();
 }
 
-function logSetOp(localId: string, entry: LocalLog): Omit<LogSetOp, 'opId'> {
+// Подход заменённого упражнения записывается в фактическое (см. ActiveSession.
+// replacedCatalogIds), иначе — в упражнение плана (null).
+function logSetOp(
+  active: ActiveSession,
+  entry: LocalLog,
+): Omit<LogSetOp, 'opId'> {
   return {
     type: 'logSet',
-    localId,
+    localId: active.localId,
     clientId: entry.clientId,
     exerciseId: entry.exerciseId,
     setNumber: entry.setNumber,
@@ -30,7 +43,8 @@ function logSetOp(localId: string, entry: LocalLog): Omit<LogSetOp, 'opId'> {
     skipped: entry.skipped,
     notes: entry.notes,
     loggedAt: entry.loggedAt,
-    actualCatalogExerciseId: null,
+    actualCatalogExerciseId:
+      active.replacedCatalogIds?.[entry.exerciseId] ?? null,
   };
 }
 
@@ -103,7 +117,7 @@ export function logSet(
   };
   session.upsertLog(entry);
   session.startRest(exercise.id, exercise.restSeconds);
-  enqueue(logSetOp(session.active.localId, entry));
+  enqueue(logSetOp(session.active, entry));
 }
 
 // Пропуск упражнения целиком — один маркер-лог (setNumber: 0, skipped:
@@ -125,7 +139,75 @@ export function skipExercise(exerciseId: string) {
     notes: null,
   };
   session.appendLog(entry);
-  enqueue(logSetOp(session.active.localId, entry));
+  enqueue(logSetOp(session.active, entry));
+}
+
+// Замена упражнения — только на эту тренировку: на месте меняется описание,
+// план остаётся (см. replaceWithCatalog). Уже записанные подходы и пропуск
+// этого упражнения отменяются — они относились к прежнему упражнению
+// (подтверждение — на экране).
+export function replaceExercise(exerciseId: string, item: ExerciseCatalogItem) {
+  const session = useSessionStore.getState();
+  const exercise = session.active?.workout.exercises.find(
+    (e) => e.id === exerciseId,
+  );
+  if (!session.active || !exercise) return;
+
+  for (const log of session.active.logs.filter(
+    (l) => l.exerciseId === exerciseId,
+  )) {
+    undoSet(exerciseId, log.setNumber);
+  }
+  session.replaceExercise(replaceWithCatalog(exercise, item), item.id);
+  loadLastLogsFor([item.id]);
+}
+
+// Новое упражнение сразу после текущего. На устройстве появляется сразу, с
+// локальным id; на сервер уходит из очереди (persist — «каждый раз в этой
+// тренировке», иначе только сегодня).
+export function addExercise(item: ExerciseCatalogItem, persist: boolean) {
+  const session = useSessionStore.getState();
+  const active = session.active;
+  if (!active) return;
+
+  const anchor = active.workout.exercises[active.currentExerciseIndex];
+  const exercise = exerciseFromCatalog(
+    item,
+    uuid(),
+    (anchor?.orderIndex ?? 0) + 1,
+  );
+  session.insertExercise(active.currentExerciseIndex, exercise);
+  enqueue({
+    type: 'addExercise',
+    localId: active.localId,
+    localExerciseId: exercise.id,
+    catalogExerciseId: item.id,
+    persist,
+    afterExerciseId: anchor?.id ?? null,
+    sets: exercise.sets,
+    repsMin: exercise.repsMin,
+    repsMax: exercise.repsMax,
+    durationSeconds: exercise.durationSeconds,
+    restSeconds: exercise.restSeconds,
+  });
+  loadLastLogsFor([item.id]);
+}
+
+// Скрыть своё упражнение (isCustom) — разовое или «каждый раз». Его подходы
+// отменяем: они ушли бы на сервер вместе с упражнением, которого больше нет.
+// Последнее упражнение тренировки не убираем — тренировка опустела бы.
+export function hideExercise(exerciseId: string) {
+  const session = useSessionStore.getState();
+  const active = session.active;
+  const exercise = active?.workout.exercises.find((e) => e.id === exerciseId);
+  if (!active || !exercise?.isCustom || active.workout.exercises.length < 2)
+    return;
+
+  for (const log of active.logs.filter((l) => l.exerciseId === exerciseId)) {
+    undoSet(exerciseId, log.setNumber);
+  }
+  session.removeExercise(exerciseId);
+  enqueue({ type: 'removeExercise', localId: active.localId, exerciseId });
 }
 
 export function undoSet(exerciseId: string, setNumber: number) {

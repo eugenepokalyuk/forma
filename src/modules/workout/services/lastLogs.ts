@@ -6,16 +6,17 @@ import { useSessionStore } from '../store';
 // Подсказка «прошлый раз» — необязательна, тренировку начинаем без неё, если
 // сети нет; подтягиваем в фоне и докладываем в стор, когда придёт.
 export function loadLastLogs(workout: WorkoutWithExercises) {
-  const catalogIds = [
-    ...new Set(
-      workout.exercises
-        .map((e) => e.catalogExerciseId)
-        .filter((v): v is string => !!v),
-    ),
-  ];
+  loadLastLogsFor(
+    workout.exercises
+      .map((e) => e.catalogExerciseId)
+      .filter((v): v is string => !!v),
+  );
+}
 
+// То же для отдельных упражнений — заменённого или добавленного.
+export function loadLastLogsFor(catalogIds: string[]) {
   void Promise.all(
-    catalogIds.map((catalogId) =>
+    [...new Set(catalogIds)].map((catalogId) =>
       getLastLogApi(catalogId)
         .then((logs) => [catalogId, logs] as const)
         .catch(() => null),

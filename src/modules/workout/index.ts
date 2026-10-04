@@ -15,6 +15,7 @@ export { useOutboxSync } from './sync/useOutboxSync';
 export * from './services/workout';
 export * from './hooks/useStartWorkout';
 export * from './queries';
+export * from './helpers/exercisePicker';
 export * from './helpers/format';
 export * from './helpers/nextSetNumber';
 export * from './helpers/nextWorkout';

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import type { WorkoutWithExercises } from '@/modules/programs';
+import type { Exercise, WorkoutWithExercises } from '@/modules/programs';
 import { mmkvStorageAdapter } from '@/shared/lib/storage/mmkv';
 
 import type { LastLog } from './models/session';
@@ -33,6 +33,10 @@ export interface ActiveSession {
   restEndsAt: string | null;
   restForExerciseId: string | null;
   lastLogs: Record<string, LastLog[]>;
+  // Замены на эту тренировку: id упражнения → фактическое упражнение каталога.
+  // Подходы заменённого упражнения уходят с actualCatalogExerciseId — история
+  // пишется в упражнение-замену. Нет у тренировок до появления замены.
+  replacedCatalogIds?: Record<string, string>;
 }
 
 interface SessionState {
@@ -48,6 +52,12 @@ interface SessionState {
   clearRest: () => void;
   goToExercise: (index: number) => void;
   mergeLastLogs: (extra: Record<string, LastLog[]>) => void;
+  // Заменяет упражнение на месте (тот же id и номер в списке).
+  replaceExercise: (next: Exercise, actualCatalogId: string) => void;
+  // Новое упражнение сразу после упражнения с номером afterIndex.
+  insertExercise: (afterIndex: number, exercise: Exercise) => void;
+  // Убирает упражнение вместе с его подходами; текущим становится следующее.
+  removeExercise: (exerciseId: string) => void;
 }
 
 type Update = (active: ActiveSession) => Partial<ActiveSession>;
@@ -119,6 +129,57 @@ export const useSessionStore = create<SessionState>()(
 
         mergeLastLogs: (extra) =>
           update((a) => ({ lastLogs: { ...a.lastLogs, ...extra } })),
+
+        replaceExercise: (next, actualCatalogId) =>
+          update((a) => ({
+            workout: {
+              ...a.workout,
+              exercises: a.workout.exercises.map((e) =>
+                e.id === next.id ? next : e,
+              ),
+            },
+            replacedCatalogIds: {
+              ...a.replacedCatalogIds,
+              [next.id]: actualCatalogId,
+            },
+          })),
+
+        insertExercise: (afterIndex, exercise) =>
+          update((a) => {
+            const exercises = [...a.workout.exercises];
+            exercises.splice(afterIndex + 1, 0, exercise);
+            return { workout: { ...a.workout, exercises } };
+          }),
+
+        removeExercise: (exerciseId) =>
+          update((a) => {
+            const index = a.workout.exercises.findIndex(
+              (e) => e.id === exerciseId,
+            );
+            if (index === -1) return {};
+            const exercises = a.workout.exercises.filter(
+              (e) => e.id !== exerciseId,
+            );
+            const { [exerciseId]: _, ...replacedCatalogIds } =
+              a.replacedCatalogIds ?? {};
+            const current =
+              index < a.currentExerciseIndex
+                ? a.currentExerciseIndex - 1
+                : a.currentExerciseIndex;
+            const restGone = a.restForExerciseId === exerciseId;
+            return {
+              workout: { ...a.workout, exercises },
+              logs: a.logs.filter((l) => l.exerciseId !== exerciseId),
+              replacedCatalogIds,
+              currentExerciseIndex: Math.max(
+                0,
+                Math.min(current, exercises.length - 1),
+              ),
+              ...(restGone
+                ? { restEndsAt: null, restForExerciseId: null }
+                : {}),
+            };
+          }),
       };
     },
     {

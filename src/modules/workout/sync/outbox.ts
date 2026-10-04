@@ -34,6 +34,33 @@ export interface LogSetOp {
   actualCatalogExerciseId: string | null;
 }
 
+// Упражнение, добавленное во время тренировки. На устройстве оно сразу
+// получает локальный id (localExerciseId) — им подписаны подходы в очереди;
+// серверный id приходит в ответе и подменяет локальный при отправке
+// (exerciseIds). persist — «каждый раз в этой тренировке», иначе разово.
+export interface AddExerciseOp {
+  type: 'addExercise';
+  opId: string;
+  localId: string;
+  localExerciseId: string;
+  catalogExerciseId: string;
+  persist: boolean;
+  afterExerciseId: string | null;
+  sets: number;
+  repsMin: number | null;
+  repsMax: number | null;
+  durationSeconds: number | null;
+  restSeconds: number;
+}
+
+// Скрыть упражнение, добавленное пользователем (своё, не из программы).
+export interface RemoveExerciseOp {
+  type: 'removeExercise';
+  opId: string;
+  localId: string;
+  exerciseId: string;
+}
+
 export interface UndoSetOp {
   type: 'undoSet';
   opId: string;
@@ -76,6 +103,8 @@ export interface DiscardOp {
 export type Operation =
   | StartSessionOp
   | LogSetOp
+  | AddExerciseOp
+  | RemoveExerciseOp
   | UndoSetOp
   | ReactOp
   | CreatePostOp
@@ -93,6 +122,8 @@ const DEAD_OPS_LIMIT = 50;
 interface OutboxState {
   ops: Operation[];
   serverIds: Record<string, string>; // localId -> session short_id на сервере
+  // Локальный id добавленного упражнения → id на сервере.
+  exerciseIds: Record<string, string>;
   deadOps: DeadOp[];
   // Чьи операции в очереди — чтобы не отправить их с токеном другого
   // пользователя после повторного входа (см. auth/services).
@@ -101,6 +132,7 @@ interface OutboxState {
   enqueue: (op: Operation) => void;
   removeOp: (opId: string) => void;
   setServerId: (localId: string, serverId: string) => void;
+  setExerciseId: (localExerciseId: string, serverExerciseId: string) => void;
   // Убирает ещё не отправленные операции сессии и её серверный id.
   forgetSession: (localId: string) => void;
   forgetServerId: (localId: string) => void;
@@ -121,6 +153,7 @@ export const useOutboxStore = create<OutboxState>()(
     (set) => ({
       ops: [],
       serverIds: {},
+      exerciseIds: {},
       deadOps: [],
       ownerId: null,
       paused: false,
@@ -135,6 +168,27 @@ export const useOutboxStore = create<OutboxState>()(
             );
             if (pending) return { ops: s.ops.filter((o) => o !== pending) };
           }
+          // Скрыли упражнение, которое ещё не ушло на сервер, — убираем его
+          // создание и всё, что с ним связано, сеть не нужна.
+          if (op.type === 'removeExercise') {
+            const pendingAdd = s.ops.some(
+              (o) =>
+                o.type === 'addExercise' && o.localExerciseId === op.exerciseId,
+            );
+            if (pendingAdd) {
+              return {
+                ops: s.ops.filter(
+                  (o) =>
+                    !(
+                      (o.type === 'addExercise' &&
+                        o.localExerciseId === op.exerciseId) ||
+                      ((o.type === 'logSet' || o.type === 'undoSet') &&
+                        o.exerciseId === op.exerciseId)
+                    ),
+                ),
+              };
+            }
+          }
           return { ops: [...s.ops, op] };
         }),
 
@@ -143,6 +197,14 @@ export const useOutboxStore = create<OutboxState>()(
 
       setServerId: (localId, serverId) =>
         set((s) => ({ serverIds: { ...s.serverIds, [localId]: serverId } })),
+
+      setExerciseId: (localExerciseId, serverExerciseId) =>
+        set((s) => ({
+          exerciseIds: {
+            ...s.exerciseIds,
+            [localExerciseId]: serverExerciseId,
+          },
+        })),
 
       forgetSession: (localId) =>
         set((s) => ({ ops: s.ops.filter((o) => o.localId !== localId) })),
@@ -182,6 +244,7 @@ export const useOutboxStore = create<OutboxState>()(
         set({
           ops: [],
           serverIds: {},
+          exerciseIds: {},
           deadOps: [],
           ownerId: null,
           paused: false,
@@ -193,6 +256,7 @@ export const useOutboxStore = create<OutboxState>()(
       partialize: (state) => ({
         ops: state.ops,
         serverIds: state.serverIds,
+        exerciseIds: state.exerciseIds,
         deadOps: state.deadOps,
         ownerId: state.ownerId,
       }),

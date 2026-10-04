@@ -3,9 +3,11 @@ import { isAxiosError } from 'axios';
 import { createPostApi, socialKeys } from '@/modules/social';
 import { queryClient } from '@/shared/lib/queryClient';
 
+import { addSessionExerciseApi } from '../api/addSessionExerciseApi';
 import { completeSessionApi } from '../api/completeSessionApi';
 import { discardSessionApi } from '../api/discardSessionApi';
 import { logSetApi } from '../api/logSetApi';
+import { removeSessionExerciseApi } from '../api/removeSessionExerciseApi';
 import { startSessionApi } from '../api/startSessionApi';
 import { submitReactionApi } from '../api/submitReactionApi';
 import { undoSetApi } from '../api/undoSetApi';
@@ -21,6 +23,14 @@ function serverIdOf(localId: string): string {
   const serverId = useOutboxStore.getState().serverIds[localId];
   if (!serverId) throw new ParentLostError();
   return serverId;
+}
+
+// Добавленное во время тренировки упражнение подписано в очереди локальным
+// id, пока addExercise не вернул серверный (очередь строго по порядку —
+// addExercise всегда уходит раньше подходов этого упражнения). Остальные id —
+// уже серверные, их не трогаем.
+function exerciseIdOf(exerciseId: string): string {
+  return useOutboxStore.getState().exerciseIds[exerciseId] ?? exerciseId;
 }
 
 function isNotFound(e: unknown) {
@@ -47,10 +57,34 @@ export async function sendOp(op: Operation): Promise<void> {
       useOutboxStore.getState().setServerId(op.localId, session.id);
       return;
     }
+    case 'addExercise': {
+      const exercise = await addSessionExerciseApi(serverIdOf(op.localId), {
+        catalogExerciseId: op.catalogExerciseId,
+        persist: op.persist,
+        afterExerciseId: op.afterExerciseId
+          ? exerciseIdOf(op.afterExerciseId)
+          : null,
+        sets: op.sets,
+        repsMin: op.repsMin,
+        repsMax: op.repsMax,
+        durationSeconds: op.durationSeconds,
+        restSeconds: op.restSeconds,
+      });
+      useOutboxStore.getState().setExerciseId(op.localExerciseId, exercise.id);
+      return;
+    }
+    case 'removeExercise':
+      await ignoreNotFound(
+        removeSessionExerciseApi(
+          serverIdOf(op.localId),
+          exerciseIdOf(op.exerciseId),
+        ),
+      );
+      return;
     case 'logSet':
       await logSetApi(serverIdOf(op.localId), {
         clientId: op.clientId,
-        exerciseId: op.exerciseId,
+        exerciseId: exerciseIdOf(op.exerciseId),
         setNumber: op.setNumber,
         repsDone: op.repsDone,
         weight: op.weight,
@@ -63,7 +97,11 @@ export async function sendOp(op: Operation): Promise<void> {
       return;
     case 'undoSet':
       await ignoreNotFound(
-        undoSetApi(serverIdOf(op.localId), op.exerciseId, op.setNumber),
+        undoSetApi(
+          serverIdOf(op.localId),
+          exerciseIdOf(op.exerciseId),
+          op.setNumber,
+        ),
       );
       return;
     case 'react':

@@ -1,4 +1,4 @@
-import type { Exercise } from '@/modules/programs';
+import type { Exercise, ExerciseType } from '@/modules/programs';
 
 import type { LastLog } from '../models/session';
 import { formatMMSS } from '@/shared/lib/string/number';
@@ -6,8 +6,12 @@ import { repsWord } from '@/shared/lib/string/plural';
 
 const TIMED_TYPES = new Set(['cardio', 'stretch', 'yoga']);
 
+export function isTimedType(type: ExerciseType) {
+  return TIMED_TYPES.has(type);
+}
+
 export function isTimedExercise(exercise: Exercise) {
-  return TIMED_TYPES.has(exercise.exerciseType);
+  return isTimedType(exercise.exerciseType);
 }
 
 // Цель подхода: repsMin–repsMax (или одно число, если равны), для временных

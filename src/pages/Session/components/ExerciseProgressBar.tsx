@@ -3,28 +3,43 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { COLORS, motion } from '@/theme';
 
+export type SegmentState = 'current' | 'done' | 'skipped' | 'pending';
+
 interface ExerciseProgressBarProps {
-  // По сегменту на упражнение: true — все подходы выполнены.
-  done: boolean[];
-  index: number;
+  // По сегменту на упражнение.
+  states: SegmentState[];
   onPressSegment: (index: number) => void;
 }
 
 const ACTIVE_SCALE = 6;
 
-// Полоса упражнений тренировки: текущее — широкий сегмент, выполненные —
-// жёлтые. Пропущенные и недоделанные остаются серыми, даже если они позади.
+// Текущее — жёлтое, выполненное — зелёное, пропущенное — красное, остальные —
+// серые (в том числе недоделанные позади).
+const COLOR: Record<SegmentState, string> = {
+  current: COLORS.Surface.accent,
+  done: COLORS.Surface.positive,
+  skipped: COLORS.Text.negative,
+  pending: COLORS.Surface.secondary,
+};
+
+const LABEL: Record<SegmentState, string> = {
+  current: ', текущее',
+  done: ', выполнено',
+  skipped: ', пропущено',
+  pending: '',
+};
+
+// Полоса упражнений тренировки: текущее — широкий сегмент.
 export function ExerciseProgressBar({
-  done,
-  index,
+  states,
   onPressSegment,
 }: ExerciseProgressBarProps) {
   return (
     <View style={styles.row}>
-      {done.map((isDone, i) => (
+      {states.map((state, i) => (
         <MotiView
           key={i}
-          animate={{ flex: i === index ? ACTIVE_SCALE : 1 }}
+          animate={{ flex: state === 'current' ? ACTIVE_SCALE : 1 }}
           transition={{ type: 'timing', duration: motion.fast }}
         >
           <Pressable
@@ -32,17 +47,11 @@ export function ExerciseProgressBar({
             style={styles.segmentHit}
             hitSlop={6}
             accessibilityRole="button"
-            accessibilityLabel={`Упражнение ${i + 1} из ${done.length}${
-              isDone ? ', выполнено' : ''
-            }`}
-            accessibilityState={{ selected: i === index }}
+            accessibilityLabel={`Упражнение ${i + 1} из ${states.length}${LABEL[state]}`}
+            accessibilityState={{ selected: state === 'current' }}
           >
             <MotiView
-              animate={{
-                backgroundColor: isDone
-                  ? COLORS.Surface.accent
-                  : COLORS.Surface.secondary,
-              }}
+              animate={{ backgroundColor: COLOR[state] }}
               transition={{ type: 'timing', duration: motion.fast }}
               style={styles.segment}
             />

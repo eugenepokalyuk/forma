@@ -9,6 +9,10 @@ import { ExerciseActionsList } from '@/pages/Session/components/ExerciseActionsL
 import { ExerciseHeaderCard } from '@/pages/Session/components/ExerciseHeaderCard';
 import { ExerciseInput } from '@/pages/Session/components/ExerciseInput';
 import { ExerciseMediaCard } from '@/pages/Session/components/ExerciseMediaCard';
+import {
+  ExercisePickerSheet,
+  type ExercisePickerMode,
+} from '@/pages/Session/components/ExercisePickerSheet';
 import { ExerciseProgressBar } from '@/pages/Session/components/ExerciseProgressBar';
 import { FinishFlow } from '@/pages/Session/components/FinishFlow';
 import { NoteModal } from '@/pages/Session/components/NoteModal';
@@ -19,8 +23,10 @@ import { FadeInCover, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
 import {
   discardWorkout,
+  hideExercise,
   isExerciseDone,
   isExerciseFinished,
+  isExerciseSkipped,
   stepAfterRest,
   stepToExercise,
   type WorkoutStep,
@@ -45,6 +51,7 @@ export default function ActiveSessionScreen() {
   const [elapsed, setElapsed] = React.useState(0);
   const [noteDraft, setNoteDraft] = React.useState('');
   const [noteModalOpen, setNoteModalOpen] = React.useState(false);
+  const [picker, setPicker] = React.useState<ExercisePickerMode | null>(null);
   // Подходы, добавленные вручную сверх плана — по упражнению, живут в
   // пределах экрана тренировки (не персистятся, как и не персистится exercise.sets).
   const [extraSets, setExtraSets] = React.useState<Record<string, number>>({});
@@ -174,6 +181,34 @@ export default function ActiveSessionScreen() {
     setView('rest');
   };
 
+  // Скрыть своё упражнение — разовое или «каждый раз». Последнее упражнение
+  // тренировки не скрываем.
+  const onHide =
+    exercise.isCustom && exercises.length > 1
+      ? () => {
+          const logged = active.logs.some(
+            (l) => l.exerciseId === exercise.id && !l.skipped,
+          );
+          Alert.alert(
+            'Скрыть упражнение?',
+            [
+              'Оно пропадёт из этой тренировки, а если вы добавляли его «каждый раз» — и из следующих.',
+              logged ? 'Записанные подходы будут отменены.' : null,
+            ]
+              .filter(Boolean)
+              .join(' '),
+            [
+              { text: 'Отмена', style: 'cancel' },
+              {
+                text: 'Скрыть',
+                style: 'destructive',
+                onPress: () => hideExercise(exercise.id),
+              },
+            ],
+          );
+        }
+      : undefined;
+
   const handleSkip = () => {
     skipExercise(exercise.id);
     jump(1);
@@ -208,13 +243,6 @@ export default function ActiveSessionScreen() {
     [exercise.notes, exercise.additionalInfo].filter(Boolean).join('\n\n') ||
     null;
 
-  const onAddExercise = () => {
-    Alert.alert(
-      'Скоро',
-      'Добавление своего упражнения в тренировку появится в одном из следующих обновлений',
-    );
-  };
-
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.xs }]}>
       {/* В шапке — только номер упражнения; «Добавить упражнение» и
@@ -231,17 +259,24 @@ export default function ActiveSessionScreen() {
 
       <View style={{ paddingHorizontal: screenPadding }}>
         <ExerciseProgressBar
-          done={exercises.map((ex) =>
-            isExerciseDone(ex, active.logs, totalSetsOf(ex)),
+          states={exercises.map((ex, i) =>
+            i === active.currentExerciseIndex
+              ? 'current'
+              : isExerciseDone(ex, active.logs, totalSetsOf(ex))
+                ? 'done'
+                : isExerciseSkipped(ex, active.logs)
+                  ? 'skipped'
+                  : 'pending',
           )}
-          index={active.currentExerciseIndex}
           onPressSegment={navigate}
         />
       </View>
 
       <AnimatePresence exitBeforeEnter>
+        {/* Ключ — с упражнением каталога: замена (тот же id) проигрывает
+            переход, как смена упражнения, и прокрутка уходит наверх. */}
         <MotiView
-          key={exercise.id}
+          key={`${exercise.id}:${exercise.catalogExerciseId}`}
           from={{ translateX: 24 }}
           animate={{ translateX: 0 }}
           exit={{ opacity: 0, translateX: -24 }}
@@ -289,7 +324,9 @@ export default function ActiveSessionScreen() {
               noteDraft={noteDraft}
               onOpenNote={() => setNoteModalOpen(true)}
               onSkip={handleSkip}
-              onAddExercise={onAddExercise}
+              onAddExercise={() => setPicker('add')}
+              onReplaceExercise={() => setPicker('replace')}
+              onHideExercise={onHide}
               onFinish={onFinishMenu}
             />
           </ScrollView>
@@ -297,6 +334,12 @@ export default function ActiveSessionScreen() {
           <FadeInCover />
         </MotiView>
       </AnimatePresence>
+
+      <ExercisePickerSheet
+        mode={picker}
+        exercise={exercise}
+        onClose={() => setPicker(null)}
+      />
 
       <NoteModal
         visible={noteModalOpen}

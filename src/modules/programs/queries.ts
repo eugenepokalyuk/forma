@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 
 import { addUserProgramApi } from './api/addUserProgramApi';
 import { getCatalogApi } from './api/getCatalogApi';
+import { getExerciseCatalogApi } from './api/getExerciseCatalogApi';
 import { getProgramApi } from './api/getProgramApi';
 import { getReactionsApi } from './api/getReactionsApi';
 import { getUserProgramsApi } from './api/getUserProgramsApi';
@@ -17,6 +18,7 @@ export const programKeys = {
   detail: (id: string | undefined) => ['program', id] as const,
   catalog: ['catalog'] as const,
   reactions: ['reactions'] as const,
+  exerciseCatalog: ['exerciseCatalog'] as const,
 };
 
 export function useUserPrograms() {
@@ -31,6 +33,18 @@ export function useCatalog() {
     queryKey: programKeys.catalog,
     queryFn: getCatalogApi,
   });
+}
+
+// Каталог упражнений (~550 штук) меняется редко: держим сутки и в кэше на
+// устройстве — замена и добавление упражнения работают в зале без сети.
+export const exerciseCatalogQueryOptions = {
+  queryKey: programKeys.exerciseCatalog,
+  queryFn: getExerciseCatalogApi,
+  staleTime: 24 * 60 * 60 * 1000,
+};
+
+export function useExerciseCatalog() {
+  return ReactQuery.useQuery(exerciseCatalogQueryOptions);
 }
 
 export function programQueryOptions(id: string) {
