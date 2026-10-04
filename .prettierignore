@@ -3,3 +3,5 @@ ios/
 vendor/
 .expo/
 package-lock.json
+# Генерирует Icon Composer — свой формат, не трогаем
+assets/branding/Forma.icon/
