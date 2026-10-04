@@ -24,7 +24,7 @@ import {
 import { ExerciseProgressBar } from '@/pages/Session/components/ExerciseProgressBar';
 import { NoteModal } from '@/pages/Session/components/NoteModal';
 import { SetPills } from '@/pages/Session/components/SetPills';
-import { FadeInCover, Typography } from '@/shared/ui';
+import { Divider, FadeInCover, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, screenPadding, spacing } from '@/theme';
 
 interface ExerciseViewProps {
@@ -154,7 +154,7 @@ export function ExerciseView({
 
             <ExerciseHeaderCard exercise={exercise} />
 
-            <View style={styles.divider} />
+            <Divider />
 
             <ExerciseActionsList
               tips={tips}
@@ -256,9 +256,5 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     gap: spacing.lg,
-  },
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: COLORS.Stroke.hairline,
   },
 });

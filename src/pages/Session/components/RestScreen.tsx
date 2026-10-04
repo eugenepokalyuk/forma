@@ -25,11 +25,15 @@ const SOUND_LATE_MS = 2_000;
 // отдыха. Заканчивается вибрацией и звуковым сигналом (его играет родитель:
 // этот экран размонтируется сразу после конца отдыха и оборвал бы звук).
 export function RestScreen({
-  nextLabel,
+  nextTitle,
+  nextSets,
   nextThumbnailUrl,
   onDone,
 }: {
-  nextLabel: string;
+  // Что дальше: упражнение (или «Итог тренировки») и, если это ещё один
+  // подход того же упражнения, — «Подход 2 из 4» отдельной строкой.
+  nextTitle: string;
+  nextSets?: string;
   nextThumbnailUrl?: string | null;
   // Отдых закончился сам (sound — пора подать сигнал) или по «Пропустить».
   onDone: (options?: { sound?: boolean }) => void;
@@ -144,7 +148,7 @@ export function RestScreen({
       </View>
 
       <View style={styles.nextRow}>
-        <Typography variant="caption" color={COLORS.Text.tertiary}>
+        <Typography variant="subtitle" color={COLORS.Text.tertiary}>
           {'ДАЛЬШЕ'}
         </Typography>
 
@@ -156,13 +160,15 @@ export function RestScreen({
               contentFit="cover"
             />
           ) : null}
-          <Typography
-            variant="heading"
-            align="center"
-            style={{ flexShrink: 1 }}
-          >
-            {nextLabel}
-          </Typography>
+          <View style={styles.nextText}>
+            <Typography variant="heading">{nextTitle}</Typography>
+
+            {nextSets ? (
+              <Typography variant="body" color={COLORS.Text.secondary}>
+                {nextSets}
+              </Typography>
+            ) : null}
+          </View>
         </View>
       </View>
 
@@ -210,6 +216,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     maxWidth: '100%',
   },
+  nextText: { flexShrink: 1, gap: 2 },
   nextThumb: {
     width: 36,
     height: 36,
