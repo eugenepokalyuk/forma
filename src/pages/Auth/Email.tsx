@@ -84,8 +84,6 @@ export default function EmailScreen() {
   const [error, setError] = React.useState<string | null>(null);
   const [guestOpen, setGuestOpen] = React.useState(false);
 
-  const valid = isValidEmail(email);
-
   // Параллакс картинки, как у обложки программы: при оттягивании вниз рамка
   // растёт вверх и картинка растягивается, при прокрутке — едет вдвое
   // медленнее контента.
@@ -101,7 +99,13 @@ export default function EmailScreen() {
   }));
 
   const onSubmit = async () => {
-    if (!valid || loading) return;
+    if (loading) return;
+    // Кнопка всегда активна и жёлтая — иначе до ввода почты главной
+    // казалась «Войти без сохранения». Неверная почта — подсказка, а не тишина.
+    if (!isValidEmail(email)) {
+      setError('Введите почту, например name@mail.ru');
+      return;
+    }
 
     setLoading(true);
     setError(null);
@@ -164,7 +168,10 @@ export default function EmailScreen() {
             autoCapitalize="none"
             autoCorrect={false}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              setError(null);
+            }}
             returnKeyType="send"
             onSubmitEditing={onSubmit}
             textAlign="center"
@@ -176,12 +183,7 @@ export default function EmailScreen() {
             </Typography>
           ) : null}
 
-          <Button
-            title="Войти"
-            onPress={onSubmit}
-            disabled={!valid}
-            loading={loading}
-          />
+          <Button title="Войти" onPress={onSubmit} loading={loading} />
 
           <TextButton
             title="Войти без сохранения прогресса"
