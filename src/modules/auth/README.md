@@ -6,7 +6,10 @@
 - `store.ts` — статус входа и текущий пользователь; 401 от API переводит в `signedOut`
 - `queries.ts` — `useUpdateProfile`
 - `helpers/onboarding.ts` — заполнен ли профиль
+- `helpers/email.ts` — `isValidEmail`: похоже ли на адрес (экран входа и привязка почты гостем)
 - `components/AppHeader` — шапка вкладок: логотип и бейдж ПРО для бесплатного тарифа
+- `components/ResendCodeButton` — «Отправить ещё раз» с минутой ожидания (экран кода и шторка
+  сохранения прогресса)
 
 Вход/выход также привязывают и сбрасывают очередь тренировок (`adoptWorkoutData`, `resetWorkoutData` из `workout`).
 

@@ -16,14 +16,21 @@ npm start              # только Metro, если dev-клиент уже у
 
 ## Команды
 
-| Команда                           | Что делает                                            |
-| --------------------------------- | ----------------------------------------------------- |
-| `npm test`                        | тесты (jest)                                          |
-| `npm run typecheck`               | проверка типов                                        |
-| `npm run lint`                    | ESLint (`eslint-config-expo`, правила React Compiler) |
-| `npm run format` / `format:check` | prettier                                              |
-| `eas build --profile preview`     | внутренняя сборка (Android — apk)                     |
-| `eas build --profile production`  | сборка в сторы                                        |
+| Команда                           | Что делает                                                                  |
+| --------------------------------- | --------------------------------------------------------------------------- |
+| `npm test`                        | тесты (jest)                                                                |
+| `npm run typecheck`               | проверка типов                                                              |
+| `npm run lint`                    | ESLint (`eslint-config-expo`, правила React Compiler)                       |
+| `npm run format` / `format:check` | prettier                                                                    |
+| `eas build --profile preview`     | внутренняя сборка (Android — apk)                                           |
+| `eas build --profile production`  | сборка в сторы                                                              |
+| `npm run build:apk` / `build:aab` | локальная release-сборка Android (apk — на устройство, aab — в Google Play) |
+| `npm run build:ios`               | локальная сборка на подключённый iPhone                                     |
+
+Локальные `build:apk` и `build:aab` перед сборкой удаляют манифест ассетов `expo-updates`: Gradle
+сам его не пересобирает, и новые картинки из `assets/` на Android оставались без адреса.
+Новая нативная зависимость (например, `react-native-keyboard-controller`) требует пересборки
+приложения и `pod install` — по OTA она не доезжает.
 
 Те же проверки — типы, линтер, тесты, prettier — запускает CI на каждый push в `main` и pull request (`.github/workflows/ci.yml`).
 
@@ -50,4 +57,5 @@ npm start              # только Metro, если dev-клиент уже у
 
 Тренировка целиком работает без сети: подходы, замена, добавление и скрытие упражнений
 пишутся на устройство и уходят на сервер из очереди синхронизации, когда появляется связь
-(каталог упражнений для замены — в кэше на устройстве). Подробнее — [modules/workout](src/modules/workout/README.md).
+(каталог упражнений для замены — в кэше на устройстве). Данные с сервера (профиль, лента,
+каталог) без сети берутся из кэша и сами перезапрашиваются, когда связь вернулась. Подробнее — [modules/workout](src/modules/workout/README.md).

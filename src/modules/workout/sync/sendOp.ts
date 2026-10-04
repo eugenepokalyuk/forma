@@ -12,6 +12,7 @@ import { startSessionApi } from '../api/startSessionApi';
 import { submitReactionApi } from '../api/submitReactionApi';
 import { undoSetApi } from '../api/undoSetApi';
 import { useOutboxStore, type Operation } from './outbox';
+import { workoutKeys } from '../queries';
 import { existingPhotos } from './postPhotos';
 
 // Сессия так и не была создана на сервере (startSession ушёл в «мёртвые») —
@@ -117,11 +118,14 @@ export async function sendOp(op: Operation): Promise<void> {
       return;
     case 'complete':
       await completeSessionApi(serverIdOf(op.localId), op.notes);
+      // История сессий — источник итогов профиля и «Сегодня» на главной.
+      void queryClient.invalidateQueries({ queryKey: workoutKeys.sessions });
       return;
     case 'discard': {
       const serverId = useOutboxStore.getState().serverIds[op.localId];
       if (!serverId) return; // сессия не успела создаться на сервере — нечего удалять
       await ignoreNotFound(discardSessionApi(serverId));
+      void queryClient.invalidateQueries({ queryKey: workoutKeys.sessions });
       return;
     }
   }
