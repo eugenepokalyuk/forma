@@ -109,7 +109,7 @@ export function RestScreen({
       ]}
     >
       <Typography
-        variant="label"
+        variant="subtitle"
         color={COLORS.Text.secondary}
         style={{ marginTop: spacing.lg }}
       >
@@ -160,8 +160,9 @@ export function RestScreen({
               contentFit="cover"
             />
           ) : null}
+
           <View style={styles.nextText}>
-            <Typography variant="heading">{nextTitle}</Typography>
+            <Typography variant="subtitle">{nextTitle}</Typography>
 
             {nextSets ? (
               <Typography variant="body" color={COLORS.Text.secondary}>
@@ -209,19 +210,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  nextRow: { alignItems: 'center', gap: spacing.sm },
+  nextRow: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
   nextCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.md,
     maxWidth: '100%',
   },
-  nextText: { flexShrink: 1, gap: 2 },
+  nextText: {
+    flexShrink: 1,
+    gap: 2,
+  },
   nextThumb: {
-    width: 36,
-    height: 36,
+    width: 72,
+    height: 72,
     borderRadius: radius.sm,
     backgroundColor: COLORS.Surface.secondary,
   },
-  actions: { flexDirection: 'row', gap: spacing.md, width: '100%' },
+  actions: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    width: '100%',
+  },
 });
