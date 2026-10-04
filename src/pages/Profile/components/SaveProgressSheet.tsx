@@ -22,12 +22,18 @@ interface SaveProgressSheetProps {
 // Ошибка входа: 400 на шаге кода — неверный код, на шаге почты — текст с
 // сервера; остальное — связь.
 function errorText(e: unknown, step: 'email' | 'code') {
-  if (!isAxiosError(e)) return 'Что-то пошло не так.';
+  if (!isAxiosError(e)) return 'Что-то пошло не так';
   const status = e.response?.status;
   const detail = (e.response?.data as { detail?: string } | undefined)?.detail;
   if (status === 400 && step === 'code') return 'Неверный или просроченный код';
   if (status === 400 && detail) return detail;
-  return 'Не получилось. Проверьте связь.';
+  return 'Не получилось. Проверьте связь';
+}
+
+// Ошибки сервера и сети — тостом поверх шторки (BottomSheet держит свой слой
+// тостов); неверная почта — рамкой и тряской поля.
+function showError(title: string) {
+  toast.show({ id: 'save-progress-error', type: 'error', title });
 }
 
 // Вход гостя по почте: почта → код из письма. Почта свободна — гость
@@ -42,7 +48,9 @@ export function SaveProgressSheet({
   const [code, setCode] = React.useState('');
   const [existing, setExisting] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  // Неверная почта — красная рамка и тряска поля (shakeKey — номер попытки).
+  const [invalid, setInvalid] = React.useState(false);
+  const [shakeKey, setShakeKey] = React.useState(0);
 
   const trimmed = email.trim().toLowerCase();
 
@@ -50,38 +58,42 @@ export function SaveProgressSheet({
     onClose();
     setStep('email');
     setCode('');
-    setError(null);
+    setInvalid(false);
   };
 
   const run = async (action: () => Promise<void>) => {
     if (loading) return;
     setLoading(true);
-    setError(null);
     try {
       await action();
     } catch (e) {
       // Неверный код стираем — вводить заново, как на экране входа.
       if (step === 'code') setCode('');
-      setError(errorText(e, step));
+      showError(errorText(e, step));
     } finally {
       setLoading(false);
     }
   };
 
-  const sendCode = () =>
-    run(async () => {
+  const sendCode = () => {
+    if (!isValidEmail(trimmed)) {
+      setInvalid(true);
+      setShakeKey((n) => n + 1);
+      return;
+    }
+    return run(async () => {
       const res = await sendGuestOtpApi(trimmed);
       setExisting(res.existing);
       setCode('');
       setStep('code');
     });
+  };
 
   const resend = async () => {
-    setError(null);
     try {
       await sendGuestOtpApi(trimmed);
     } catch {
-      setError('Не получилось отправить код повторно.');
+      showError('Не получилось отправить код повторно');
     }
   };
 
@@ -114,9 +126,14 @@ export function SaveProgressSheet({
             autoCapitalize="none"
             autoCorrect={false}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              setInvalid(false);
+            }}
             returnKeyType="send"
             onSubmitEditing={() => void sendCode()}
+            error={invalid}
+            shakeKey={shakeKey}
           />
         </>
       ) : (
@@ -136,17 +153,10 @@ export function SaveProgressSheet({
         </>
       )}
 
-      {error ? (
-        <Typography variant="label" color={COLORS.Text.negative}>
-          {error}
-        </Typography>
-      ) : null}
-
       {step === 'email' ? (
         <Button
           title="Получить код"
           onPress={() => void sendCode()}
-          disabled={!isValidEmail(trimmed)}
           loading={loading}
         />
       ) : (
@@ -160,13 +170,7 @@ export function SaveProgressSheet({
 
           <ResendCodeButton onResend={() => void resend()} />
 
-          <TextButton
-            title="Изменить почту"
-            onPress={() => {
-              setStep('email');
-              setError(null);
-            }}
-          />
+          <TextButton title="Изменить почту" onPress={() => setStep('email')} />
         </>
       )}
     </BottomSheet>

@@ -22,6 +22,7 @@ import {
   Input,
   Logo,
   TextButton,
+  toast,
   Typography,
   type IconName,
 } from '@/shared/ui';
@@ -81,7 +82,6 @@ export default function EmailScreen() {
 
   const [email, setEmail] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
   // Неверная почта — красная рамка и тряска поля (shakeKey — номер попытки).
   const [invalid, setInvalid] = React.useState(false);
   const [shakeKey, setShakeKey] = React.useState(0);
@@ -107,24 +107,24 @@ export default function EmailScreen() {
     // казалась «Войти без сохранения». Неверная почта — красная рамка и
     // тряска поля, без текста.
     if (!isValidEmail(email)) {
-      setError(null);
       setInvalid(true);
       setShakeKey((n) => n + 1);
       return;
     }
 
     setLoading(true);
-    setError(null);
-
     try {
       await sendOtpApi(email.trim());
       router.push(ROUTES.authCode(email.trim()));
     } catch (e) {
-      setError(
-        isAxiosError(e)
-          ? 'Не получилось отправить код. Проверьте связь.'
-          : 'Что-то пошло не так.',
-      );
+      // Ошибка сети — не про поле, поэтому тостом, а не под полем.
+      toast.show({
+        id: 'auth-error',
+        type: 'error',
+        title: isAxiosError(e)
+          ? 'Не получилось отправить код. Проверьте связь'
+          : 'Что-то пошло не так',
+      });
     } finally {
       setLoading(false);
     }
@@ -176,7 +176,6 @@ export default function EmailScreen() {
             value={email}
             onChangeText={(text) => {
               setEmail(text);
-              setError(null);
               setInvalid(false);
             }}
             returnKeyType="send"
@@ -185,16 +184,6 @@ export default function EmailScreen() {
             error={invalid}
             shakeKey={shakeKey}
           />
-
-          {error ? (
-            <Typography
-              variant="label"
-              align="center"
-              color={COLORS.Text.negative}
-            >
-              {error}
-            </Typography>
-          ) : null}
 
           <Button title="Войти" onPress={onSubmit} loading={loading} />
 

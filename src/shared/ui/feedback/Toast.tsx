@@ -115,7 +115,8 @@ function ToastView({ item }: { item: ToastItem }) {
   );
 }
 
-// Слой тостов — один на приложение, монтируется в корневом layout.
+// Слой тостов: в корневом layout и в каждой открытой шторке (Modal
+// накрывает корневой слой). Тосты общие — показываются в верхнем слое.
 export function Toaster() {
   const insets = SafeArea.useSafeAreaInsets();
   const items = useToastStore((s) => s.items);

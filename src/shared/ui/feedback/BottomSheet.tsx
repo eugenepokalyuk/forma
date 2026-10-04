@@ -25,6 +25,7 @@ import { COLORS, radius, spacing } from '@/theme';
 import { DismissKeyboard } from '../inputs/DismissKeyboard';
 import { Icon } from '../text/Icon';
 import { Typography } from '../text/Typography';
+import { Toaster } from './Toast';
 
 // Открытие: фон затемняется, следом шторка мягко выезжает снизу.
 // Закрытие — в обратном порядке: шторка уезжает, затем гаснет фон.
@@ -168,6 +169,10 @@ export function BottomSheet({
             </DismissKeyboard>
           </Animated.View>
         </KeyboardAvoidingView>
+
+        {/* Modal накрывает корневой слой тостов — у шторки свой, поверх неё.
+            Стор у тостов общий: показанный из шторки тост виден над ней. */}
+        <Toaster />
       </View>
     </Modal>
   );
