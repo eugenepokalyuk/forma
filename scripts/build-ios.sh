@@ -18,9 +18,16 @@ if [[ -z "$UDID" ]]; then
   xcrun devicectl list devices --json-output "$JSON" >/dev/null
   UDID="$(node -e '
     const { devices } = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).result;
-    const d = devices.find(
-      (d) => d.hardwareProperties?.platform === "iOS" && d.connectionProperties?.pairingState === "paired",
+    // С Xcode 27 devicectl показывает и симуляторы — берём только настоящий
+    // телефон, подключённый сейчас (tunnel connected) — в приоритете.
+    const phones = devices.filter(
+      (d) =>
+        d.hardwareProperties?.platform === "iOS" &&
+        d.hardwareProperties?.reality === "physical" &&
+        d.connectionProperties?.pairingState === "paired",
     );
+    const d =
+      phones.find((d) => d.connectionProperties?.tunnelState === "connected") ?? phones[0];
     if (d) console.log(d.hardwareProperties.udid);
   ' "$JSON")"
   rm -f "$JSON"
