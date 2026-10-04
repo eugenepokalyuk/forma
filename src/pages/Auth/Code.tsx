@@ -12,45 +12,46 @@ import {
   DismissKeyboard,
   FadeInCover,
   TextButton,
+  toast,
   Typography,
 } from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
+// Ошибки — тостом, как на экране почты: под ячейками кода ничего не прыгает.
+function showError(title: string) {
+  toast.show({ id: 'auth-error', type: 'error', title });
+}
+
 export default function CodeScreen() {
   const { email } = ExpoRouter.useLocalSearchParams<{ email: string }>();
   const [code, setCode] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
 
   const submit = async (value: string) => {
     if (value.length !== 6 || loading) return;
     setLoading(true);
-    setError(null);
-
     try {
       const res = await verifyOtpApi(email, value);
       await signIn(res.accessToken, res.user);
       router.replace(ROUTES.home);
     } catch (e) {
       setCode('');
-
-      if (isAxiosError(e) && e.response?.status === 400) {
-        setError('Неверный или просроченный код.');
-      } else {
-        setError('Не получилось войти. Проверьте связь.');
-      }
+      showError(
+        isAxiosError(e) && e.response?.status === 400
+          ? 'Неверный или просроченный код'
+          : 'Не получилось войти. Проверьте связь',
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const resend = async () => {
-    setError(null);
     try {
       await sendOtpApi(email);
     } catch {
-      setError('Не получилось отправить код повторно.');
+      showError('Не получилось отправить код повторно');
     }
   };
 
@@ -83,16 +84,6 @@ export default function CodeScreen() {
           onComplete={(digits) => void submit(digits)}
           autoFocus
         />
-
-        {error ? (
-          <Typography
-            variant="label"
-            color={COLORS.Text.negative}
-            align="center"
-          >
-            {error}
-          </Typography>
-        ) : null}
 
         <View style={styles.footer}>
           <ResendCodeButton onResend={() => void resend()} />
