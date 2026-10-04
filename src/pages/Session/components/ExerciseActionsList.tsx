@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
-import { Icon, Typography } from '@/shared/ui';
+import { Divider, Icon, Typography } from '@/shared/ui';
 import { COLORS, screenPadding, spacing } from '@/theme';
 
 interface ExerciseActionsListProps {
@@ -36,64 +36,111 @@ export function ExerciseActionsList({
     ]);
   };
 
+  const rows: { key: string; node: React.ReactNode }[] = [
+    {
+      key: 'note',
+      node: (
+        <ActionRow
+          icon="note-plus-outline"
+          title="Добавить заметку"
+          subtitle={noteDraft || undefined}
+          onPress={onOpenNote}
+        />
+      ),
+    },
+    ...(tips
+      ? [
+          {
+            key: 'tips',
+            // Раскрытые советы — под своей строкой, без разделителя между ними.
+            node: (
+              <>
+                <ActionRow
+                  icon="lightbulb-on-outline"
+                  title="Советы по технике"
+                  trailingIcon={tipsOpen ? 'chevron-up' : 'chevron-down'}
+                  onPress={() => setTipsOpen((v) => !v)}
+                />
+
+                {tipsOpen ? (
+                  <Typography
+                    variant="body"
+                    color={COLORS.Text.secondary}
+                    style={styles.tipsText}
+                  >
+                    {tips}
+                  </Typography>
+                ) : null}
+              </>
+            ),
+          },
+        ]
+      : []),
+    {
+      key: 'add',
+      node: (
+        <ActionRow
+          icon="plus-circle-outline"
+          title="Добавить упражнение"
+          onPress={onAddExercise}
+        />
+      ),
+    },
+    {
+      key: 'replace',
+      node: (
+        <ActionRow
+          icon="swap-horizontal"
+          title="Заменить на похожее упражнение"
+          onPress={onReplaceExercise}
+        />
+      ),
+    },
+    ...(onHideExercise
+      ? [
+          {
+            key: 'hide',
+            node: (
+              <ActionRow
+                icon="eye-off-outline"
+                title="Скрыть упражнение"
+                onPress={onHideExercise}
+              />
+            ),
+          },
+        ]
+      : []),
+    {
+      key: 'skip',
+      node: (
+        <ActionRow
+          icon="skip-next-outline"
+          title="Пропустить упражнение"
+          onPress={onSkipPress}
+        />
+      ),
+    },
+    {
+      key: 'finish',
+      node: (
+        <ActionRow
+          icon="stop-circle-outline"
+          title="Завершить тренировку"
+          onPress={onFinish}
+          destructive
+        />
+      ),
+    },
+  ];
+
   return (
     <View style={styles.list}>
-      <ActionRow
-        icon="note-plus-outline"
-        title="Добавить заметку"
-        subtitle={noteDraft || undefined}
-        onPress={onOpenNote}
-      />
-
-      {tips ? (
-        <>
-          <ActionRow
-            icon="lightbulb-on-outline"
-            title="Советы по технике"
-            trailingIcon={tipsOpen ? 'chevron-up' : 'chevron-down'}
-            onPress={() => setTipsOpen((v) => !v)}
-          />
-
-          {tipsOpen ? (
-            <Typography
-              variant="body"
-              color={COLORS.Text.secondary}
-              style={styles.tipsText}
-            >
-              {tips}
-            </Typography>
-          ) : null}
-        </>
-      ) : null}
-
-      <ActionRow
-        icon="plus-circle-outline"
-        title="Добавить упражнение"
-        onPress={onAddExercise}
-      />
-      <ActionRow
-        icon="swap-horizontal"
-        title="Заменить на похожее упражнение"
-        onPress={onReplaceExercise}
-      />
-      {onHideExercise ? (
-        <ActionRow
-          icon="eye-off-outline"
-          title="Скрыть упражнение"
-          onPress={onHideExercise}
-        />
-      ) : null}
-      <ActionRow
-        icon="skip-next-outline"
-        title="Пропустить упражнение"
-        onPress={onSkipPress}
-      />
-      <ActionRow
-        icon="stop-circle-outline"
-        title="Завершить тренировку"
-        onPress={onFinish}
-        destructive
-      />
+      {rows.map((row, i) => (
+        <React.Fragment key={row.key}>
+          {i > 0 ? <Divider /> : null}
+          {row.node}
+        </React.Fragment>
+      ))}
     </View>
   );
 }
@@ -137,6 +184,7 @@ function ActionRow({
           </Typography>
         ) : null}
       </View>
+
       {trailingIcon ? (
         <Icon name={trailingIcon} size={18} color={tint} />
       ) : null}
@@ -147,7 +195,7 @@ function ActionRow({
 const styles = StyleSheet.create({
   list: {
     paddingHorizontal: screenPadding,
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   row: {
     flexDirection: 'row',
@@ -155,5 +203,8 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingVertical: spacing.xs,
   },
-  tipsText: { marginTop: -spacing.xs, marginLeft: spacing.lg + spacing.sm },
+  tipsText: {
+    paddingBottom: spacing.xs,
+    marginLeft: spacing.lg + spacing.sm,
+  },
 });

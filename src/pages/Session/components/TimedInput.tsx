@@ -19,7 +19,9 @@ export function TimedInput({ onDone }: { onDone: (seconds: number) => void }) {
 
   return (
     <View style={styles.row}>
-      <Typography variant="display">{formatMMSS(seconds)}</Typography>
+      <Typography variant="display" style={{ flex: 1 }}>
+        {formatMMSS(seconds)}
+      </Typography>
 
       <Pressable
         onPress={() => {
@@ -38,7 +40,7 @@ export function TimedInput({ onDone }: { onDone: (seconds: number) => void }) {
       >
         <Icon
           name={running ? 'stop' : 'play'}
-          size={20}
+          size={24}
           color={running ? COLORS.Text.negative : COLORS.Text.inverse}
         />
       </Pressable>
@@ -57,8 +59,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
   },
   btn: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     borderRadius: radius.pill,
     backgroundColor: COLORS.Surface.accent,
     alignItems: 'center',

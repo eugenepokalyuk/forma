@@ -44,8 +44,6 @@ export function ExerciseInput({ exercise, onLog }: ExerciseInputProps) {
     <View style={styles.container}>
       {timed ? (
         <>
-          {/* У упражнений на время нет карточек — цель и прошлый раз
-              показываем над таймером. */}
           <SetTargetLabel exercise={exercise} />
           <PreviousResultLabel lastLog={lastLog} />
           <TimedInput
