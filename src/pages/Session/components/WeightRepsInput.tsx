@@ -59,13 +59,7 @@ export function WeightRepsInput({
       {showWeight ? (
         <View style={styles.columns}>
           <View style={[styles.fieldRow, styles.fieldHalf]}>
-            <Stepper
-              value={weight}
-              step={2.5}
-              suffix="кг"
-              compact
-              onChange={setWeight}
-            />
+            <Stepper value={weight} step={2.5} compact onChange={setWeight} />
 
             <Divider />
 
@@ -135,8 +129,8 @@ const styles = StyleSheet.create({
   fieldRow: {
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 16,
+    justifyContent: 'flex-start',
+    gap: spacing.md,
     width: '100%',
     backgroundColor: COLORS.Surface.secondary,
     borderRadius: radius.lg,

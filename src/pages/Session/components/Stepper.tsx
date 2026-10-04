@@ -9,7 +9,6 @@ import { COLORS, TYPOGRAPHY, motion, spacing } from '@/theme';
 interface StepperProps {
   value: number;
   step: number;
-  suffix?: string;
   min?: number;
   onChange: (value: number) => void;
   compact?: boolean;
@@ -19,7 +18,6 @@ interface StepperProps {
 export function Stepper({
   value,
   step,
-  suffix,
   min = 0,
   onChange,
   compact,
@@ -71,8 +69,6 @@ export function Stepper({
             transition={motion.springy}
           >
             <Typography variant="display">{value}</Typography>
-
-            {/*{suffix ? <Text style={styles.suffix}> {suffix}</Text> : null}*/}
           </MotiView>
         </Pressable>
       )}
@@ -96,9 +92,6 @@ const styles = StyleSheet.create({
   rowCompact: { gap: spacing.sm },
   valueBox: { minWidth: 92, alignItems: 'center', paddingVertical: spacing.sm },
   valueBoxCompact: { minWidth: 50, alignItems: 'center' },
-  value: { ...TYPOGRAPHY.title, color: COLORS.Text.primary },
-  valueCompact: { ...TYPOGRAPHY.display, color: COLORS.Text.primary },
-  suffix: { ...TYPOGRAPHY.display, color: COLORS.Text.secondary },
   input: {
     minWidth: 92,
     textAlign: 'center',

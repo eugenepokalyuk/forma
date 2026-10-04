@@ -54,7 +54,7 @@ interface TabBarProps {
 // Высота самого высокого элемента таб-бара (кружок/пилюля) — используется
 // экранами, чтобы их контент не уезжал под плавающий таб-бар (см.
 // useTabBarClearance ниже).
-export const TAB_BAR_PILL_HEIGHT = 52;
+const TAB_BAR_PILL_HEIGHT = 52;
 
 export function useTabBarClearance() {
   const insets = SafeArea.useSafeAreaInsets();

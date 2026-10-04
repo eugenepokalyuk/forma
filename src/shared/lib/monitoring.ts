@@ -22,12 +22,6 @@ export function setMonitoringUser(id: string | null) {
   Sentry.setUser(id ? { id } : null);
 }
 
-// Ошибка, которую поймали и обработали, но о ней нужно знать.
-export function reportError(error: unknown, extra?: Record<string, unknown>) {
-  if (!enabled) return;
-  Sentry.captureException(error, { extra });
-}
-
 // Не исключение, а ситуация, требующая внимания.
 export function reportWarning(
   message: string,

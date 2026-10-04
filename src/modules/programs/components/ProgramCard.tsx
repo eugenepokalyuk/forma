@@ -10,14 +10,6 @@ import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
 import { ROUTES } from '@/shared/constants/routes';
 import { useReactions } from '../queries';
 
-// Сумма всех реакций программы — для сортировки каталога по популярности.
-export function totalReactions(program: Program): number {
-  return Object.values(program.reactionCounts ?? {}).reduce(
-    (sum, n) => sum + (n ?? 0),
-    0,
-  );
-}
-
 interface ProgramCardProps {
   program: Program;
 }

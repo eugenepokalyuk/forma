@@ -4,7 +4,7 @@ import { compressImage } from '@/shared/lib/media/compressImage';
 import { canPickImages, pickImages } from '@/shared/lib/media/pickImages';
 
 // Столько же, сколько принимает бэк (MAX_POST_PHOTOS).
-export const MAX_POST_PHOTOS = 6;
+const MAX_POST_PHOTOS = 6;
 
 // Фото к посту — локальные uri из галереи, не больше MAX_POST_PHOTOS.
 // Сжимаем сразу при выборе: и превью, и очередь, и загрузка — с лёгким файлом.

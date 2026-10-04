@@ -37,15 +37,6 @@ export function isSameDay(a: Date, b: string | Date): boolean {
   );
 }
 
-// «Сегодня, 24 сентября» — подзаголовок в шапке главного экрана.
-export function formatTodayLabel(): string {
-  const label = new Date().toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-  });
-  return `Сегодня, ${label}`;
-}
-
 // «Сентябрь» — подпись месяца над недельной лентой.
 export function formatMonthLabel(): string {
   const label = new Date().toLocaleDateString('ru-RU', { month: 'long' });

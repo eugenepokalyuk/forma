@@ -1,4 +1,3 @@
-export { PALETTE } from './palette';
 export { COLORS } from './colors';
 export {
   spacing,

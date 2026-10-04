@@ -178,8 +178,8 @@ export const BroPriority = {
   WeeklyGoal: 40,
 } as const;
 
-export const RETURN_AFTER_DAYS = 7;
-export const ACHIEVEMENT_FRESH_DAYS = 3;
+const RETURN_AFTER_DAYS = 7;
+const ACHIEVEMENT_FRESH_DAYS = 3;
 
 export function findRecentAchievement(
   res: AchievementsResponse,

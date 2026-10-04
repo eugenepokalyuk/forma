@@ -55,6 +55,4 @@ const styles = StyleSheet.create({
   },
   underlineActive: { backgroundColor: COLORS.Text.primary },
   underlinePositive: { backgroundColor: COLORS.Text.positive },
-  dot: { width: 4, height: 4, borderRadius: 2, backgroundColor: 'transparent' },
-  dotActive: { backgroundColor: COLORS.Text.positive },
 });
