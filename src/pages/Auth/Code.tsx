@@ -3,28 +3,24 @@ import { router } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { MotiView } from 'moti';
 import * as React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { sendOtpApi, signIn, verifyOtpApi } from '@/modules/auth';
-import { CodeInput, DismissKeyboard, Typography } from '@/shared/ui';
+import { ResendCodeButton } from '@/modules/auth/ui';
+import {
+  CodeInput,
+  DismissKeyboard,
+  TextButton,
+  Typography,
+} from '@/shared/ui';
 import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
-
-const RESEND_SECONDS = 60;
 
 export default function CodeScreen() {
   const { email } = ExpoRouter.useLocalSearchParams<{ email: string }>();
   const [code, setCode] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [resendIn, setResendIn] = React.useState(RESEND_SECONDS);
-
-  React.useEffect(() => {
-    if (resendIn <= 0) return;
-    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
-
-    return () => clearInterval(t);
-  }, [resendIn]);
 
   const submit = async (value: string) => {
     if (value.length !== 6 || loading) return;
@@ -49,9 +45,6 @@ export default function CodeScreen() {
   };
 
   const resend = async () => {
-    if (resendIn > 0) return;
-
-    setResendIn(RESEND_SECONDS);
     setError(null);
     try {
       await sendOtpApi(email);
@@ -99,22 +92,9 @@ export default function CodeScreen() {
         ) : null}
 
         <View style={styles.footer}>
-          <Pressable onPress={resend} disabled={resendIn > 0}>
-            <Typography
-              variant="label"
-              color={resendIn > 0 ? COLORS.Text.tertiary : COLORS.Text.accent}
-            >
-              {resendIn > 0
-                ? `Отправить ещё раз (${resendIn}с)`
-                : 'Отправить ещё раз'}
-            </Typography>
-          </Pressable>
+          <ResendCodeButton onResend={() => void resend()} />
 
-          <Pressable onPress={() => router.back()}>
-            <Typography variant="label" color={COLORS.Text.accent}>
-              {'Изменить email'}
-            </Typography>
-          </Pressable>
+          <TextButton title="Изменить почту" onPress={() => router.back()} />
         </View>
       </MotiView>
     </DismissKeyboard>

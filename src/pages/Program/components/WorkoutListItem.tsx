@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import type { WorkoutWithExercises } from '@/modules/programs';
-import { Card, FadeInItem, Icon, Typography } from '@/shared/ui';
+import { Badge, Card, FadeInItem, Icon, Typography } from '@/shared/ui';
 import { COLORS, motion, radius, spacing } from '@/theme';
 import { WorkoutExercises } from '@/modules/workout/ui';
 
@@ -57,13 +57,7 @@ export function WorkoutListItem({
                 День {workout.dayNumber}
               </Typography>
 
-              {isCurrent ? (
-                <View style={styles.todayBadge}>
-                  <Typography variant="caption" color={COLORS.Text.accent}>
-                    {'Сегодня'}
-                  </Typography>
-                </View>
-              ) : null}
+              {isCurrent ? <Badge label="Сегодня" /> : null}
             </View>
 
             {isCurrent ? (
@@ -122,12 +116,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
     flex: 1,
-  },
-  todayBadge: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    borderRadius: radius.pill,
-    backgroundColor: COLORS.Surface.accentSubdued,
   },
   workoutRow: {
     flexDirection: 'row',

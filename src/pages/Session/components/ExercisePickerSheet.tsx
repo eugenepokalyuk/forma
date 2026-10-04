@@ -29,6 +29,7 @@ import {
   Input,
   ListGroup,
   ListRow,
+  TextButton,
   toast,
   Typography,
 } from '@/shared/ui';
@@ -304,19 +305,7 @@ function ScopeStep({
         />
       </ListGroup>
 
-      <Pressable
-        onPress={onBack}
-        accessibilityRole="button"
-        hitSlop={spacing.sm}
-      >
-        <Typography
-          variant="subtitle"
-          color={COLORS.Text.secondary}
-          align="center"
-        >
-          {'Выбрать другое'}
-        </Typography>
-      </Pressable>
+      <TextButton title="Выбрать другое" onPress={onBack} />
     </View>
   );
 }

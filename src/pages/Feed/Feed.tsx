@@ -10,10 +10,8 @@ import Animated, {
 import { scheduleOnRN } from 'react-native-worklets';
 
 import {
-  Button,
-  ErrorState,
+  ListEmpty,
   ScreenContainer,
-  Typography,
   useTabBarClearance,
   useUnderStatusBarScroll,
 } from '@/shared/ui';
@@ -26,6 +24,7 @@ import { COLORS, screenPadding, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { useFeed, useToggleLike, type Post } from '@/modules/social';
 import { AppHeader } from '@/modules/auth/components/AppHeader';
+import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
 // Сколько выглядывают соседние посты сверху и снизу и зазор между ними.
 const PEEK = 24;
@@ -56,15 +55,7 @@ export default function FeedScreen() {
 
   const posts = data?.pages.flat() ?? [];
 
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const onRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
+  const { isRefreshing, onRefresh } = useRefresh(refetch);
 
   const toggleLike = useToggleLike();
 
@@ -156,32 +147,16 @@ export default function FeedScreen() {
               if (hasNextPage && !isFetchingNextPage) void fetchNextPage();
             }}
             ListEmptyComponent={
-              isError ? (
-                <ErrorState onRetry={refetch} />
-              ) : (
-                <View style={styles.empty}>
-                  <Typography variant="display" align="center">
-                    {'Пока тихо'}
-                  </Typography>
-
-                  <Typography
-                    variant="body"
-                    color={COLORS.Text.secondary}
-                    align="center"
-                    style={{ marginTop: spacing.xs }}
-                  >
-                    {
-                      'В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки'
-                    }
-                  </Typography>
-
-                  <Button
-                    title="Найти друзей"
-                    onPress={() => router.push(ROUTES.friends)}
-                    style={{ marginTop: spacing.lg }}
-                  />
-                </View>
-              )
+              <ListEmpty
+                isError={isError}
+                onRetry={refetch}
+                title="Пока тихо"
+                message="В ленте пока пусто. Подпишитесь на друзей, чтобы видеть их тренировки"
+                action={{
+                  title: 'Найти друзей',
+                  onPress: () => router.push(ROUTES.friends),
+                }}
+              />
             }
             ListFooterComponent={
               isFetchingNextPage ? (
@@ -207,10 +182,4 @@ const styles = StyleSheet.create({
   list: { flex: 1 },
   card: { flex: 1 },
   emptyContent: { flexGrow: 1 },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
-  },
 });

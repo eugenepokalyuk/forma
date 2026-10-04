@@ -9,11 +9,10 @@ import { StyleSheet, View } from 'react-native';
 import type { Program } from '@/modules/programs';
 import { AppHeader } from '@/modules/auth/ui';
 import {
-  ErrorState,
   FadeInItem,
   FloatingHeader,
+  ListEmpty,
   ScreenContainer,
-  Typography,
   useTabBarClearance,
   useUnderStatusBarScroll,
 } from '@/shared/ui';
@@ -26,6 +25,7 @@ import {
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
+import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program }
@@ -76,7 +76,6 @@ export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
   const statusBarScroll = useUnderStatusBarScroll();
   const { data, isLoading, isError, refetch } = useCatalog();
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
   // Прокрутка списка — для параллакса обложки.
   const scrollY = useSharedValue(0);
   // Высота шапки поверх обложки (вместе с отступом под статус-бар).
@@ -93,14 +92,7 @@ export default function CatalogScreen() {
     [data, previewProgram],
   );
 
-  const onRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
+  const { isRefreshing, onRefresh } = useRefresh(refetch);
 
   // Шапка закреплена, как в ленте. С обложкой — лежит поверх неё и
   // проявляет фон, когда обложка уезжает; без обложки — стоит над списком.
@@ -156,24 +148,12 @@ export default function CatalogScreen() {
           ) : null
         }
         ListEmptyComponent={
-          isError ? (
-            <ErrorState onRetry={refetch} />
-          ) : (
-            <View style={styles.empty}>
-              <Typography variant="display" align="center">
-                {'Пока пусто'}
-              </Typography>
-
-              <Typography
-                variant="body"
-                color={COLORS.Text.secondary}
-                align="center"
-                style={{ marginTop: spacing.xs }}
-              >
-                {'Готовые программы появятся здесь'}
-              </Typography>
-            </View>
-          )
+          <ListEmpty
+            isError={isError}
+            onRetry={refetch}
+            title="Пока пусто"
+            message="Готовые программы появятся здесь"
+          />
         }
         renderItem={({ item, index }) => (
           <FadeInItem index={index} style={styles.itemList}>
@@ -225,12 +205,6 @@ const styles = StyleSheet.create({
   },
   emptyContent: {
     flexGrow: 1,
-  },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
   },
   previewWrap: {
     position: 'relative',

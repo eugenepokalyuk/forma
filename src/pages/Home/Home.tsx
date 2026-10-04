@@ -16,6 +16,7 @@ import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
 import { useSyncToast } from '@/pages/Home/hooks/useSyncToast';
 import { programKeys } from '@/modules/programs';
 import { workoutKeys } from '@/modules/workout';
+import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
 // Насколько сияние за Бро выходит за рамки блока сверху и снизу.
 const AURORA_SPILL = 120;
@@ -35,18 +36,12 @@ export default function HomeScreen() {
     height: number;
   } | null>(null);
 
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const onRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await Promise.all([
-        queryClient.refetchQueries({ queryKey: programKeys.userPrograms }),
-        queryClient.refetchQueries({ queryKey: workoutKeys.sessions }),
-      ]);
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [queryClient]);
+  const { isRefreshing, onRefresh } = useRefresh(() =>
+    Promise.all([
+      queryClient.refetchQueries({ queryKey: programKeys.userPrograms }),
+      queryClient.refetchQueries({ queryKey: workoutKeys.sessions }),
+    ]),
+  );
 
   return (
     <ScreenContainer

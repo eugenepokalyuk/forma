@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as React from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import Animated, {
   useAnimatedScrollHandler,
@@ -12,7 +12,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { sendOtpApi } from '@/modules/auth';
+import { isValidEmail, sendOtpApi } from '@/modules/auth';
 import {
   Button,
   Divider,
@@ -21,14 +21,13 @@ import {
   Icon,
   Input,
   Logo,
+  TextButton,
   Typography,
   type IconName,
 } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { GuestSheet } from '@/pages/Auth/components/GuestSheet';
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const HERO = require('@/assets/images/auth-hero.webp');
 const HERO_ASPECT = 1024 / 700;
@@ -85,7 +84,7 @@ export default function EmailScreen() {
   const [error, setError] = React.useState<string | null>(null);
   const [guestOpen, setGuestOpen] = React.useState(false);
 
-  const valid = EMAIL_RE.test(email.trim());
+  const valid = isValidEmail(email);
 
   // Параллакс картинки, как у обложки программы: при оттягивании вниз рамка
   // растёт вверх и картинка растягивается, при прокрутке — едет вдвое
@@ -184,20 +183,11 @@ export default function EmailScreen() {
             loading={loading}
           />
 
-          <Pressable
+          <TextButton
+            title="Войти без сохранения прогресса"
             onPress={() => setGuestOpen(true)}
-            accessibilityRole="button"
-            hitSlop={spacing.sm}
             style={styles.guest}
-          >
-            <Typography
-              variant="body"
-              color={COLORS.Text.secondary}
-              align="center"
-            >
-              {'Войти без сохранения прогресса'}
-            </Typography>
-          </Pressable>
+          />
         </GlassCard>
 
         <View style={styles.features}>

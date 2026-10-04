@@ -2,14 +2,16 @@
 
 // Текст, иконки, логотип
 export { Typography } from './text/Typography';
-export { Icon, TAB_ICONS, type IconName } from './text/Icon';
+export { Icon, type IconName } from './text/Icon';
 export { CustomIcon, type CustomIconName } from './text/CustomIcon';
 export { Logo } from './text/Logo';
 export * from './text/ProBadge';
+export * from './text/Badge';
 
 // Кнопки
 export * from './buttons/Button';
 export * from './buttons/GlassIconButton';
+export * from './buttons/TextButton';
 
 // Поля ввода
 export { Input } from './inputs/Input';
@@ -38,6 +40,7 @@ export * from './content/UserAvatar';
 export * from './feedback/BottomSheet';
 export * from './feedback/Toast';
 export * from './feedback/ErrorState';
+export * from './feedback/EmptyState';
 
 // Появление и фоны
 export * from './motion/FadeInCover';

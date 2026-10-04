@@ -9,20 +9,13 @@ import { SignOutSection } from '@/pages/Profile/components/SignOutSection';
 import { StatsSection } from '@/pages/Profile/components/StatsSection';
 import { useProfileStats } from '@/pages/Profile/hooks/useProfileStats';
 import { AppHeader } from '@/modules/auth/components/AppHeader';
+import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
 export default function ProfileScreen() {
   const tabBarClearance = useTabBarClearance();
   const { isLoading, refetch } = useProfileStats();
 
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const onRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    try {
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
+  const { isRefreshing, onRefresh } = useRefresh(refetch);
 
   return (
     <ScreenContainer

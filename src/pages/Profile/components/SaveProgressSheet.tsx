@@ -1,21 +1,18 @@
 import { isAxiosError } from 'axios';
 import * as React from 'react';
-import { Pressable } from 'react-native';
 
-import { claimGuest, sendGuestOtpApi } from '@/modules/auth';
+import { claimGuest, isValidEmail, sendGuestOtpApi } from '@/modules/auth';
+import { ResendCodeButton } from '@/modules/auth/ui';
 import {
   BottomSheet,
   Button,
   CodeInput,
   Input,
+  TextButton,
   toast,
   Typography,
 } from '@/shared/ui';
-import { COLORS, spacing } from '@/theme';
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Как на экране входа: повторно код — не раньше чем через минуту.
-const RESEND_SECONDS = 60;
+import { COLORS } from '@/theme';
 
 interface SaveProgressSheetProps {
   visible: boolean;
@@ -46,14 +43,6 @@ export function SaveProgressSheet({
   const [existing, setExisting] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [resendIn, setResendIn] = React.useState(0);
-
-  React.useEffect(() => {
-    if (resendIn <= 0) return;
-    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
-
-    return () => clearInterval(t);
-  }, [resendIn]);
 
   const trimmed = email.trim().toLowerCase();
 
@@ -85,13 +74,9 @@ export function SaveProgressSheet({
       setExisting(res.existing);
       setCode('');
       setStep('code');
-      setResendIn(RESEND_SECONDS);
     });
 
   const resend = async () => {
-    if (resendIn > 0) return;
-
-    setResendIn(RESEND_SECONDS);
     setError(null);
     try {
       await sendGuestOtpApi(trimmed);
@@ -161,7 +146,7 @@ export function SaveProgressSheet({
         <Button
           title="Получить код"
           onPress={() => void sendCode()}
-          disabled={!EMAIL_RE.test(trimmed)}
+          disabled={!isValidEmail(trimmed)}
           loading={loading}
         />
       ) : (
@@ -173,39 +158,15 @@ export function SaveProgressSheet({
             loading={loading}
           />
 
-          <Pressable
-            onPress={() => void resend()}
-            disabled={resendIn > 0}
-            accessibilityRole="button"
-            hitSlop={spacing.sm}
-          >
-            <Typography
-              variant="subtitle"
-              color={resendIn > 0 ? COLORS.Text.tertiary : COLORS.Text.accent}
-              align="center"
-            >
-              {resendIn > 0
-                ? `Отправить ещё раз (${resendIn}с)`
-                : 'Отправить ещё раз'}
-            </Typography>
-          </Pressable>
+          <ResendCodeButton onResend={() => void resend()} />
 
-          <Pressable
+          <TextButton
+            title="Изменить почту"
             onPress={() => {
               setStep('email');
               setError(null);
             }}
-            accessibilityRole="button"
-            hitSlop={spacing.sm}
-          >
-            <Typography
-              variant="subtitle"
-              color={COLORS.Text.secondary}
-              align="center"
-            >
-              {'Изменить почту'}
-            </Typography>
-          </Pressable>
+          />
         </>
       )}
     </BottomSheet>

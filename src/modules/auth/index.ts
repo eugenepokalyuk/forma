@@ -13,3 +13,4 @@ export * from './api/deleteAccountApi';
 export * from './queries';
 export * from './helpers/onboarding';
 export * from './helpers/showProInfo';
+export * from './helpers/email';

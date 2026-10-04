@@ -4,7 +4,7 @@
 - `storage/` — MMKV (быстрое хранилище сторов и кэша) и токен в SecureStore
 - `date/` — неделя, «2 часа назад», время суток по часовому поясу
 - `string/` — числа (мм:сс, разряды, тоннаж) и склонения
-- `hooks/` — общие хуки (`useTimeOfDay`)
+- `hooks/` — общие хуки: `useTimeOfDay`, `useRefresh` (pull-to-refresh), `useDebouncedValue`
 - `media/` — выбор фото из галереи (`pickImages`) и сжатие до 1080px в WebP (`compressImage`);
   без нативного модуля в сборке пикер возвращает пусто, а сжатие — исходный файл
 - `alerts/` — `alertActionFailed`: «Не удалось …» с советом проверить сеть; его зовут

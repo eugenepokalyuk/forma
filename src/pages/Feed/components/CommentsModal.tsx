@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import * as React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { BottomSheet, Composer, ErrorState, Typography } from '@/shared/ui';
+import { BottomSheet, Composer, ListEmpty, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatRelativeTime } from '@/shared/lib/date/relativeTime';
 import { useAddComment, useComments } from '@/modules/social';
@@ -39,18 +39,12 @@ export function CommentsModal({ postId, onClose }: CommentsModalProps) {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         ListEmptyComponent={
-          isError ? (
-            <ErrorState onRetry={refetch} />
-          ) : !isLoading ? (
-            <Typography
-              variant="body"
-              color={COLORS.Text.secondary}
-              align="center"
-              style={{ paddingVertical: spacing.lg }}
-            >
-              {'Пока нет комментариев'}
-            </Typography>
-          ) : null
+          <ListEmpty
+            isError={isError}
+            isLoading={isLoading}
+            onRetry={refetch}
+            message="Пока нет комментариев"
+          />
         }
         renderItem={({ item }) => (
           // Долгое нажатие на чужой комментарий — пожаловаться/заблокировать.

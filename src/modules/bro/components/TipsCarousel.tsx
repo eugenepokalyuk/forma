@@ -2,7 +2,6 @@ import { router } from 'expo-router';
 import * as React from 'react';
 import {
   FlatList,
-  Pressable,
   StyleSheet,
   View,
   useWindowDimensions,
@@ -16,7 +15,7 @@ import {
   useWaterToday,
 } from '../queries';
 import { useSessions } from '@/modules/workout';
-import { Typography } from '@/shared/ui';
+import { TextButton, Typography } from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 import {
   type BroMessage,
@@ -149,15 +148,12 @@ export function TipsCarousel({ today, weeklyGoal }: TipsCarouselProps) {
             </Typography>
 
             {item.cta ? (
-              <Pressable
+              <TextButton
+                title={item.cta.label}
+                tone="accent"
                 onPress={item.cta.onPress}
-                hitSlop={8}
                 style={styles.cta}
-              >
-                <Typography variant="body" color={COLORS.Text.accent}>
-                  {item.cta.label}
-                </Typography>
-              </Pressable>
+              />
             ) : null}
           </View>
         )}

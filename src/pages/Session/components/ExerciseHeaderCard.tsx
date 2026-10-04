@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/modules/programs';
-import { Typography } from '@/shared/ui';
-import { COLORS, radius, spacing } from '@/theme';
+import { Badge, Typography } from '@/shared/ui';
+import { COLORS, spacing } from '@/theme';
 
 // Имя, описание и мышцы упражнения — по центру, без карточки-подложки
 // (плашки мышц не разбиты на «основные/вспомогательные», просто один ряд).
@@ -13,11 +13,7 @@ export function ExerciseHeaderCard({ exercise }: { exercise: Exercise }) {
     <View style={styles.container}>
       {/* Своё упражнение, добавленное поверх программы, — его можно скрыть. */}
       {exercise.isCustom ? (
-        <View style={styles.customBadge}>
-          <Typography variant="label" color={COLORS.Text.accent}>
-            {'Добавлено вами'}
-          </Typography>
-        </View>
+        <Badge label="Добавлено вами" style={styles.customBadge} />
       ) : null}
 
       <Typography variant="display" align="center">
@@ -38,11 +34,7 @@ export function ExerciseHeaderCard({ exercise }: { exercise: Exercise }) {
       {muscles.length > 0 ? (
         <View style={styles.muscleRow}>
           {muscles.map((name, i) => (
-            <View key={`${name}-${i}`} style={styles.muscleChip}>
-              <Typography variant="label" color={COLORS.Text.secondary}>
-                {name}
-              </Typography>
-            </View>
+            <Badge key={`${name}-${i}`} label={name} tone="outline" />
           ))}
         </View>
       ) : null}
@@ -51,8 +43,13 @@ export function ExerciseHeaderCard({ exercise }: { exercise: Exercise }) {
 }
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', gap: spacing.xs },
-  description: { paddingHorizontal: spacing.md },
+  container: {
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  description: {
+    paddingHorizontal: spacing.md,
+  },
   muscleRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -61,17 +58,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   customBadge: {
-    backgroundColor: COLORS.Surface.accentSubdued,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-    marginBottom: spacing.xs,
-  },
-  muscleChip: {
-    borderWidth: 1,
-    borderColor: COLORS.Stroke.secondary,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
+    marginBottom: spacing.md,
   },
 });
