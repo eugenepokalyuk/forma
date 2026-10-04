@@ -1,9 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
 import * as React from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { GlassIconButton } from '@/shared/ui';
+import { GlassIconButton, Typography } from '@/shared/ui';
 import { COLORS, TYPOGRAPHY, motion, spacing } from '@/theme';
 
 interface StepperProps {
@@ -12,7 +12,6 @@ interface StepperProps {
   suffix?: string;
   min?: number;
   onChange: (value: number) => void;
-  /** Компактный вариант — маленькие кнопки, для строки «лейбл слева / значение справа». */
   compact?: boolean;
 }
 
@@ -71,11 +70,9 @@ export function Stepper({
             animate={{ scale: 1 }}
             transition={motion.springy}
           >
-            <Text style={compact ? styles.valueCompact : styles.value}>
-              {value}
+            <Typography variant="display">{value}</Typography>
 
-              {suffix ? <Text style={styles.suffix}> {suffix}</Text> : null}
-            </Text>
+            {/*{suffix ? <Text style={styles.suffix}> {suffix}</Text> : null}*/}
           </MotiView>
         </Pressable>
       )}
@@ -101,7 +98,7 @@ const styles = StyleSheet.create({
   valueBoxCompact: { minWidth: 50, alignItems: 'center' },
   value: { ...TYPOGRAPHY.title, color: COLORS.Text.primary },
   valueCompact: { ...TYPOGRAPHY.display, color: COLORS.Text.primary },
-  suffix: { ...TYPOGRAPHY.body, color: COLORS.Text.secondary },
+  suffix: { ...TYPOGRAPHY.display, color: COLORS.Text.secondary },
   input: {
     minWidth: 92,
     textAlign: 'center',

@@ -19,9 +19,8 @@ export function TimedInput({ onDone }: { onDone: (seconds: number) => void }) {
 
   return (
     <View style={styles.row}>
-      <Typography variant="display" style={{ fontSize: 28, flex: 1 }}>
-        {formatMMSS(seconds)}
-      </Typography>
+      <Typography variant="display">{formatMMSS(seconds)}</Typography>
+
       <Pressable
         onPress={() => {
           if (running) {

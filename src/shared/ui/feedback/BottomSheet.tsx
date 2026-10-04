@@ -1,9 +1,7 @@
 import * as React from 'react';
 import type { ReactNode } from 'react';
 import {
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -11,6 +9,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -134,7 +133,7 @@ export function BottomSheet({
             своим значением (0 без клавиатуры) — поэтому он только обёртка,
             а отступы шторки живут на вложенном View. */}
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          behavior="padding"
           style={maxHeight != null && { maxHeight }}
         >
           <Animated.View

@@ -139,12 +139,7 @@ export function RestScreen({
         </Svg>
 
         <View style={styles.timeOverlay}>
-          <Typography
-            variant="display"
-            style={{ fontSize: 48, lineHeight: 56 }}
-          >
-            {formatMMSS(remaining)}
-          </Typography>
+          <Typography variant="hero">{formatMMSS(remaining)}</Typography>
         </View>
       </View>
 

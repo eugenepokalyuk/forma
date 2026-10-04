@@ -1,12 +1,6 @@
 import * as React from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import * as SafeArea from 'react-native-safe-area-context';
 
 import type { WorkoutFinish } from '@/modules/workout';
@@ -38,10 +32,7 @@ export function WorkoutShare({ onPublish, onSkip, onBack }: WorkoutShareProps) {
   const photos = usePostPhotos();
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
       <DismissKeyboard
         style={[
           styles.content,

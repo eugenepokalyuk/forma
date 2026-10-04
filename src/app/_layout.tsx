@@ -11,6 +11,7 @@ import { Slot, SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { View } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { COLORS } from '@/theme';
 import { Toaster } from '@/shared/ui';
@@ -62,13 +63,18 @@ export default function RootLayout() {
   }
 
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{ persister: queryPersister }}
-    >
-      <StatusBar style="light" />
-      <Slot />
-      <Toaster />
-    </PersistQueryClientProvider>
+    // KeyboardProvider — высота клавиатуры для KeyboardAvoidingView на обеих
+    // платформах, в том числе внутри Modal на Android (edge-to-edge: система
+    // окно под клавиатуру не поджимает).
+    <KeyboardProvider>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister: queryPersister }}
+      >
+        <StatusBar style="light" />
+        <Slot />
+        <Toaster />
+      </PersistQueryClientProvider>
+    </KeyboardProvider>
   );
 }
