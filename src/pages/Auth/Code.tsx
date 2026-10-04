@@ -57,8 +57,8 @@ export default function CodeScreen() {
 
   return (
     <DismissKeyboard style={styles.fill}>
-      {/* Появление — сдвигом и FadeInCover, без opacity у содержимого:
-          внутри полупрозрачного родителя iOS не рисует стекло ячеек кода. */}
+      {/* Появление — сдвигом и FadeInCover, без opacity у содержимого (см.
+          «Liquid Glass» в README shared/ui). */}
       <MotiView
         from={{ translateY: 16 }}
         animate={{ translateY: 0 }}

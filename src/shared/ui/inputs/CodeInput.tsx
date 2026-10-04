@@ -4,8 +4,6 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { COLORS, motion, radius, spacing } from '@/theme';
 
-import { GlassFill } from '../glass/GlassFill';
-import { GLASS_IDLE_BORDER, GlassView } from '../glass/glass';
 import { Typography } from '../text/Typography';
 
 interface CodeInputProps {
@@ -20,6 +18,8 @@ interface CodeInputProps {
 
 // Код из письма: ячейка на каждую цифру, под ними — скрытое поле, которое
 // принимает ввод и автоподстановку кода. Тап по ячейкам открывает клавиатуру.
+// Без Liquid Glass и на iOS 26+: шесть мелких стеклянных ячеек подряд
+// выглядят шумно — у них обычная заливка, как на Android.
 export function CodeInput({
   value,
   onChangeText,
@@ -51,32 +51,24 @@ export function CodeInput({
               from={filled ? { scale: 1.15 } : undefined}
               animate={{
                 scale: 1,
-                // Со стеклом заливку даёт GlassFill.
-                backgroundColor: GlassView
-                  ? 'transparent'
-                  : filled
-                    ? COLORS.Surface.secondary
-                    : COLORS.Surface.primary,
+                backgroundColor: filled
+                  ? COLORS.Surface.secondary
+                  : COLORS.Surface.primary,
               }}
               transition={motion.springy}
               style={styles.digitBox}
             >
-              <GlassFill borderRadius={radius.md} interactive={false} />
               <Typography variant="display">{value[i] ?? ''}</Typography>
 
-              {/* Рамка — слоем поверх: border ячейки на iOS рисуется под
-                  стеклом. Со стеклом она только у текущей ячейки — остальные,
-                  как кнопки, без своей рамки. */}
+              {/* Рамка — слоем поверх заливки ячейки. */}
               <MotiView
                 pointerEvents="none"
                 animate={{
                   borderColor: active
                     ? COLORS.Stroke.accent
-                    : GlassView
-                      ? GLASS_IDLE_BORDER
-                      : filled
-                        ? COLORS.Stroke.secondary
-                        : COLORS.Stroke.primary,
+                    : filled
+                      ? COLORS.Stroke.secondary
+                      : COLORS.Stroke.primary,
                 }}
                 transition={motion.springy}
                 style={styles.digitBorder}
