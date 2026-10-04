@@ -21,6 +21,8 @@ export interface User {
   workoutDuration?: number | null;
   trainingPlace?: string | null;
   isPublic?: boolean;
+  // Гостевой аккаунт без почты: email служебный, войти повторно нельзя.
+  isGuest?: boolean;
 }
 
 export interface VerifyOtpResponse {

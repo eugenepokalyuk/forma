@@ -1,4 +1,10 @@
-import { adoptWorkoutData, resetWorkoutData } from '@/modules/workout';
+import {
+  adoptWorkoutData,
+  pauseWorkoutSync,
+  resetWorkoutData,
+  transferWorkoutData,
+} from '@/modules/workout';
+import { queryClient } from '@/shared/lib/queryClient';
 import {
   clearToken,
   getToken,
@@ -9,6 +15,7 @@ import { deleteAccountApi } from '../api/deleteAccountApi';
 import { setMonitoringUser } from '@/shared/lib/monitoring';
 
 import { getMeApi } from '../api/getMeApi';
+import { claimGuestApi, signInAsGuestApi } from '../api/guestApi';
 import type { User } from '../models/user';
 import { useAuthStore } from '../store';
 
@@ -36,6 +43,45 @@ export async function signIn(token: string, user: User) {
   adoptWorkoutData(user.id);
   setMonitoringUser(user.id);
   useAuthStore.getState().setSignedIn(user);
+}
+
+// Гостевой вход: аккаунт без почты, дальше — как обычный вход.
+export async function signInAsGuest() {
+  const res = await signInAsGuestApi();
+  await signIn(res.accessToken, res.user);
+}
+
+// Вход гостя по почте. Почта свободна — пользователь тот же, меняется только
+// токен. У почты есть аккаунт — сервер перенёс данные гостя туда с теми же
+// id, поэтому очередь и активную тренировку передаём аккаунту, а не
+// сбрасываем, и перезапрашиваем кэш: в нём данные одного гостя.
+export async function claimGuest(email: string, code: string) {
+  const guestId = useAuthStore.getState().user?.id;
+  pauseWorkoutSync(true);
+  let res;
+  try {
+    res = await claimGuestApi(email, code);
+  } catch (e) {
+    pauseWorkoutSync(false);
+    throw e;
+  }
+  const merged = res.user.id !== guestId;
+  if (merged) transferWorkoutData(res.user.id);
+  await signIn(res.accessToken, res.user);
+  if (merged) void queryClient.invalidateQueries();
+  return { merged };
+}
+
+// Выход гостя: войти обратно он не сможет, поэтому аккаунт удаляем. Без сети
+// удаление не пройдёт — всё равно выходим, аккаунт останется на сервере
+// без владельца.
+export async function signOutGuest() {
+  try {
+    await deleteAccountApi();
+  } catch {
+    // см. выше
+  }
+  await signOut();
 }
 
 // Выход без вопросов — неотправленные тренировки удаляются. Предупреждение

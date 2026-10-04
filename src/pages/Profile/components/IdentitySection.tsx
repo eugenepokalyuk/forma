@@ -20,7 +20,7 @@ export function IdentitySection() {
 
         <UserAvatar
           url={user?.avatarUrl ?? null}
-          name={user?.name || user?.email || '?'}
+          name={user?.name || (user?.isGuest ? '' : user?.email) || '?'}
           pro={user?.hasProAccess}
           size={92}
         />
@@ -28,7 +28,7 @@ export function IdentitySection() {
         <Typography variant="display">{user?.name || 'Без имени'}</Typography>
 
         <Typography variant="body" color={COLORS.Text.secondary}>
-          {user?.email}
+          {user?.isGuest ? 'Гостевой режим' : user?.email}
         </Typography>
       </View>
     </Section>

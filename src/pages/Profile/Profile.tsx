@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { ScreenContainer, useTabBarClearance } from '@/shared/ui';
+import { GuestSection } from '@/pages/Profile/components/GuestSection';
 import { AccountSection } from '@/pages/Profile/components/AccountSection';
 import { IdentitySection } from '@/pages/Profile/components/IdentitySection';
 import { LegalSection } from '@/pages/Profile/components/LegalSection';
@@ -34,6 +35,7 @@ export default function ProfileScreen() {
       contentStyle={{ paddingBottom: tabBarClearance }}
     >
       <IdentitySection />
+      <GuestSection />
       <StatsSection />
       <AccountSection />
       <LegalSection />

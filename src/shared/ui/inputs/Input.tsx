@@ -17,7 +17,7 @@ interface InputProps extends Omit<TextInputProps, 'style'> {
 
 // Высота рамки и бордер — само поле занимает её целиком, без зазоров.
 const BORDER = 1.5;
-const HEIGHT = 52;
+const HEIGHT = 48;
 const HEIGHT_MULTILINE = 88;
 
 // Единый стиль поля ввода — та же скала радиусов/цветов, что у Button, с
@@ -44,7 +44,7 @@ export function Input({
         style={[
           {
             minHeight: multiline ? HEIGHT_MULTILINE : HEIGHT,
-            borderRadius: radius.md,
+            borderRadius: radius.pill,
             backgroundColor: COLORS.Surface.primary,
             borderWidth: BORDER,
           },

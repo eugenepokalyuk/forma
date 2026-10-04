@@ -1,6 +1,7 @@
 // Публичный API модуля — снаружи импортируем только отсюда.
 export * from './models/user';
 export * from './api/getMeApi';
+export * from './api/guestApi';
 export * from './api/sendOtpApi';
 export * from './api/updateProfileApi';
 export * from './api/verifyOtpApi';

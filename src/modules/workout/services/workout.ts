@@ -202,6 +202,18 @@ export function adoptWorkoutData(userId: string) {
   void processOutbox({ force: true });
 }
 
+// Гость вошёл в существующий аккаунт: сервер перенёс его сессии и подходы
+// в аккаунт с теми же id, поэтому очередь и активная тренировка остаются —
+// меняется только владелец. Пауза — пока идёт перенос, чтобы запрос со
+// старым токеном не получил 401.
+export function pauseWorkoutSync(paused: boolean) {
+  useOutboxStore.getState().setPaused(paused);
+}
+
+export function transferWorkoutData(userId: string) {
+  useOutboxStore.getState().setOwner(userId);
+}
+
 // Выход из аккаунта: локальные данные тренировок больше не нужны.
 export function resetWorkoutData() {
   useSessionStore.getState().end();
