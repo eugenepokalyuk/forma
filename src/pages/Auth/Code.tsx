@@ -3,11 +3,11 @@ import { router } from 'expo-router';
 import * as ExpoRouter from 'expo-router';
 import { MotiView } from 'moti';
 import * as React from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { sendOtpApi, signIn, verifyOtpApi } from '@/modules/auth';
-import { DismissKeyboard, Typography } from '@/shared/ui';
-import { COLORS, motion, radius, spacing } from '@/theme';
+import { CodeInput, DismissKeyboard, Typography } from '@/shared/ui';
+import { COLORS, motion, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 
 const RESEND_SECONDS = 60;
@@ -18,7 +18,6 @@ export default function CodeScreen() {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [resendIn, setResendIn] = React.useState(RESEND_SECONDS);
-  const inputRef = React.useRef<TextInput>(null);
 
   React.useEffect(() => {
     if (resendIn <= 0) return;
@@ -47,13 +46,6 @@ export default function CodeScreen() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const onChangeCode = (value: string) => {
-    const digits = value.replace(/\D/g, '').slice(0, 6);
-    setCode(digits);
-
-    if (digits.length === 6) void submit(digits);
   };
 
   const resend = async () => {
@@ -89,47 +81,10 @@ export default function CodeScreen() {
           {`Отправили на ${email}`}
         </Typography>
 
-        <Pressable
-          onPress={() => inputRef.current?.focus()}
-          style={styles.digits}
-        >
-          {Array.from({ length: 6 }).map((_, i) => {
-            const filled = i < code.length;
-            const active = i === code.length;
-
-            return (
-              <MotiView
-                key={i}
-                from={filled ? { scale: 1.15 } : undefined}
-                animate={{
-                  scale: 1,
-                  borderColor: active
-                    ? COLORS.Stroke.accent
-                    : filled
-                      ? COLORS.Stroke.secondary
-                      : COLORS.Stroke.primary,
-                  backgroundColor: filled
-                    ? COLORS.Surface.secondary
-                    : COLORS.Surface.primary,
-                }}
-                transition={motion.springy}
-                style={styles.digitBox}
-              >
-                <Typography variant="display">{code[i] ?? ''}</Typography>
-              </MotiView>
-            );
-          })}
-        </Pressable>
-
-        <TextInput
-          ref={inputRef}
-          style={styles.hiddenInput}
+        <CodeInput
           value={code}
-          onChangeText={onChangeCode}
-          keyboardType="number-pad"
-          textContentType="oneTimeCode"
-          autoComplete="sms-otp"
-          maxLength={6}
+          onChangeText={setCode}
+          onComplete={(digits) => void submit(digits)}
           autoFocus
         />
 
@@ -175,15 +130,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.xs,
   },
-  digits: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm },
-  digitBox: {
-    width: 46,
-    height: 58,
-    borderRadius: radius.md,
-    borderWidth: 1.5,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  hiddenInput: { position: 'absolute', opacity: 0, height: 1, width: 1 },
   footer: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.lg },
 });

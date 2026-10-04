@@ -13,6 +13,7 @@ export * from './buttons/GlassIconButton';
 
 // Поля ввода
 export { Input } from './inputs/Input';
+export { CodeInput } from './inputs/CodeInput';
 export * from './inputs/Composer';
 export * from './inputs/DismissKeyboard';
 

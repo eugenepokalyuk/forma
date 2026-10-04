@@ -7,7 +7,7 @@
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `text/`     | `Typography`, иконки (`Icon` — Material, `CustomIcon` — свои глифы, `TAB_ICONS`), `Logo`, `ProBadge`                              |
 | `buttons/`  | `Button` (основная, второстепенная, опасная), круглая `GlassIconButton`                                                           |
-| `inputs/`   | `Input`, `Composer` (текст с отправкой), `DismissKeyboard`                                                                        |
+| `inputs/`   | `Input`, `CodeInput` (код из письма по ячейкам), `Composer` (текст с отправкой), `DismissKeyboard`                                |
 | `layout/`   | `ScreenContainer` (safe area, прокрутка под статус-бар, pull-to-refresh, шапка), `FloatingHeader`, `Section`, `TabBar`, `Divider` |
 | `content/`  | `Card`, `GlassCard`, `ListRow`/`ListGroup`, `StatTile`, `UserAvatar`                                                              |
 | `feedback/` | `BottomSheet` (все шторки), тосты (`toast`, `Toaster`), `ErrorState`                                                              |

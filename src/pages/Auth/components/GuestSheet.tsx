@@ -17,8 +17,9 @@ import { COLORS, spacing } from '@/theme';
 const POINTS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'dumbbell',
-    title: 'Всё работает как обычно',
-    description: 'Программы, тренировки и статистика — без ограничений',
+    title: 'Всё работает',
+    description:
+      'Программы, тренировки и\u00A0статистика\u00A0—\u00A0без ограничений',
   },
   {
     icon: 'cellphone-lock',

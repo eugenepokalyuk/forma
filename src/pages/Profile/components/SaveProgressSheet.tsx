@@ -3,10 +3,19 @@ import * as React from 'react';
 import { Pressable } from 'react-native';
 
 import { claimGuest, sendGuestOtpApi } from '@/modules/auth';
-import { BottomSheet, Button, Input, toast, Typography } from '@/shared/ui';
+import {
+  BottomSheet,
+  Button,
+  CodeInput,
+  Input,
+  toast,
+  Typography,
+} from '@/shared/ui';
 import { COLORS, spacing } from '@/theme';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Как на экране входа: повторно код — не раньше чем через минуту.
+const RESEND_SECONDS = 60;
 
 interface SaveProgressSheetProps {
   visible: boolean;
@@ -37,6 +46,14 @@ export function SaveProgressSheet({
   const [existing, setExisting] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [resendIn, setResendIn] = React.useState(0);
+
+  React.useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setInterval(() => setResendIn((s) => Math.max(0, s - 1)), 1000);
+
+    return () => clearInterval(t);
+  }, [resendIn]);
 
   const trimmed = email.trim().toLowerCase();
 
@@ -48,11 +65,14 @@ export function SaveProgressSheet({
   };
 
   const run = async (action: () => Promise<void>) => {
+    if (loading) return;
     setLoading(true);
     setError(null);
     try {
       await action();
     } catch (e) {
+      // Неверный код стираем — вводить заново, как на экране входа.
+      if (step === 'code') setCode('');
       setError(errorText(e, step));
     } finally {
       setLoading(false);
@@ -65,11 +85,25 @@ export function SaveProgressSheet({
       setExisting(res.existing);
       setCode('');
       setStep('code');
+      setResendIn(RESEND_SECONDS);
     });
 
-  const claim = () =>
+  const resend = async () => {
+    if (resendIn > 0) return;
+
+    setResendIn(RESEND_SECONDS);
+    setError(null);
+    try {
+      await sendGuestOtpApi(trimmed);
+    } catch {
+      setError('Не получилось отправить код повторно.');
+    }
+  };
+
+  // Введены все цифры — отправляем сразу, как на экране входа.
+  const claim = (digits = code) =>
     run(async () => {
-      const { merged } = await claimGuest(trimmed, code);
+      const { merged } = await claimGuest(trimmed, digits);
       close();
       toast.show({
         type: 'success',
@@ -83,7 +117,7 @@ export function SaveProgressSheet({
         <>
           <Typography variant="body" color={COLORS.Text.secondary}>
             {
-              'Укажите почту — новую или от своего аккаунта. Программы, тренировки и прогресс останутся с вами, а войти можно будет с любого телефона'
+              'Укажите почту — новую или от своего аккаунта. Программы, тренировки и прогресс останутся с вами, а войти можно будет с любого устройства'
             }
           </Typography>
 
@@ -108,14 +142,10 @@ export function SaveProgressSheet({
               : `Отправили код на ${trimmed}`}
           </Typography>
 
-          <Input
-            placeholder="Код из письма"
-            keyboardType="number-pad"
-            autoComplete="one-time-code"
-            textContentType="oneTimeCode"
-            maxLength={6}
+          <CodeInput
             value={code}
-            onChangeText={(v) => setCode(v.replace(/\D/g, ''))}
+            onChangeText={setCode}
+            onComplete={(digits) => void claim(digits)}
             autoFocus
           />
         </>
@@ -142,6 +172,23 @@ export function SaveProgressSheet({
             disabled={code.length !== 6}
             loading={loading}
           />
+
+          <Pressable
+            onPress={() => void resend()}
+            disabled={resendIn > 0}
+            accessibilityRole="button"
+            hitSlop={spacing.sm}
+          >
+            <Typography
+              variant="subtitle"
+              color={resendIn > 0 ? COLORS.Text.tertiary : COLORS.Text.accent}
+              align="center"
+            >
+              {resendIn > 0
+                ? `Отправить ещё раз (${resendIn}с)`
+                : 'Отправить ещё раз'}
+            </Typography>
+          </Pressable>
 
           <Pressable
             onPress={() => {

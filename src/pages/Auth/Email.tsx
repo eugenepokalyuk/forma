@@ -85,6 +85,7 @@ const FEATURES: { icon: IconName; title: string; description: string }[] = [
 export default function EmailScreen() {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+
   const [email, setEmail] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
