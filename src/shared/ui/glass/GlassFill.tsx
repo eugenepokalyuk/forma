@@ -1,13 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-import { GlassView } from './glass';
+import { GLASS_NEUTRAL_TINT, GlassView } from './glass';
 
-// Стеклянная подложка поля ввода — на весь родитель, под содержимым.
-// Лёгкий светлый оттенок нужен, когда поле лежит на другом стекле
-// (GlassCard, шторка): стекло не преломляет стекло, и без оттенка поле
-// сливается с карточкой. Без Liquid Glass не рисуется — поле оставляет
-// свою заливку.
-export const FIELD_GLASS_TINT = 'rgba(255, 255, 255, 0.08)';
+// Стеклянная подложка поля ввода — на весь родитель, под содержимым, с
+// нейтральным оттенком (как у кнопок без цвета). Без Liquid Glass не
+// рисуется — поле оставляет свою заливку.
 
 interface GlassFillProps {
   borderRadius: number;
@@ -23,7 +20,7 @@ export function GlassFill({
   return (
     <GlassView
       glassEffectStyle="regular"
-      tintColor={FIELD_GLASS_TINT}
+      tintColor={GLASS_NEUTRAL_TINT}
       isInteractive={interactive}
       pointerEvents="none"
       style={[StyleSheet.absoluteFill, { borderRadius }]}

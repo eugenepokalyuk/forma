@@ -244,8 +244,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.Background.primary,
   },
+  // top: 0 — у рамки есть высота и до того, как применится анимированный
+  // стиль.
   heroFrame: {
     position: 'absolute',
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,

@@ -18,7 +18,7 @@ import {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { GlassView } from '../glass/glass';
+import { GLASS_NEUTRAL_TINT, GlassView } from '../glass/glass';
 import { Typography } from '../text/Typography';
 import { COLORS, gradients, hitTarget, motion, radius, spacing } from '@/theme';
 
@@ -38,15 +38,14 @@ const GLASS_TINT: Record<
 const STATE_TIMING = { duration: motion.base, easing: Easing.out(Easing.quad) };
 
 // Цвета стеклянной кнопки на долю перехода p: 0 — неактивная, 1 — активная.
-// Оттенок проявляется из того же цвета с нулевой альфой (#RRGGBB00), а не из
-// прозрачного чёрного — иначе на середине перехода кнопка темнеет. В крайнем
-// неактивном положении — undefined: стекло без оттенка, как и раньше.
+// Неактивная и кнопка без цвета — нейтральное стекло, как у полей ввода;
+// цвет проявляется из него.
 function glassColorsAt(p: number, tint: string | undefined, label: string) {
   return {
     tint:
       tint && p > 0
-        ? interpolateColor(p, [0, 1], [`${tint}00`, tint])
-        : undefined,
+        ? interpolateColor(p, [0, 1], [GLASS_NEUTRAL_TINT, tint])
+        : GLASS_NEUTRAL_TINT,
     label: interpolateColor(p, [0, 1], [COLORS.Text.tertiary, label]),
   };
 }
@@ -95,7 +94,7 @@ export function Button({
   const isDanger = variant === 'danger';
   const inert = disabled || loading;
   // Со стеклом неактивность — без прозрачности: стекло внутри полупрозрачного
-  // родителя не рисуется. Вместо этого стекло без оттенка и приглушённый текст.
+  // родителя не рисуется. Вместо этого нейтральное стекло и приглушённый текст.
   const dimmed = inert && !GlassView;
   const activeLabel = isPrimary ? COLORS.Text.inverse : COLORS.Text.primary;
   const glassColors = useGlassColors(!inert, GLASS_TINT[variant], activeLabel);

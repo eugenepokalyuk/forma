@@ -12,5 +12,11 @@ const glass: typeof ExpoGlassEffect | null =
       require('expo-glass-effect')
     : null;
 
+// Нейтральный оттенок стекла — у полей ввода и у кнопок без цвета
+// (второстепенная, неактивная): один на всех, чтобы они не отличались по
+// яркости. Лёгкий светлый — иначе на другом стекле (GlassCard, шторка)
+// элемент сливается с подложкой: стекло не преломляет стекло.
+export const GLASS_NEUTRAL_TINT = 'rgba(255, 255, 255, 0.08)';
+
 export const GlassView =
   glass && glass.isLiquidGlassAvailable() ? glass.GlassView : null;
