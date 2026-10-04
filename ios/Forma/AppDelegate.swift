@@ -2,8 +2,12 @@ internal import Expo
 import React
 import ReactAppDependencyProvider
 
+// iOS 27 не запускает приложение без жизненного цикла сцен: окно создаёт и
+// запускает в нём React Native ExpoAppSceneDelegate (Info.plist →
+// UIApplicationSceneManifest), а фабрику он берёт отсюда через
+// ExpoReactNativeFactoryProvider.
 @main
-class AppDelegate: ExpoAppDelegate {
+class AppDelegate: ExpoAppDelegate, ExpoReactNativeFactoryProvider {
   var window: UIWindow?
 
   var reactNativeDelegate: ExpoReactNativeFactoryDelegate?
@@ -19,14 +23,6 @@ class AppDelegate: ExpoAppDelegate {
 
     reactNativeDelegate = delegate
     reactNativeFactory = factory
-
-#if os(iOS) || os(tvOS)
-    window = UIWindow(frame: UIScreen.main.bounds)
-    factory.startReactNative(
-      withModuleName: "main",
-      in: window,
-      launchOptions: launchOptions)
-#endif
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
