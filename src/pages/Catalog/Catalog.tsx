@@ -29,7 +29,7 @@ import {
 } from '@/modules/programs/ui';
 import { CatalogGenderSwitch } from '@/pages/Catalog/components/CatalogGenderSwitch';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
-import { COLORS, spacing } from '@/theme';
+import { COLORS } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
 import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
@@ -78,6 +78,12 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // расстояние от начала секции до первых программ.
 const SHEET_OVERLAP = 20;
 
+// Сетка каталога по макету: поля по бокам, зазор между рядами и между
+// medium-карточками в ряду.
+const GUTTER = 20;
+const ROW_GAP = 20;
+const MEDIUM_GAP = 12;
+
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
   const statusBarScroll = useUnderStatusBarScroll();
@@ -117,7 +123,11 @@ export default function CatalogScreen() {
       <AppHeader />
 
       {genderSwitchEnabled ? (
-        <CatalogGenderSwitch value={gender} onChange={setGender} />
+        <CatalogGenderSwitch
+          value={gender}
+          onChange={setGender}
+          style={styles.genderSwitch}
+        />
       ) : null}
     </>
   );
@@ -147,14 +157,14 @@ export default function CatalogScreen() {
             // Обложка — от самого верха экрана, под статус-баром и шапкой.
             paddingTop: 0,
             paddingBottom: tabBarClearance,
-            gap: spacing.md,
+            gap: ROW_GAP,
           },
           rows.length === 0 && styles.emptyContent,
         ]}
         // gap списка действует и между шапкой и первым элементом — под
         // обложкой его убираем: от начала секции до программ ровно SHEET_OVERLAP.
         ListHeaderComponentStyle={
-          previewProgram ? { marginBottom: -spacing.md } : undefined
+          previewProgram ? { marginBottom: -ROW_GAP } : undefined
         }
         ListHeaderComponent={
           previewProgram ? (
@@ -193,13 +203,14 @@ export default function CatalogScreen() {
                   <ProgramMediumCard
                     key={program.id}
                     program={program}
-                    style={
-                      item.programs.length === 2
-                        ? styles.mediumItemPaired
-                        : styles.mediumItemAlone
-                    }
+                    style={styles.mediumItem}
                   />
                 ))}
+
+                {/* Одиночная — на половину ряда, как в паре. */}
+                {item.programs.length === 1 ? (
+                  <View style={styles.mediumItem} />
+                ) : null}
               </View>
             )}
           </FadeInItem>
@@ -229,7 +240,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemList: {
-    paddingHorizontal: 8,
+    paddingHorizontal: GUTTER,
+  },
+  genderSwitch: {
+    marginHorizontal: GUTTER,
+    marginBottom: ROW_GAP,
   },
   emptyContent: {
     flexGrow: 1,
@@ -246,12 +261,9 @@ const styles = StyleSheet.create({
   },
   mediumRow: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: MEDIUM_GAP,
   },
-  mediumItemPaired: {
+  mediumItem: {
     flex: 1,
-  },
-  mediumItemAlone: {
-    width: '50%',
   },
 });

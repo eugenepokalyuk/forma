@@ -14,13 +14,15 @@ interface ProgramMediumCardProps {
 }
 
 // Карточка каталога 1/2 ширины — без рамки и фона: обложка на всю ширину,
-// заголовок и описание. На обложке внизу слева — реакции, справа — бейдж ПРО.
+// бейдж ПРО на ней в правом нижнем углу, под обложкой заголовок, описание
+// и реакции.
 export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
   const { data: reactionTypes } = useReactions();
 
   const reactions = (reactionTypes ?? [])
     .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
     .sort((a, b) => a.order - b.order);
+
   const isPro = program.tier === 'pro';
 
   return (
@@ -46,26 +48,7 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
             </View>
           )}
 
-          {reactions.length > 0 || isPro ? (
-            <View style={styles.footer}>
-              <View style={styles.reactions}>
-                {reactions.map((r) => (
-                  <View key={r.value} style={styles.reactionChip}>
-                    <Typography variant="subtitle">{r.emoji}</Typography>
-
-                    <Typography
-                      variant="subtitle"
-                      color={COLORS.Text.secondary}
-                    >
-                      {program.reactionCounts[r.value]}
-                    </Typography>
-                  </View>
-                ))}
-              </View>
-
-              {isPro ? <ProBadge style={styles.proBadge} /> : null}
-            </View>
-          ) : null}
+          {isPro ? <ProBadge style={styles.proBadge} /> : null}
         </View>
 
         <View style={styles.textCard}>
@@ -87,6 +70,20 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
             {formatProgramSubtitle(program)}
           </Typography>
         </View>
+
+        {reactions.length > 0 ? (
+          <View style={styles.reactions}>
+            {reactions.map((r) => (
+              <View key={r.value} style={styles.reactionChip}>
+                <Typography variant="subtitle">{r.emoji}</Typography>
+
+                <Typography variant="subtitle" color={COLORS.Text.secondary}>
+                  {program.reactionCounts[r.value]}
+                </Typography>
+              </View>
+            ))}
+          </View>
+        ) : null}
       </Card>
     </View>
   );
@@ -114,28 +111,27 @@ const styles = StyleSheet.create({
     borderRadius: radius.md,
     backgroundColor: COLORS.Surface.secondary,
   },
-  coverPlaceholder: { alignItems: 'center', justifyContent: 'center' },
+  coverPlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   title: {
     marginTop: spacing.xs,
   },
-  // Поверх обложки, по её нижнему краю: реакции слева, бейдж ПРО — справа.
-  footer: {
+  // Бейдж ПРО — на обложке в правом нижнем углу.
+  proBadge: {
     position: 'absolute',
-    left: spacing.xs,
-    right: spacing.xs,
-    bottom: spacing.xs,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: spacing.xs,
+    right: spacing.sm,
+    bottom: spacing.sm,
   },
+  // Реакции под текстом, прижаты к низу карточки.
   reactions: {
-    flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap-reverse',
+    flexWrap: 'wrap',
     gap: spacing.xs,
+    marginTop: 'auto',
+    paddingTop: spacing.sm,
   },
-  // У ProBadge alignSelf: flex-start — держим его в нижнем углу.
-  proBadge: { alignSelf: 'flex-end' },
   reactionChip: {
     flexDirection: 'row',
     alignItems: 'center',

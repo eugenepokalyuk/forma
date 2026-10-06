@@ -1,26 +1,34 @@
 import * as Haptics from 'expo-haptics';
-import { Pressable, StyleSheet, View } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import type { CatalogGender } from '@/modules/programs';
 import { Typography } from '@/shared/ui';
-import { COLORS, radius, spacing } from '@/theme';
+import { COLORS, spacing } from '@/theme';
 
 const OPTIONS: { key: CatalogGender; label: string }[] = [
   { key: 'men', label: 'Мужская' },
   { key: 'women', label: 'Женская' },
 ];
 
-// Переключатель вкладок каталога «Мужская» / «Женская» под шапкой:
-// выбранная половина — жёлтая.
+// Вкладки каталога «Мужская» / «Женская» под шапкой: каждая на половину
+// ширины, под выбранной — светлая черта, под второй — тёмная.
 export function CatalogGenderSwitch({
   value,
   onChange,
+  style,
 }: {
   value: CatalogGender;
   onChange: (value: CatalogGender) => void;
+  style?: StyleProp<ViewStyle>;
 }) {
   return (
-    <View style={styles.track} accessibilityRole="tablist">
+    <View style={[styles.tabs, style]} accessibilityRole="tablist">
       {OPTIONS.map((o) => {
         const active = value === o.key;
         return (
@@ -33,11 +41,11 @@ export function CatalogGenderSwitch({
             }}
             accessibilityRole="tab"
             accessibilityState={{ selected: active }}
-            style={[styles.segment, active && styles.segmentActive]}
+            style={[styles.tab, active && styles.tabActive]}
           >
             <Typography
-              variant="subtitle"
-              color={active ? COLORS.Text.inverse : COLORS.Text.secondary}
+              variant="heading"
+              color={active ? COLORS.Text.primary : COLORS.Text.secondary}
             >
               {o.label}
             </Typography>
@@ -49,22 +57,18 @@ export function CatalogGenderSwitch({
 }
 
 const styles = StyleSheet.create({
-  track: {
+  tabs: {
     flexDirection: 'row',
-    padding: 4,
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.md,
-    borderRadius: radius.pill,
-    backgroundColor: COLORS.Surface.secondary,
+    gap: spacing.sm,
   },
-  segment: {
+  tab: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 36,
-    borderRadius: radius.pill,
+    paddingBottom: spacing.sm,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.Stroke.secondary,
   },
-  segmentActive: {
-    backgroundColor: COLORS.Surface.accent,
+  tabActive: {
+    borderBottomColor: COLORS.Text.primary,
   },
 });
