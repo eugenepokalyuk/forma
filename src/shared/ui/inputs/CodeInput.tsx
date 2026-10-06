@@ -58,7 +58,9 @@ export function CodeInput({
               transition={motion.springy}
               style={styles.digitBox}
             >
-              <Typography variant="display">{value[i] ?? ''}</Typography>
+              <Typography variant="display" style={styles.digit}>
+                {value[i] ?? ''}
+              </Typography>
 
               {/* Рамка — слоем поверх заливки ячейки. */}
               <MotiView
@@ -111,6 +113,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: radius.pill,
     borderWidth: 1.5,
+  },
+  // У display высота строки равна кеглю (32), а шрифту нужно 38,4 (900
+  // над базовой линией и 300 под ней на 1000) — строка ужималась
+  // несимметрично, и цифры сидели выше центра ячейки. С естественной высотой
+  // центр цифр ниже центра строки на ~1 — добираем отступом.
+  digit: {
+    lineHeight: 38,
+    marginTop: 1,
+    includeFontPadding: false,
   },
   hiddenInput: { position: 'absolute', opacity: 0, height: 1, width: 1 },
 });
