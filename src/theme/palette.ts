@@ -14,7 +14,7 @@ export const PALETTE = {
 
   // Истинный чёрный фон + три слоя поверхностей поверх него.
   neutral00: '#111111',
-  neutral10: '#1C1C1E',
+  neutral10: '#161616',
   neutral15: '#242426',
   neutral20: '#2C2C2E',
   neutral25: '#3A3A3C',
