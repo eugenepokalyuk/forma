@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { Button, Icon, Typography } from '@/shared/ui';
+import { Button, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 
 interface ExerciseDoneCardProps {
@@ -17,16 +17,12 @@ export function ExerciseDoneCard({
 }: ExerciseDoneCardProps) {
   return (
     <View style={styles.card}>
-      <View style={styles.titleRow}>
-        <Icon name="check-circle" size={28} color={COLORS.Icon.positive} />
-
-        <Typography variant="heading" color={COLORS.Text.positive}>
-          Упражнение выполнено
-        </Typography>
-      </View>
+      <Typography variant="title" color={COLORS.Text.primary}>
+        {'Упражнение выполнено'}
+      </Typography>
 
       <Typography variant="body" color={COLORS.Text.secondary}>
-        {`Сделано подходов: ${setsDone}. Нужен ещё один — добавьте подход.`}
+        {`Сделано подходов: ${setsDone}\nНужен ещё один — жми на кнопку`}
       </Typography>
 
       <Button title="Ещё подход" variant="secondary" onPress={onAddSet} />
@@ -41,10 +37,5 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: radius.md,
     backgroundColor: COLORS.Surface.positiveSubdued,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
   },
 });
