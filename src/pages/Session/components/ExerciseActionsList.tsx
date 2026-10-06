@@ -8,7 +8,8 @@ interface ExerciseActionsListProps {
   tips: string | null;
   noteDraft: string;
   onOpenNote: () => void;
-  onSkip: () => void;
+  /** Нет — упражнение выполнено, пункта «Пропустить» нет. */
+  onSkip?: () => void;
   onAddExercise: () => void;
   onReplaceExercise: () => void;
   /** Только для своего упражнения, добавленного поверх программы. */
@@ -32,7 +33,7 @@ export function ExerciseActionsList({
   const onSkipPress = () => {
     Alert.alert('Пропустить упражнение?', 'Подходы не будут засчитаны', [
       { text: 'Отмена', style: 'cancel' },
-      { text: 'Пропустить', style: 'destructive', onPress: onSkip },
+      { text: 'Пропустить', style: 'destructive', onPress: () => onSkip?.() },
     ]);
   };
 
@@ -110,16 +111,20 @@ export function ExerciseActionsList({
           },
         ]
       : []),
-    {
-      key: 'skip',
-      node: (
-        <ActionRow
-          icon="skip-next-outline"
-          title="Пропустить упражнение"
-          onPress={onSkipPress}
-        />
-      ),
-    },
+    ...(onSkip
+      ? [
+          {
+            key: 'skip',
+            node: (
+              <ActionRow
+                icon="skip-next-outline"
+                title="Пропустить упражнение"
+                onPress={onSkipPress}
+              />
+            ),
+          },
+        ]
+      : []),
     {
       key: 'finish',
       node: (

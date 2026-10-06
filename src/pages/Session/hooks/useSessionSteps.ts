@@ -32,22 +32,26 @@ export function useSessionSteps(totalSetsOf: (ex: Exercise) => number) {
     setPhase('exercise');
   };
 
+  // Тап по полосе упражнений — прямо к выбранному, даже выполненному или
+  // пропущенному: к сделанному возвращаются, чтобы добавить подход.
   const navigate = (index: number) => {
+    if (index < 0) return;
+    goTo({ kind: 'exercise', index });
+  };
+
+  // Переход по ходу тренировки (после пропуска) — к следующему незаконченному,
+  // законченные проходим насквозь.
+  const jump = (delta: number) => {
     const current = useSessionStore.getState().active;
-    if (!current || index < 0) return;
+    if (!current) return;
     goTo(
       stepToExercise(
         current.workout.exercises,
         current.logs,
-        index,
+        current.currentExerciseIndex + delta,
         totalSetsOf,
       ),
     );
-  };
-
-  const jump = (delta: number) => {
-    const current = useSessionStore.getState().active;
-    if (current) navigate(current.currentExerciseIndex + delta);
   };
 
   // Отдых — самостоятельный полноэкранный шаг. Когда он заканчивается (сам

@@ -6,6 +6,7 @@ import * as SafeArea from 'react-native-safe-area-context';
 import type { Exercise } from '@/modules/programs';
 import {
   discardWorkout,
+  doneSetsCount,
   hideExercise,
   isExerciseDone,
   isExerciseSkipped,
@@ -14,6 +15,7 @@ import {
   type ActiveSession,
 } from '@/modules/workout';
 import { ExerciseActionsList } from '@/pages/Session/components/ExerciseActionsList';
+import { ExerciseDoneCard } from '@/pages/Session/components/ExerciseDoneCard';
 import { ExerciseHeaderCard } from '@/pages/Session/components/ExerciseHeaderCard';
 import { ExerciseInput } from '@/pages/Session/components/ExerciseInput';
 import { ExerciseMediaCard } from '@/pages/Session/components/ExerciseMediaCard';
@@ -34,6 +36,7 @@ interface ExerciseViewProps {
   onRemoveExtraSet: (exerciseId: string) => void;
   noteDraft: string;
   onNoteChange: (text: string) => void;
+  // Открыть упражнение с полосы — любое, в том числе уже выполненное.
   onNavigate: (index: number) => void;
   onJump: (delta: number) => void;
   // Подход записан — дальше отдых.
@@ -63,6 +66,8 @@ export function ExerciseView({
   const exercises = active.workout.exercises;
   const index = active.currentExerciseIndex;
   const exercise = exercises[index];
+  // Вернулись к выполненному — вместо ввода итог и «Ещё подход».
+  const done = isExerciseDone(exercise, active.logs, totalSetsOf(exercise));
 
   const handleLog = (
     setNumber: number,
@@ -149,7 +154,14 @@ export function ExerciseView({
                 onRemoveExtraSet={() => onRemoveExtraSet(exercise.id)}
               />
 
-              <ExerciseInput exercise={exercise} onLog={handleLog} />
+              {done ? (
+                <ExerciseDoneCard
+                  setsDone={doneSetsCount(exercise, active.logs)}
+                  onAddSet={() => onAddSet(exercise.id)}
+                />
+              ) : (
+                <ExerciseInput exercise={exercise} onLog={handleLog} />
+              )}
             </View>
 
             <ExerciseHeaderCard exercise={exercise} />
@@ -160,10 +172,15 @@ export function ExerciseView({
               tips={tips}
               noteDraft={noteDraft}
               onOpenNote={() => setNoteModalOpen(true)}
-              onSkip={() => {
-                skipExercise(exercise.id);
-                onJump(1);
-              }}
+              // Выполненное пропускать нечего.
+              onSkip={
+                done
+                  ? undefined
+                  : () => {
+                      skipExercise(exercise.id);
+                      onJump(1);
+                    }
+              }
               onAddExercise={() => setPicker('add')}
               onReplaceExercise={() => setPicker('replace')}
               onHideExercise={onHide}
