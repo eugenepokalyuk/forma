@@ -65,14 +65,10 @@ export default function CodeScreen() {
         transition={motion.springSoft}
         style={styles.container}
       >
-        {/* Заголовок целиком: текст белый, почта — серая и как введена. */}
+        {/* Заголовок целиком, капсом: текст белый, почта — серая. */}
         <Typography variant="display" align="center" style={styles.title}>
           {'Отправили код на почту '}
-          <Typography
-            variant="display"
-            color={COLORS.Text.secondary}
-            style={styles.email}
-          >
+          <Typography variant="display" color={COLORS.Text.secondary}>
             {email}
           </Typography>
         </Typography>
@@ -106,6 +102,5 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   title: { marginBottom: spacing.lg },
-  email: { textTransform: 'none' },
   footer: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.lg },
 });
