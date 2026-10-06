@@ -8,7 +8,7 @@ import { Card, ProBadge, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
 import { ROUTES } from '@/shared/constants/routes';
-import { useReactions } from '../queries';
+import { ProgramReactions } from './ProgramReactions';
 
 interface ProgramCardProps {
   program: Program;
@@ -20,12 +20,6 @@ interface ProgramCardProps {
 // главном были два разных вида карточек, теперь один компонент везде
 // (см. forma-project Figma, node 5487-2731).
 export function ProgramCard({ program, height }: ProgramCardProps) {
-  const { data: reactionTypes } = useReactions();
-
-  const reactions = (reactionTypes ?? [])
-    .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
-    .sort((a, b) => a.order - b.order);
-
   const subtitle = formatProgramSubtitle(program);
   const isPro = program.tier === 'pro';
 
@@ -61,23 +55,11 @@ export function ProgramCard({ program, height }: ProgramCardProps) {
         </View>
       </View>
 
-      {reactions.length > 0 || isPro ? (
-        <View style={styles.footer}>
-          <View style={styles.reactions}>
-            {reactions.map((r) => (
-              <View key={r.value} style={styles.reactionChip}>
-                <Typography variant="subtitle">{r.emoji}</Typography>
+      <View style={styles.footer}>
+        <ProgramReactions program={program} style={styles.reactions} />
 
-                <Typography variant="subtitle" color={COLORS.Text.secondary}>
-                  {program.reactionCounts[r.value]}
-                </Typography>
-              </View>
-            ))}
-          </View>
-
-          {isPro ? <ProBadge style={styles.proBadge} /> : null}
-        </View>
-      ) : null}
+        {isPro ? <ProBadge style={styles.proBadge} /> : null}
+      </View>
     </Card>
   );
 }
@@ -85,7 +67,7 @@ export function ProgramCard({ program, height }: ProgramCardProps) {
 const styles = StyleSheet.create({
   card: {
     height: 230,
-    padding: spacing.sm,
+    padding: 10,
     borderRadius: radius.md,
     backgroundColor: COLORS.Surface.primary,
     justifyContent: 'space-between',
@@ -108,27 +90,19 @@ const styles = StyleSheet.create({
   subtitle: {
     marginTop: 4,
   },
-  // Низ карточки: реакции слева, бейдж ПРО — в правом углу.
+  // Низ карточки: реакции слева, бейдж ПРО — в правом углу, даже когда
+  // реакций нет.
   footer: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     alignItems: 'flex-end',
     gap: spacing.sm,
   },
+  // Не помещаются в строку — переносятся вверх, бейдж остаётся в углу.
   reactions: {
     flex: 1,
-    flexDirection: 'row',
     flexWrap: 'wrap-reverse',
-    gap: spacing.sm,
   },
   // У ProBadge alignSelf: flex-start — держим его в нижнем углу.
   proBadge: { alignSelf: 'flex-end' },
-  reactionChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.Surface.secondary,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
-  },
 });

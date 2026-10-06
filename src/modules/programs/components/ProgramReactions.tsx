@@ -12,7 +12,8 @@ interface ProgramReactionsProps {
 }
 
 // Реакции на программу — только те, что кто-то поставил, в порядке справочника.
-// Нет ни одной — ничего не рисуем.
+// Нет ни одной — ничего не рисуем. Общие для карточек каталога, обложки и
+// страницы программы; раскладку (перенос, отступы) задаёт style.
 export function ProgramReactions({ program, style }: ProgramReactionsProps) {
   const { data: reactionTypes } = useReactions();
 
@@ -28,7 +29,7 @@ export function ProgramReactions({ program, style }: ProgramReactionsProps) {
         <View key={r.value} style={styles.chip}>
           <Typography variant="label">{r.emoji}</Typography>
 
-          <Typography variant="label" color={COLORS.Text.secondary}>
+          <Typography variant="label" color={COLORS.Text.primary}>
             {program.reactionCounts[r.value]}
           </Typography>
         </View>
@@ -38,7 +39,7 @@ export function ProgramReactions({ program, style }: ProgramReactionsProps) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: spacing.sm },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',

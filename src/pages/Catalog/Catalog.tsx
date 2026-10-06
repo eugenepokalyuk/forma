@@ -19,6 +19,7 @@ import { ProgramCard } from '@/modules/programs/ui';
 import { CatalogGenderSwitch } from '@/pages/Catalog/components/CatalogGenderSwitch';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { useRefresh } from '@/shared/lib/hooks/useRefresh';
+import { screenPadding } from '@/theme';
 
 type CatalogRow =
   | { type: 'wide'; key: string; program: Program; height?: number }
@@ -66,7 +67,7 @@ const PREVIEW_HEIGHT = 350;
 
 // Сетка каталога по макету: поля по бокам, зазор между рядами и между
 // medium-карточками в ряду.
-const GUTTER = 20;
+const GUTTER = screenPadding;
 const ROW_GAP = 20;
 const MEDIUM_GAP = 12;
 

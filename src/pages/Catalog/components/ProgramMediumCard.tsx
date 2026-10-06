@@ -5,7 +5,8 @@ import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import type { Program } from '@/modules/programs';
 import { Card, Icon, ProBadge, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
-import { formatProgramSubtitle, useReactions } from '@/modules/programs';
+import { formatProgramSubtitle } from '@/modules/programs';
+import { ProgramReactions } from '@/modules/programs/ui';
 import { ROUTES } from '@/shared/constants/routes';
 
 interface ProgramMediumCardProps {
@@ -17,12 +18,6 @@ interface ProgramMediumCardProps {
 // бейдж ПРО на ней в правом нижнем углу, под обложкой заголовок, описание
 // и реакции.
 export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
-  const { data: reactionTypes } = useReactions();
-
-  const reactions = (reactionTypes ?? [])
-    .filter((r) => (program.reactionCounts?.[r.value] ?? 0) > 0)
-    .sort((a, b) => a.order - b.order);
-
   const isPro = program.tier === 'pro';
 
   return (
@@ -53,7 +48,7 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
 
         <View style={styles.textCard}>
           <Typography
-            variant="title"
+            variant="heading"
             align="left"
             numberOfLines={2}
             style={styles.title}
@@ -71,19 +66,7 @@ export function ProgramMediumCard({ program, style }: ProgramMediumCardProps) {
           </Typography>
         </View>
 
-        {reactions.length > 0 ? (
-          <View style={styles.reactions}>
-            {reactions.map((r) => (
-              <View key={r.value} style={styles.reactionChip}>
-                <Typography variant="subtitle">{r.emoji}</Typography>
-
-                <Typography variant="subtitle" color={COLORS.Text.secondary}>
-                  {program.reactionCounts[r.value]}
-                </Typography>
-              </View>
-            ))}
-          </View>
-        ) : null}
+        <ProgramReactions program={program} style={styles.reactions} />
       </Card>
     </View>
   );
@@ -104,7 +87,10 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   // Обложка на всю ширину карточки, квадратная.
-  cover: { width: '100%', aspectRatio: 1 },
+  cover: {
+    width: '100%',
+    aspectRatio: 1,
+  },
   coverImage: {
     width: '100%',
     height: '100%',
@@ -126,19 +112,8 @@ const styles = StyleSheet.create({
   },
   // Реакции под текстом, прижаты к низу карточки.
   reactions: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: spacing.xs,
     marginTop: 'auto',
     paddingTop: spacing.sm,
-  },
-  reactionChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.Surface.secondary,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 4,
   },
 });
