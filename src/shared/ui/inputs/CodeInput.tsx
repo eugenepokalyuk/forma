@@ -16,7 +16,7 @@ interface CodeInputProps {
   autoFocus?: boolean;
 }
 
-// Код из письма: ячейка на каждую цифру, под ними — скрытое поле, которое
+// Код из письма: круглая ячейка на каждую цифру, под ними — скрытое поле, которое
 // принимает ввод и автоподстановку кода. Тап по ячейкам открывает клавиатуру.
 // Без Liquid Glass и на iOS 26+: шесть мелких стеклянных ячеек подряд
 // выглядят шумно — у них обычная заливка, как на Android.
@@ -96,9 +96,9 @@ export function CodeInput({
 const styles = StyleSheet.create({
   digits: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm },
   digitBox: {
-    width: 46,
-    height: 58,
-    borderRadius: radius.md,
+    width: 48,
+    height: 48,
+    borderRadius: radius.pill,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     borderWidth: 1.5,
   },
   hiddenInput: { position: 'absolute', opacity: 0, height: 1, width: 1 },
