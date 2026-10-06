@@ -23,9 +23,10 @@ export function ResendCodeButton({ onResend }: { onResend: () => void }) {
   return (
     <TextButton
       title={
-        waiting ? `Отправить ещё раз (${secondsLeft}с)` : 'Отправить ещё раз'
+        waiting
+          ? `Отправить код повторно через ${secondsLeft} сек`
+          : 'Отправить код повторно'
       }
-      tone="accent"
       disabled={waiting}
       onPress={() => {
         setSecondsLeft(RESEND_SECONDS);

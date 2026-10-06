@@ -57,8 +57,6 @@ export default function CodeScreen() {
 
   return (
     <DismissKeyboard style={styles.fill}>
-      {/* Появление — сдвигом и FadeInCover, без opacity у содержимого (см.
-          «Liquid Glass» в README shared/ui). */}
       <MotiView
         from={{ translateY: 16 }}
         animate={{ translateY: 0 }}
@@ -66,8 +64,9 @@ export default function CodeScreen() {
         style={styles.container}
       >
         {/* Заголовок целиком, капсом: текст белый, почта — серая. */}
-        <Typography variant="display" align="center" style={styles.title}>
+        <Typography variant="display" align="center">
           {'Отправили код на почту '}
+
           <Typography variant="display" color={COLORS.Text.secondary}>
             {email}
           </Typography>
@@ -83,7 +82,10 @@ export default function CodeScreen() {
         <View style={styles.footer}>
           <ResendCodeButton onResend={() => void resend()} />
 
-          <TextButton title="Изменить почту" onPress={() => router.back()} />
+          <TextButton
+            title="Изменить эл. почту"
+            onPress={() => router.back()}
+          />
         </View>
       </MotiView>
 
@@ -97,10 +99,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.Background.primary,
-    padding: spacing.lg,
+    padding: spacing.md,
     justifyContent: 'center',
     gap: spacing.xs,
   },
-  title: { marginBottom: spacing.lg },
-  footer: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.lg },
+  footer: {
+    alignItems: 'center',
+    gap: spacing.md,
+    marginTop: spacing.xxl,
+  },
 });
