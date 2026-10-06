@@ -1,20 +1,14 @@
 import { router } from 'expo-router';
 import * as React from 'react';
-import Animated, {
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from 'react-native-reanimated';
-import { StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import type { Program } from '@/modules/programs';
 import { AppHeader } from '@/modules/auth/ui';
 import {
   FadeInItem,
-  FloatingHeader,
   ListEmpty,
   ScreenContainer,
   useTabBarClearance,
-  useUnderStatusBarScroll,
 } from '@/shared/ui';
 import { useFeatureFlag } from '@/modules/featureFlags';
 import {
@@ -22,11 +16,7 @@ import {
   useCatalog,
   useCatalogStore,
 } from '@/modules/programs';
-import {
-  PREVIEW_HEIGHT,
-  ProgramCard,
-  ProgramPreviewCard,
-} from '@/modules/programs/ui';
+import { ProgramCard, ProgramPreviewCard } from '@/modules/programs/ui';
 import { CatalogGenderSwitch } from '@/pages/Catalog/components/CatalogGenderSwitch';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { COLORS } from '@/theme';
@@ -78,6 +68,9 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // расстояние от начала секции до первых программ.
 const SHEET_OVERLAP = 20;
 
+// Высота обложки закреплённой программы в каталоге.
+const PREVIEW_HEIGHT = 350;
+
 // Сетка каталога по макету: поля по бокам, зазор между рядами и между
 // medium-карточками в ряду.
 const GUTTER = 20;
@@ -86,7 +79,6 @@ const MEDIUM_GAP = 12;
 
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
-  const statusBarScroll = useUnderStatusBarScroll();
   const { data: catalog, isLoading, isError, refetch } = useCatalog();
   // Вкладки «Мужская» / «Женская» — только при включённом флаге в админке;
   // без флага каталог целиком, как раньше.
@@ -100,16 +92,8 @@ export default function CatalogScreen() {
         : catalog,
     [catalog, genderSwitchEnabled, gender],
   );
-  // Прокрутка списка — для параллакса обложки.
-  const scrollY = useSharedValue(0);
-  // Высота шапки поверх обложки (вместе с отступом под статус-бар).
-  const [headerHeight, setHeaderHeight] = React.useState(0);
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollY.set(e.contentOffset.y);
-  });
-
   // Единственная закреплённая preview-программа (см. Program.catalog_layout
-  // на бэке) — если есть, идёт баннером над остальным списком.
+  // на бэке) — если есть, идёт баннером первым в списке, под шапкой.
   const previewProgram = data?.find((p) => p.catalogLayout === 'preview');
   const rows = React.useMemo(
     () => buildCatalogRows((data ?? []).filter((p) => p !== previewProgram)),
@@ -132,36 +116,21 @@ export default function CatalogScreen() {
     </>
   );
 
-  // Шапка закреплена, как в ленте. С обложкой — лежит поверх неё и
-  // проявляет фон, когда обложка уезжает; без обложки — стоит над списком.
+  // Шапка с переключателем закреплена над списком, как в ленте; обложка
+  // закреплённой программы — первый элемент списка, под статус-бар не заходит.
   return (
-    <ScreenContainer
-      edges={['top']}
-      loading={isLoading}
-      header={previewProgram ? undefined : header}
-      // Обложка сверху во всю высоту — со своим тёмным градиентом.
-      statusBarScrim={false}
-    >
-      <Animated.FlatList
-        // Индикатор обновления — под шапкой.
-        progressViewOffset={previewProgram ? headerHeight : 0}
+    <ScreenContainer edges={['top']} loading={isLoading} header={header}>
+      <FlatList
         style={styles.list}
         data={rows}
         keyExtractor={(row) => row.key}
-        onScroll={onScroll}
-        scrollEventThrottle={16}
         refreshing={isRefreshing}
         onRefresh={onRefresh}
         contentContainerStyle={[
-          {
-            // Обложка — от самого верха экрана, под статус-баром и шапкой.
-            paddingTop: 0,
-            paddingBottom: tabBarClearance,
-            gap: ROW_GAP,
-          },
+          { paddingBottom: tabBarClearance, gap: ROW_GAP },
           rows.length === 0 && styles.emptyContent,
         ]}
-        // gap списка действует и между шапкой и первым элементом — под
+        // gap списка действует и между обложкой и первым рядом — под
         // обложкой его убираем: от начала секции до программ ровно SHEET_OVERLAP.
         ListHeaderComponentStyle={
           previewProgram ? { marginBottom: -ROW_GAP } : undefined
@@ -169,16 +138,12 @@ export default function CatalogScreen() {
         ListHeaderComponent={
           previewProgram ? (
             <View>
-              <View style={styles.previewWrap}>
-                <ProgramPreviewCard
-                  program={previewProgram}
-                  onPress={() => router.push(ROUTES.program(previewProgram.id))}
-                  bottomOverlap={SHEET_OVERLAP}
-                  scrollY={scrollY}
-                  // Время и батарея читаются на фото.
-                  topShadeHeight={statusBarScroll.paddingTop + 64}
-                />
-              </View>
+              <ProgramPreviewCard
+                program={previewProgram}
+                onPress={() => router.push(ROUTES.program(previewProgram.id))}
+                bottomOverlap={SHEET_OVERLAP}
+                height={PREVIEW_HEIGHT}
+              />
 
               {/* Всё ниже обложки — секция, которая заходит на неё снизу. */}
               <View style={styles.sheetTop} />
@@ -216,21 +181,6 @@ export default function CatalogScreen() {
           </FadeInItem>
         )}
       />
-
-      {previewProgram ? (
-        <FloatingHeader
-          scrollY={scrollY}
-          // Фон проявляется, когда до конца обложки остаётся высота шапки.
-          revealRange={[
-            PREVIEW_HEIGHT - headerHeight * 2,
-            PREVIEW_HEIGHT - headerHeight,
-          ]}
-          onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
-          style={{ paddingTop: statusBarScroll.paddingTop }}
-        >
-          {header}
-        </FloatingHeader>
-      ) : null}
     </ScreenContainer>
   );
 }
@@ -248,9 +198,6 @@ const styles = StyleSheet.create({
   },
   emptyContent: {
     flexGrow: 1,
-  },
-  previewWrap: {
-    position: 'relative',
   },
   sheetTop: {
     height: SHEET_OVERLAP,

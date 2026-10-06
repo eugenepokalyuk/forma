@@ -24,7 +24,6 @@ export {
   ScreenContainer,
   useUnderStatusBarScroll,
 } from './layout/ScreenContainer';
-export * from './layout/FloatingHeader';
 export { Section } from './layout/Section';
 export * from './layout/TabBar';
 export { Divider } from './layout/Divider';

@@ -8,7 +8,7 @@
 | `text/`     | `Typography`, иконки (`Icon` — Material, `CustomIcon` — свои глифы), `Logo`, `ProBadge`, `Badge` (пометка «Сегодня» или тег-контур)                                     |
 | `buttons/`  | `Button` (основная, второстепенная, опасная), круглая `GlassIconButton`, `TextButton` (ссылка без подложки)                                                             |
 | `inputs/`   | `Input` (`error` — красная рамка, `shakeKey` — тряска при неудачной попытке), `CodeInput` (код из письма по ячейкам), `Composer` (текст с отправкой), `DismissKeyboard` |
-| `layout/`   | `ScreenContainer` (safe area, прокрутка под статус-бар, pull-to-refresh, шапка), `FloatingHeader`, `Section`, `TabBar`, `Divider`                                       |
+| `layout/`   | `ScreenContainer` (safe area, прокрутка под статус-бар, pull-to-refresh, шапка), `Section`, `TabBar`, `Divider`                                                         |
 | `content/`  | `Card`, `GlassCard`, `ListRow`/`ListGroup`, `StatTile`, `UserAvatar`                                                                                                    |
 | `feedback/` | `BottomSheet` (все шторки), тосты (`toast`, `Toaster`), `ErrorState`, `EmptyState`, `ListEmpty` (пусто / ошибка / загрузка списка)                                      |
 | `motion/`   | `FadeInItem` (появление карточек списка), `FadeInCover` (появление экрана), `AuroraBackground`                                                                          |
@@ -17,8 +17,7 @@
 ## Как пользоваться
 
 - **Шапка вкладок** закреплена: `ScreenContainer header={<AppHeader />}` ставит её над прокруткой —
-  не уезжает ни при прокрутке, ни при оттягивании. На экранах с обложкой под статус-баром —
-  `FloatingHeader` поверх списка: прозрачный над обложкой, фон проявляется, когда обложка уехала.
+  не уезжает ни при прокрутке, ни при оттягивании.
 - **Текст с отправкой** (комментарии, посты, обратная связь) — `Composer`: «+» слева открывает меню
   вложений поверх соседних блоков, справа — кнопка отправки с зоной касания 56pt.
 - **Клавиатура:** экраны и шторки с полями оборачивают пустое место в `DismissKeyboard` —
