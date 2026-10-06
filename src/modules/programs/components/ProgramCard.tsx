@@ -49,12 +49,6 @@ export function ProgramCard({ program }: ProgramCardProps) {
             {program.title}
           </Typography>
 
-          {isPro ? (
-            <View style={styles.badgeRow}>
-              <ProBadge />
-            </View>
-          ) : null}
-
           <Typography
             variant="body"
             color={COLORS.Text.secondary}
@@ -65,17 +59,21 @@ export function ProgramCard({ program }: ProgramCardProps) {
         </View>
       </View>
 
-      {reactions.length > 0 ? (
-        <View style={styles.reactions}>
-          {reactions.map((r) => (
-            <View key={r.value} style={styles.reactionChip}>
-              <Typography variant="subtitle">{r.emoji}</Typography>
+      {reactions.length > 0 || isPro ? (
+        <View style={styles.footer}>
+          <View style={styles.reactions}>
+            {reactions.map((r) => (
+              <View key={r.value} style={styles.reactionChip}>
+                <Typography variant="subtitle">{r.emoji}</Typography>
 
-              <Typography variant="subtitle" color={COLORS.Text.secondary}>
-                {program.reactionCounts[r.value]}
-              </Typography>
-            </View>
-          ))}
+                <Typography variant="subtitle" color={COLORS.Text.secondary}>
+                  {program.reactionCounts[r.value]}
+                </Typography>
+              </View>
+            ))}
+          </View>
+
+          {isPro ? <ProBadge style={styles.proBadge} /> : null}
         </View>
       ) : null}
     </Card>
@@ -105,19 +103,23 @@ const styles = StyleSheet.create({
   title: {
     flexShrink: 1,
   },
-  badgeRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xs,
-    marginTop: 4,
-  },
   subtitle: {
     marginTop: 4,
   },
-  reactions: {
+  // Низ карточки: реакции слева, бейдж ПРО — в правом углу.
+  footer: {
     flexDirection: 'row',
+    alignItems: 'flex-end',
     gap: spacing.sm,
   },
+  reactions: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap-reverse',
+    gap: spacing.sm,
+  },
+  // У ProBadge alignSelf: flex-start — держим его в нижнем углу.
+  proBadge: { alignSelf: 'flex-end' },
   reactionChip: {
     flexDirection: 'row',
     alignItems: 'center',
