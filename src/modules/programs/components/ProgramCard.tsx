@@ -4,7 +4,7 @@ import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { Program } from '../models/program';
-import { Card, Icon, ProBadge, Typography } from '@/shared/ui';
+import { Card, ProBadge, Typography } from '@/shared/ui';
 import { COLORS, radius, spacing } from '@/theme';
 import { formatProgramSubtitle } from '../helpers/formatProgramSubtitle';
 import { ROUTES } from '@/shared/constants/routes';
@@ -63,8 +63,6 @@ export function ProgramCard({ program }: ProgramCardProps) {
             {subtitle}
           </Typography>
         </View>
-
-        <Icon name="chevron-right" size={32} color={COLORS.Icon.tertiary} />
       </View>
 
       {reactions.length > 0 ? (
