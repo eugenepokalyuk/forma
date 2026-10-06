@@ -10,8 +10,15 @@ import {
 import { Button } from '@/shared/ui';
 
 // Кнопка на обложке: «Выбрать программу» или «Отписаться». ПРО-программа
-// без доступа вместо добавления рассказывает о ПРО.
-export function ProgramAction({ program }: { program: Program }) {
+// без доступа вместо добавления рассказывает о ПРО. После добавления —
+// предложение сразу начать тренировку (onStartWorkout — обычный запуск).
+export function ProgramAction({
+  program,
+  onStartWorkout,
+}: {
+  program: Program;
+  onStartWorkout: () => void;
+}) {
   const hasProAccess = useAuthStore((s) => s.user?.hasProAccess);
   const { data: userPrograms } = useUserPrograms();
   const addMutation = useAddUserProgram(program.id);
@@ -51,9 +58,23 @@ export function ProgramAction({ program }: { program: Program }) {
       title="Выбрать программу"
       onPress={() => {
         if (program.tier === 'pro' && !hasProAccess) showProInfo();
-        else addMutation.mutate();
+        else
+          addMutation.mutate(undefined, {
+            onSuccess: () => confirmStart(program.title, onStartWorkout),
+          });
       }}
       loading={addMutation.isPending}
     />
+  );
+}
+
+function confirmStart(title: string, onStart: () => void) {
+  Alert.alert(
+    'Программа добавлена',
+    `«${title}» теперь в ваших программах. Начните первую тренировку сейчас или вернитесь к ней позже — выбранные программы всегда под рукой на главном экране.`,
+    [
+      { text: 'Позже', style: 'cancel' },
+      { text: 'Начать тренировку', onPress: onStart },
+    ],
   );
 }

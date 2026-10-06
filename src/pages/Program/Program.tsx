@@ -74,6 +74,15 @@ export default function ProgramScreen() {
   const expandedId =
     expandedWorkoutId === undefined ? (current?.id ?? null) : expandedWorkoutId;
 
+  // Запуск из «Начать тренировку» после добавления программы: текущий по
+  // плану день, у новой программы — первый.
+  const startCurrentWorkout = () => {
+    const workout =
+      current ??
+      [...data.workouts].sort((a, b) => a.dayNumber - b.dayNumber)[0];
+    if (workout) startWorkout({ programId: data.id, workout });
+  };
+
   const header = (
     <View>
       <ProgramPreviewCard
@@ -82,7 +91,9 @@ export default function ProgramScreen() {
         scrollY={scrollY}
         // «Назад», время и батарея читаются на фото.
         topShadeHeight={insets.top + 64}
-        footer={<ProgramAction program={data} />}
+        footer={
+          <ProgramAction program={data} onStartWorkout={startCurrentWorkout} />
+        }
       />
 
       {/* Всё ниже обложки — секция, которая заходит на неё снизу. */}
