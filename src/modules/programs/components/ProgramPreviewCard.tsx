@@ -32,16 +32,15 @@ interface ProgramPreviewCardProps {
   // едет вместе с ним — отдельный градиент поверх обложки при параллаксе
   // «проезжал» бы по фото тёмной полосой.
   topShadeHeight?: number;
-  // Высота обложки; по умолчанию — PREVIEW_HEIGHT (шапка страницы программы).
-  height?: number;
 }
 
 export const PREVIEW_HEIGHT = 450;
+const HEIGHT = PREVIEW_HEIGHT;
 
 // Обложка программы во всю ширину устройства, а не контейнера (в каталоге
 // стоит с отрицательным marginHorizontal), поэтому ширину берём из окна, а не
-// из процентов родителя. Каталог — закреплённая программа (под шапкой,
-// пониже), страница программы — шапка под статус-баром.
+// из процентов родителя. Каталог — закреплённая программа, страница
+// программы — шапка.
 export function ProgramPreviewCard({
   program,
   bottomOverlap = 0,
@@ -49,7 +48,6 @@ export function ProgramPreviewCard({
   footer,
   scrollY,
   topShadeHeight,
-  height = PREVIEW_HEIGHT,
 }: ProgramPreviewCardProps) {
   const { width } = useWindowDimensions();
 
@@ -67,7 +65,7 @@ export function ProgramPreviewCard({
   const contentStyle = useAnimatedStyle(() => {
     const y = scrollY?.get() ?? 0;
     return {
-      opacity: interpolate(y, [0, height * 0.6], [1, 0], Extrapolation.CLAMP),
+      opacity: interpolate(y, [0, HEIGHT * 0.6], [1, 0], Extrapolation.CLAMP),
     };
   });
 
@@ -75,7 +73,7 @@ export function ProgramPreviewCard({
     <Pressable
       onPress={onPress}
       disabled={!onPress}
-      style={[styles.wrap, { width, height }]}
+      style={[styles.wrap, { width }]}
     >
       <Animated.View style={[styles.frame, frameStyle]}>
         <Animated.View style={[StyleSheet.absoluteFill, imageStyle]}>
@@ -137,6 +135,7 @@ const styles = StyleSheet.create({
   // Без overflow: hidden — растянутое фото выходит за верх карточки;
   // обрезает его рамка frame.
   wrap: {
+    height: HEIGHT,
     justifyContent: 'flex-end',
     backgroundColor: COLORS.Surface.primary,
   },

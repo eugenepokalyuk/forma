@@ -12,12 +12,14 @@ import { useReactions } from '../queries';
 
 interface ProgramCardProps {
   program: Program;
+  // Высота карточки; закреплённая программа в каталоге — выше обычной.
+  height?: number;
 }
 
 // Единая карточка программы — раньше в каталоге и в «Мои программы» на
 // главном были два разных вида карточек, теперь один компонент везде
 // (см. forma-project Figma, node 5487-2731).
-export function ProgramCard({ program }: ProgramCardProps) {
+export function ProgramCard({ program, height }: ProgramCardProps) {
   const { data: reactionTypes } = useReactions();
 
   const reactions = (reactionTypes ?? [])
@@ -29,7 +31,7 @@ export function ProgramCard({ program }: ProgramCardProps) {
 
   return (
     <Card
-      style={[styles.card, styles.cardClip]}
+      style={[styles.card, styles.cardClip, height ? { height } : null]}
       onPress={() => router.push(ROUTES.program(program.id))}
     >
       {program.coverImageUrl ? (
@@ -83,7 +85,7 @@ export function ProgramCard({ program }: ProgramCardProps) {
 const styles = StyleSheet.create({
   card: {
     height: 230,
-    padding: spacing.md,
+    padding: spacing.sm,
     borderRadius: radius.md,
     backgroundColor: COLORS.Surface.primary,
     justifyContent: 'space-between',

@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import * as React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
@@ -16,15 +15,13 @@ import {
   useCatalog,
   useCatalogStore,
 } from '@/modules/programs';
-import { ProgramCard, ProgramPreviewCard } from '@/modules/programs/ui';
+import { ProgramCard } from '@/modules/programs/ui';
 import { CatalogGenderSwitch } from '@/pages/Catalog/components/CatalogGenderSwitch';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
-import { COLORS } from '@/theme';
-import { ROUTES } from '@/shared/constants/routes';
 import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
 type CatalogRow =
-  | { type: 'wide'; key: string; program: Program }
+  | { type: 'wide'; key: string; program: Program; height?: number }
   | { type: 'medium'; key: string; programs: Program[] };
 
 // Порядок программ — с бэка (Program.order, управляется в админке), поэтому
@@ -64,11 +61,7 @@ function buildCatalogRows(programs: Program[]): CatalogRow[] {
 // отдельная карточка с описанием и кнопкой «Добавить»; теперь добавление
 // программы делается на её странице (см. pages/Program), а список тут
 // один в один как в forma-project Figma (node 5487-2731).
-// Насколько секция с программами заходит на обложку снизу; это же —
-// расстояние от начала секции до первых программ.
-const SHEET_OVERLAP = 20;
-
-// Высота обложки закреплённой программы в каталоге.
+// Высота карточки закреплённой программы — первой в каталоге.
 const PREVIEW_HEIGHT = 350;
 
 // Сетка каталога по макету: поля по бокам, зазор между рядами и между
@@ -93,12 +86,24 @@ export default function CatalogScreen() {
     [catalog, genderSwitchEnabled, gender],
   );
   // Единственная закреплённая preview-программа (см. Program.catalog_layout
-  // на бэке) — если есть, идёт баннером первым в списке, под шапкой.
-  const previewProgram = data?.find((p) => p.catalogLayout === 'preview');
-  const rows = React.useMemo(
-    () => buildCatalogRows((data ?? []).filter((p) => p !== previewProgram)),
-    [data, previewProgram],
-  );
+  // на бэке) — если есть, идёт первой: такая же карточка, как широкая,
+  // только выше.
+  const rows = React.useMemo(() => {
+    const programs = data ?? [];
+    const preview = programs.find((p) => p.catalogLayout === 'preview');
+    const rest = buildCatalogRows(programs.filter((p) => p !== preview));
+    return preview
+      ? [
+          {
+            type: 'wide' as const,
+            key: preview.id,
+            program: preview,
+            height: PREVIEW_HEIGHT,
+          },
+          ...rest,
+        ]
+      : rest;
+  }, [data]);
 
   const { isRefreshing, onRefresh } = useRefresh(refetch);
 
@@ -116,8 +121,7 @@ export default function CatalogScreen() {
     </>
   );
 
-  // Шапка с переключателем закреплена над списком, как в ленте; обложка
-  // закреплённой программы — первый элемент списка, под статус-бар не заходит.
+  // Шапка с переключателем закреплена над списком, как в ленте.
   return (
     <ScreenContainer edges={['top']} loading={isLoading} header={header}>
       <FlatList
@@ -130,26 +134,6 @@ export default function CatalogScreen() {
           { paddingBottom: tabBarClearance, gap: ROW_GAP },
           rows.length === 0 && styles.emptyContent,
         ]}
-        // gap списка действует и между обложкой и первым рядом — под
-        // обложкой его убираем: от начала секции до программ ровно SHEET_OVERLAP.
-        ListHeaderComponentStyle={
-          previewProgram ? { marginBottom: -ROW_GAP } : undefined
-        }
-        ListHeaderComponent={
-          previewProgram ? (
-            <View>
-              <ProgramPreviewCard
-                program={previewProgram}
-                onPress={() => router.push(ROUTES.program(previewProgram.id))}
-                bottomOverlap={SHEET_OVERLAP}
-                height={PREVIEW_HEIGHT}
-              />
-
-              {/* Всё ниже обложки — секция, которая заходит на неё снизу. */}
-              <View style={styles.sheetTop} />
-            </View>
-          ) : null
-        }
         ListEmptyComponent={
           <ListEmpty
             isError={isError}
@@ -161,7 +145,7 @@ export default function CatalogScreen() {
         renderItem={({ item, index }) => (
           <FadeInItem index={index} style={styles.itemList}>
             {item.type === 'wide' ? (
-              <ProgramCard program={item.program} />
+              <ProgramCard program={item.program} height={item.height} />
             ) : (
               <View style={styles.mediumRow}>
                 {item.programs.map((program) => (
@@ -198,13 +182,6 @@ const styles = StyleSheet.create({
   },
   emptyContent: {
     flexGrow: 1,
-  },
-  sheetTop: {
-    height: SHEET_OVERLAP,
-    marginTop: -SHEET_OVERLAP,
-    backgroundColor: COLORS.Background.primary,
-    borderTopLeftRadius: SHEET_OVERLAP,
-    borderTopRightRadius: SHEET_OVERLAP,
   },
   mediumRow: {
     flexDirection: 'row',

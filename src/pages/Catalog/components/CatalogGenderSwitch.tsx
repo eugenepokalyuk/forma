@@ -44,7 +44,7 @@ export function CatalogGenderSwitch({
             style={[styles.tab, active && styles.tabActive]}
           >
             <Typography
-              variant="heading"
+              variant="title"
               color={active ? COLORS.Text.primary : COLORS.Text.secondary}
             >
               {o.label}
