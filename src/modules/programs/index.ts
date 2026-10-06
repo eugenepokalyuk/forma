@@ -10,4 +10,6 @@ export * from './api/getReactionsApi';
 export * from './api/getUserProgramsApi';
 export * from './api/removeUserProgramApi';
 export * from './queries';
+export * from './store';
 export * from './helpers/formatProgramSubtitle';
+export * from './helpers/filterProgramsByGender';

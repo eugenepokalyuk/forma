@@ -52,6 +52,9 @@ export interface ProgramWeek {
 
 export type ProgramCatalogLayout = 'preview' | 'wide' | 'medium';
 
+// Вкладка каталога «Мужская» / «Женская» (за фича флагом catalog_gender).
+export type CatalogGender = 'men' | 'women';
+
 export interface Program {
   id: string; // short_id
   title: string;
@@ -64,6 +67,9 @@ export interface Program {
   tier: SubscriptionTier;
   isPersonal: boolean;
   catalogLayout: ProgramCatalogLayout;
+  // Опции «Мужская» / «Женская» из админки; с обеими — в обеих вкладках.
+  forMen: boolean;
+  forWomen: boolean;
   coverImageUrl: string | null;
   likesCount: number;
   isLiked: boolean;

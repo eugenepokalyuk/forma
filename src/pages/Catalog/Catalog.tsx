@@ -16,12 +16,18 @@ import {
   useTabBarClearance,
   useUnderStatusBarScroll,
 } from '@/shared/ui';
-import { useCatalog } from '@/modules/programs';
+import { useFeatureFlag } from '@/modules/featureFlags';
+import {
+  filterProgramsByGender,
+  useCatalog,
+  useCatalogStore,
+} from '@/modules/programs';
 import {
   PREVIEW_HEIGHT,
   ProgramCard,
   ProgramPreviewCard,
 } from '@/modules/programs/ui';
+import { CatalogGenderSwitch } from '@/pages/Catalog/components/CatalogGenderSwitch';
 import { ProgramMediumCard } from '@/pages/Catalog/components/ProgramMediumCard';
 import { COLORS, spacing } from '@/theme';
 import { ROUTES } from '@/shared/constants/routes';
@@ -75,7 +81,19 @@ const SHEET_OVERLAP = 20;
 export default function CatalogScreen() {
   const tabBarClearance = useTabBarClearance();
   const statusBarScroll = useUnderStatusBarScroll();
-  const { data, isLoading, isError, refetch } = useCatalog();
+  const { data: catalog, isLoading, isError, refetch } = useCatalog();
+  // Вкладки «Мужская» / «Женская» — только при включённом флаге в админке;
+  // без флага каталог целиком, как раньше.
+  const genderSwitchEnabled = useFeatureFlag('catalog_gender');
+  const gender = useCatalogStore((s) => s.gender);
+  const setGender = useCatalogStore((s) => s.setGender);
+  const data = React.useMemo(
+    () =>
+      catalog && genderSwitchEnabled
+        ? filterProgramsByGender(catalog, gender)
+        : catalog,
+    [catalog, genderSwitchEnabled, gender],
+  );
   // Прокрутка списка — для параллакса обложки.
   const scrollY = useSharedValue(0);
   // Высота шапки поверх обложки (вместе с отступом под статус-бар).
@@ -94,13 +112,23 @@ export default function CatalogScreen() {
 
   const { isRefreshing, onRefresh } = useRefresh(refetch);
 
+  const header = (
+    <>
+      <AppHeader />
+
+      {genderSwitchEnabled ? (
+        <CatalogGenderSwitch value={gender} onChange={setGender} />
+      ) : null}
+    </>
+  );
+
   // Шапка закреплена, как в ленте. С обложкой — лежит поверх неё и
   // проявляет фон, когда обложка уезжает; без обложки — стоит над списком.
   return (
     <ScreenContainer
       edges={['top']}
       loading={isLoading}
-      header={previewProgram ? undefined : <AppHeader />}
+      header={previewProgram ? undefined : header}
       // Обложка сверху во всю высоту — со своим тёмным градиентом.
       statusBarScrim={false}
     >
@@ -189,7 +217,7 @@ export default function CatalogScreen() {
           onLayout={(e) => setHeaderHeight(e.nativeEvent.layout.height)}
           style={{ paddingTop: statusBarScroll.paddingTop }}
         >
-          <AppHeader />
+          {header}
         </FloatingHeader>
       ) : null}
     </ScreenContainer>

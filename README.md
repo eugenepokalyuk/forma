@@ -51,7 +51,8 @@ npm start              # только Metro, если dev-клиент уже у
 [programs](src/modules/programs/README.md) ·
 [workout](src/modules/workout/README.md) ·
 [social](src/modules/social/README.md) ·
-[bro](src/modules/bro/README.md)
+[bro](src/modules/bro/README.md) ·
+[featureFlags](src/modules/featureFlags/README.md)
 
 ## Офлайн
 
