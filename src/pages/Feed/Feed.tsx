@@ -1,13 +1,6 @@
-import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import * as React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import Animated, {
-  useAnimatedReaction,
-  useAnimatedScrollHandler,
-  useSharedValue,
-} from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import {
   ListEmpty,
@@ -17,7 +10,6 @@ import {
 } from '@/shared/ui';
 import { CommentsModal } from '@/pages/Feed/components/CommentsModal';
 import { PostCard } from '@/pages/Feed/components/PostCard';
-import { PostPage } from '@/pages/Feed/components/PostPage';
 import { ReportSheet } from '@/pages/Feed/components/ReportSheet';
 import { useContentActions } from '@/pages/Feed/hooks/useContentActions';
 import { COLORS, screenPadding, spacing } from '@/theme';
@@ -26,14 +18,12 @@ import { useFeed, useToggleLike, type Post } from '@/modules/social';
 import { AppHeader } from '@/modules/auth/components/AppHeader';
 import { useRefresh } from '@/shared/lib/hooks/useRefresh';
 
-// Сколько выглядывают соседние посты сверху и снизу и зазор между ними.
+// Сколько выглядывает следующий пост снизу и зазор между постами.
 const PEEK = 24;
 const GAP = spacing.sm;
 
-const selectionHaptic = () => void Haptics.selectionAsync();
-
-// Лента — вертикальная карусель: пост на страницу, листается со снэпом,
-// соседние выглядывают по краям.
+// Лента — вертикальный список постов высотой почти в экран (следующий
+// выглядывает снизу), прокрутка свободная, без снэпа.
 export default function FeedScreen() {
   const tabBarClearance = useTabBarClearance();
   const statusBarScroll = useUnderStatusBarScroll();
@@ -64,29 +54,8 @@ export default function FeedScreen() {
   const pageHeight = Math.max(visible - PEEK * 2, 0);
   const interval = pageHeight + GAP;
 
-  const scrollY = useSharedValue(0);
-  const onScroll = useAnimatedScrollHandler((e) => {
-    scrollY.set(e.contentOffset.y);
-  });
-
-  // Лёгкий щелчок, когда в центр встаёт следующий пост.
-  useAnimatedReaction(
-    () => (interval > 0 ? Math.round(scrollY.get() / interval) : 0),
-    (page, prev) => {
-      if (prev !== null && page !== prev && page >= 0) {
-        scheduleOnRN(selectionHaptic);
-      }
-    },
-    [interval],
-  );
-
-  const renderPost = ({ item, index }: { item: Post; index: number }) => (
-    <PostPage
-      index={index}
-      interval={interval}
-      height={pageHeight}
-      scrollY={scrollY}
-    >
+  const renderPost = ({ item }: { item: Post }) => (
+    <View style={{ height: pageHeight }}>
       <PostCard
         post={item}
         style={styles.card}
@@ -102,7 +71,7 @@ export default function FeedScreen() {
                 )
         }
       />
-    </PostPage>
+    </View>
   );
 
   return (
@@ -116,19 +85,14 @@ export default function FeedScreen() {
         onLayout={(e) => setListHeight(e.nativeEvent.layout.height)}
       >
         {pageHeight > 0 ? (
-          <Animated.FlatList
+          <FlatList
             style={styles.list}
             data={posts}
             keyExtractor={(item) => item.id}
-            onScroll={onScroll}
-            scrollEventThrottle={16}
             showsVerticalScrollIndicator={false}
-            snapToInterval={interval}
-            decelerationRate="fast"
-            disableIntervalMomentum
             getItemLayout={(_, index) => ({
               length: pageHeight,
-              offset: PEEK + interval * index,
+              offset: GAP + interval * index,
               index,
             })}
             refreshing={isRefreshing}
@@ -136,7 +100,7 @@ export default function FeedScreen() {
             contentContainerStyle={[
               {
                 gap: GAP,
-                paddingTop: PEEK,
+                paddingTop: GAP,
                 paddingBottom: tabBarClearance + PEEK,
                 paddingHorizontal: screenPadding,
               },
