@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import { MotiView } from 'moti';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import type { Exercise } from '@/modules/programs';
 import { Icon, Typography } from '@/shared/ui';
@@ -52,12 +52,12 @@ export function SetPills({
                   ? `Убрать подход ${setNumber}`
                   : `Подход ${setNumber}${isCurrent ? ', текущий' : ''}`
             }
-            accessibilityHint={done ? 'Отменить подход' : undefined}
+            accessibilityHint={done ? 'Удалить подход' : undefined}
             accessibilityState={{ disabled: !done && !isRemovableExtra }}
             onPress={() => {
               void Haptics.selectionAsync();
               if (done) {
-                undoSet(exercise.id, setNumber);
+                confirmUndoSet(exercise.id, setNumber);
               } else {
                 onRemoveExtraSet();
               }
@@ -97,6 +97,22 @@ export function SetPills({
         <Icon name="plus" size={24} color={COLORS.Text.accent} />
       </Pressable>
     </View>
+  );
+}
+
+// Тап по сделанному подходу стирает его данные — сначала спрашиваем.
+function confirmUndoSet(exerciseId: string, setNumber: number) {
+  Alert.alert(
+    `Удалить подход ${setNumber}?`,
+    'Записанные данные подхода будут удалены.',
+    [
+      { text: 'Отмена', style: 'cancel' },
+      {
+        text: 'Удалить',
+        style: 'destructive',
+        onPress: () => undoSet(exerciseId, setNumber),
+      },
+    ],
   );
 }
 
