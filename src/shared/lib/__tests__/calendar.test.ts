@@ -1,4 +1,10 @@
-import { computeStreak, getCurrentWeek, isSameDay } from '../date/calendar';
+import {
+  computeStreak,
+  getCurrentWeek,
+  getWeek,
+  isSameDay,
+  weekOffsetOf,
+} from '../date/calendar';
 
 // Локальное время: даты строим конструктором, а не ISO-строками,
 // чтобы тесты не зависели от часового пояса машины.
@@ -44,6 +50,36 @@ describe('getCurrentWeek', () => {
 
     expect(week[0].dayNumber).toBe(12);
     expect(week[6].isToday).toBe(true);
+  });
+});
+
+describe('getWeek', () => {
+  beforeEach(() => jest.useFakeTimers({ now: day(15) }));
+  afterEach(() => jest.useRealTimers());
+
+  it('следующая неделя — без «сегодня»', () => {
+    const week = getWeek(1);
+    expect(week.map((d) => d.dayNumber)).toEqual([19, 20, 21, 22, 23, 24, 25]);
+    expect(week.some((d) => d.isToday)).toBe(false);
+  });
+
+  it('прошлая неделя через границу года', () => {
+    const week = getWeek(-2);
+    expect(week[0].date).toEqual(new Date(2025, 11, 29));
+    expect(week[6].date).toEqual(new Date(2026, 0, 4));
+  });
+});
+
+describe('weekOffsetOf', () => {
+  beforeEach(() => jest.useFakeTimers({ now: day(15) }));
+  afterEach(() => jest.useRealTimers());
+
+  it('обратное к getWeek', () => {
+    expect(weekOffsetOf(day(12, 0))).toBe(0);
+    expect(weekOffsetOf(day(18, 23))).toBe(0);
+    expect(weekOffsetOf(day(19))).toBe(1);
+    expect(weekOffsetOf(day(11))).toBe(-1);
+    expect(weekOffsetOf(new Date(2025, 11, 29))).toBe(-2);
   });
 });
 

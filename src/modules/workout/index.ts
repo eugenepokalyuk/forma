@@ -19,5 +19,6 @@ export * from './helpers/format';
 export * from './helpers/nextSetNumber';
 export * from './helpers/nextWorkout';
 export * from './helpers/progress';
+export * from './helpers/sessionDay';
 export * from './helpers/setPrefill';
 export * from './helpers/tonnage';

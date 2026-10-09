@@ -11,12 +11,15 @@ import {
 import { BroSection } from '@/pages/Home/components/BroSection';
 import { ProgramsSection } from '@/pages/Home/components/ProgramsSection';
 import { WeekSection } from '@/pages/Home/components/WeekSection';
+import { FutureDayView } from '@/pages/Home/components/views/FutureDayView';
+import { PastDayView } from '@/pages/Home/components/views/PastDayView';
 import { usePrefetchActivePrograms } from '@/pages/Home/hooks/usePrefetchActivePrograms';
 import { useMyPrograms } from '@/pages/Home/hooks/useMyPrograms';
 import { useSyncToast } from '@/pages/Home/hooks/useSyncToast';
 import { programKeys } from '@/modules/programs';
 import { workoutKeys } from '@/modules/workout';
 import { useRefresh } from '@/shared/lib/hooks/useRefresh';
+import { isSameDay } from '@/shared/lib/date/calendar';
 
 // Насколько сияние за Бро выходит за рамки блока сверху и снизу.
 const AURORA_SPILL = 120;
@@ -28,6 +31,11 @@ export default function HomeScreen() {
 
   usePrefetchActivePrograms(data);
   useSyncToast();
+
+  // День, выбранный в неделе. Реплики Бро и старт тренировки — только
+  // сегодня; прошедший день — его тренировки, будущий — что по плану.
+  const [selectedDate, setSelectedDate] = React.useState(() => new Date());
+  const isTodaySelected = isSameDay(selectedDate, new Date());
 
   // Сияние за Бро — первый слой контента экрана: выходит за рамки блока, но
   // лежит под всеми блоками (а не поверх соседних) и прокручивается с ним.
@@ -53,7 +61,7 @@ export default function HomeScreen() {
       refreshing={isRefreshing}
       contentStyle={{ paddingBottom: tabBarClearance }}
     >
-      {broLayout ? (
+      {isTodaySelected && broLayout ? (
         <AuroraBackground
           style={{
             top: broLayout.y - AURORA_SPILL,
@@ -63,16 +71,24 @@ export default function HomeScreen() {
         />
       ) : null}
 
-      <WeekSection />
-      <View
-        onLayout={(e) => {
-          const { y, height } = e.nativeEvent.layout;
-          setBroLayout({ y, height });
-        }}
-      >
-        <BroSection />
-      </View>
-      <ProgramsSection />
+      <WeekSection selectedDate={selectedDate} onSelect={setSelectedDate} />
+      {isTodaySelected ? (
+        <>
+          <View
+            onLayout={(e) => {
+              const { y, height } = e.nativeEvent.layout;
+              setBroLayout({ y, height });
+            }}
+          >
+            <BroSection />
+          </View>
+          <ProgramsSection />
+        </>
+      ) : selectedDate < new Date() ? (
+        <PastDayView date={selectedDate} />
+      ) : (
+        <FutureDayView />
+      )}
     </ScreenContainer>
   );
 }
